@@ -1,0 +1,117 @@
+<template>
+  <div>
+       <!-- 面包屑 -->
+    <el-breadcrumb>
+      <el-breadcrumb-item :to="{ path: '/workbench' }">工作台</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/workbench/warehouseMmanagement' }">箱号列表</el-breadcrumb-item>
+      <el-breadcrumb-item>新增出货</el-breadcrumb-item>
+    </el-breadcrumb>
+    <!-- 主题内容 -->
+    <el-card>
+            <div class="wordborder" >
+                <p class='clickbox' @click="dotSwitch(1)">建筑信息</p>
+                <div class='content' v-show="show1">
+                    <el-row>
+                        <el-col :span="4"><p>出货日期:</p></el-col>
+                        <el-col :span="8">
+                            <el-date-picker v-model="value1" type="date" placeholder="选择日期"></el-date-picker>
+                        </el-col>
+                        <el-col :span="4"><p>出货数量:</p></el-col>
+                        <el-col :span="8"><el-input  clearable disabled>
+                            </el-input>
+                        </el-col>
+                    </el-row>
+
+                     <el-row>
+                        <el-col :span="4"><p>客户名称</p></el-col>
+                        <el-col :span="8">
+                            <el-input clearable></el-input>
+                        </el-col>
+                        <el-col :span="4"><p>出货地区:</p></el-col>
+                        <el-col :span="8"><el-input  clearable>
+                            </el-input>
+                        </el-col>
+                    </el-row>
+                </div>
+            </div>
+    </el-card>
+  </div>
+</template>
+
+<script>
+export default {
+
+  data () {
+    return {
+        show1:true,
+        show2:true,
+        show3:true,
+        formData: {
+                leader: sessionStorage.getItem("user"), //项目负责人
+                submitDate: new Date(), //提交日期
+                name: "", //项目名称
+                industry: "", //行业
+                floorArea: "", //建筑面积
+                buildingAddr: "", //项目建筑地址
+                exploitUnit: "", //项目使用单位
+                managementUnit: "", //项目管理单位
+                province: "", //省
+                city: "", //市
+                region: "", //区
+                projectMode: "", //项目模式
+                tenderMode: "", //招标模式
+                demandUser: "", //业主需求对接人
+                demandUserPhone: "", //联系方式
+                scale: "", //项目规模
+                content: "", //项目内容简介
+                status: 1, //项目状态
+                userName: sessionStorage.getItem("user"),//日志操作人
+            },
+      //日期
+      value1:"",
+    }
+  },
+
+  methods: {
+    //   下拉框的显示和隐藏
+      dotSwitch(index){
+          if(index==1){
+              this.show1=!this.show1
+          }else if(index==1){
+              this.show2=!this.show2
+          }else if(index==3){
+              this.show3=!this.show3
+          }
+      }
+  },
+
+  created () {
+  }
+}
+</script>
+
+<style lang='scss'>
+.approval_upload_design_partner {
+  margin: 10px auto;
+  border: 1px solid #e7e8ed;
+  .div2 {
+    position: relative;
+    margin: 25px;
+    min-height: 20px;
+    line-height: 40px;
+    .content {
+      width: 80%;
+      margin: 35px;
+      margin-left: 50px;
+      p {
+        padding: 0px 5px;
+        margin: 0px 10px;
+      }
+    }
+  }
+  .div5 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+}
+</style>

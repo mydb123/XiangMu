@@ -1,0 +1,149 @@
+<template>
+  <div id="qualityTesting">
+      <el-breadcrumb>
+        <el-breadcrumb-item :to="{ path: '/workbench/management/productInspection'}">制备管理</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/workbench/management/productInspection'}">成品质检</el-breadcrumb-item>
+        <el-breadcrumb-item >录入成品质检信息</el-breadcrumb-item>
+      </el-breadcrumb>
+    <el-card>
+      <div class="box" style="border:0px">
+        <div class='content'>
+        <el-row >
+          <el-col :span="4"><p>制备批号</p></el-col>
+          <el-col :span="8">
+            <el-input class="w260" v-model="formData.code" :disabled="true"></el-input>
+          </el-col>
+        </el-row>
+        </div>
+      </div>
+      <div class="box" >
+        <p class='clickbox' v-on:click="click(1)">成品质检信息</p>
+        <div class='content' v-show="show1">
+          <el-form :model="formData" :rules="rules" ref="ruleForm">
+            <el-row >
+              <el-col :span="4"><p>质检结果</p></el-col>
+              <el-col :span="8">
+                <el-form-item prop="qcResult">
+                  <el-select class="w260" v-model="formData.qcResult" placeholder="请选择">
+                    <el-option
+                        v-for="item in qcResults"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              
+              <el-col :span="4"><p>OD</p></el-col>
+              <el-col :span="8">
+                <el-form-item prop="od">
+                  <el-input
+                    type="textarea"
+                    :autosize="{ minRows: 5, maxRows: 10}"
+                    placeholder="请输入内容"
+                    v-model="formData.od">
+                  </el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
+        </div>
+      </div>
+      <div class='div5'>
+          <el-button @click="save('ruleForm')" type="primary" round>提交</el-button>
+      </div>
+    </el-card>
+  </div>
+</template>
+
+<script>
+import api from '@/api/index';
+import {PRODUCT_QC} from '@/utils/util'
+ 
+export default {
+  data() {
+    return {
+      qcResults:PRODUCT_QC,
+      show1:true,
+      formData:{
+        id:'',//成品id
+        code:'',//制备批号
+        od:'',//质检信息
+        qcResult:''//质检结果
+      },
+      rules:{
+        od: [
+            { required: true, message: '请输入od', trigger: 'blur' },
+        ],
+        qcResult: [
+            { required: true, message: '请选择质检结果', trigger: 'change' },
+        ]
+      }
+    }
+  },
+  methods: {
+    click(index) {
+      if (index == 1) {
+          this.show1 = !this.show1;
+      }
+    },
+    save(ruleForm){
+      this.$refs[ruleForm].validate((valid) => {
+        if (valid) {
+          api.product.qcCheck(this.formData).then( response=>{
+            this.$router.push('/workbench/management/productInspection');
+          }).catch(error=>{
+            console.log(error)
+          })
+        } else {
+        console.log('error submit!!');
+        return false;
+      }});
+    }
+  },
+  created(){
+    //获取路由传值
+    this.formData.code = this.$route.query.code; 
+    this.formData.id = this.$route.query.id; 
+  }
+}
+</script>
+
+<style lang="scss">
+  .detail_design_partner {
+  margin: 0 auto;
+  .distpicker-address-wrapper {
+    select {
+      color: #c0c4cc;
+      background: #f5f7fa;
+      // appearance:none;
+      // -moz-appearance:none; /* Firefox */
+      // -webkit-appearance:none; /* Safari 和 Chrome */
+    }
+  }
+}
+  .div5 {
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+    left: -40px;
+  }
+
+.disabled-select select {
+  background-color: #e7e8ed;
+  // cursor: not-allowed;
+
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  border: none;
+
+  // width:20%;
+  margin: 0;
+  padding: 0;
+  height: 28px;
+}
+</style>

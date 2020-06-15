@@ -1,0 +1,73 @@
+<template>
+    <div>
+        状态43.
+        月度缴费页面
+        <el-button type="primary" @click="monthSuccess()">缴费成功的回调函数</el-button>
+    </div>
+</template>
+<script>
+import StepComponent from '@/components/StepComponent'
+import {getStatusPurchasePartnerRouter} from '@/utils/statusPurchaseRouter';
+import api from '@/api/index'
+export default {
+    components: {
+        StepComponent
+    },
+    data() {
+        return {
+            index:3,
+            formData:{
+                id:""
+            },
+            monthFormData:[],//月度
+            monthId:""//本次缴费月度id
+        }
+    },
+    methods: {
+        monthSuccess(){ //缴费成功的回调函数
+            console.log(this.monthId);
+            api.purchasePartner.monthFeeCallBack(this.monthId).then(response => {
+                let r = getStatusPurchasePartnerRouter(response);
+                this.$router.push({path:r,query:{id:this.formData.id}});
+            }).catch(error => {
+                console.log(error);
+            });
+        },
+        loadData(id) {
+            api.purchasePartner.findById(id).then(response => {
+                this.formData.id = response.id;
+            }).catch(error => {
+                console.log(error);
+            });
+        },
+        loadMonthData(id){
+            api.purchasePartner.findMouthListByExample(this.formData.id).then(response => {
+                console.log(response);
+                for(let i in response){
+                    let monthObject = new Object();
+                    let fileList = new Array();
+                    monthObject.id = response[i].id;
+                    monthObject.purchasingMonth = response[i].purchasingMonth;
+                    monthObject.cost = response[i].cost;
+                    monthObject.fileList = response[i].fileList;
+                    if(response[i].used=="Y"){
+                        monthObject.flag=false;//当月度已审核，默认关闭表单
+                    }else{
+                        this.monthId = response[i].id;//当前审核的月度id
+                        monthObject.flag=true;
+                    }
+                    this.monthFormData.push(monthObject);
+                }
+            }).catch(error => {
+                console.log(error);
+            });
+        }
+    },
+    mounted:function(){
+        this.formData.id = this.$route.query.id; //获取路由传值
+        //加载数据
+        this.loadData(this.formData.id); //项目基本信息
+        this.loadMonthData(this.formData.id);//月度采购信息
+    }
+}
+</script>

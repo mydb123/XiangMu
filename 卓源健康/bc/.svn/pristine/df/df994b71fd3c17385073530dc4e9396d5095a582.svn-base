@@ -1,0 +1,137 @@
+<template>
+    <div id="addPreparation">
+        <el-breadcrumb>
+            <el-breadcrumb-item :to="{ path: '/workbench/dataCoding/CodeList'}">附加功能</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/workbench/dataCoding/print'}">编码列表</el-breadcrumb-item>
+            <el-breadcrumb-item >新增打印</el-breadcrumb-item>
+        </el-breadcrumb>
+    <el-card>    
+        <div class="box">
+            <p class='clickbox' v-on:click="click(1)">新增打印</p>
+            <div class='content' v-show="show1">
+                <el-form :model="formData" :rules="rules"  ref="refs">
+                    <el-row>
+                        <el-col :span="4"><p>起始编码</p></el-col>
+                        <el-col :span="8">
+                            <el-form-item prop="start">
+                                <el-input class="w260" v-model="formData.start">
+                                    <template slot="prepend">{{Prefix.start}}</template>
+                                </el-input>
+                            </el-form-item>
+                        </el-col> 
+                        <el-col :span="4"><p>结束编码</p></el-col>
+                        <el-col :span="8">
+                            <el-form-item prop="end">
+                                <el-input class="w260" v-model="formData.end">
+                                    <template slot="prepend">{{Prefix.start}}</template>
+                                </el-input>
+                            </el-form-item>
+                        </el-col> 
+                    </el-row>
+                </el-form>
+            </div>
+        </div>
+        <div class='tac'>
+            <el-button  @click="save(formData)" type="primary" round>提交</el-button>
+        </div>
+        </el-card>
+    </div>    
+</template>
+
+<script>
+import qs from 'qs' // 根据需求是否导入qs模块
+
+import { provinceAndCityData, regionData, provinceAndCityDataPlus, regionDataPlus, CodeToText, TextToCode } from 'element-china-area-data';
+import api from '@/api/index';
+export default {
+    data(){
+             // 验证开始
+        var startve = (rule,value,cb) =>{
+            const pattern = /^\d{4,}$/
+            if(pattern.test(value)){
+                return cb()
+            }
+            cb(new Error('最少输入4个数字'))
+        }
+        // 验证结束
+        var ends = (rule,value,cb) =>{
+             const pattern = /^\d{4,}$/
+            if(pattern.test(value)){
+                return cb()
+            }else if(Number(this.formData.start)>Number(value)){
+                 return cb(new Error('请输入大于起始编码的数字'))
+            }
+            cb(new Error('最少输入4个数字'))
+        };
+        return{ 
+            readonly: true,
+            show1:true,
+            templateRadio:'',
+            formData:{
+                start:'',
+                end:''
+            },
+            sendData:[]
+            ,
+            Prefix:{
+                start:"ZY"+new Date().getFullYear().toString().slice(2,4),
+                end:"ZY"+new Date().getFullYear().toString().slice(2,4),
+            },
+            rules:{
+                start: [
+                    { required: true, message: '数字不能为空',trigger:'blur'},
+                    { validator: startve, trigger:'blur'}
+                ],
+                end:[
+                    { required: true, message: '数字不能为空',trigger:'blur'},
+                    { validator: ends, trigger:'blur'}
+                ]
+            }
+        }},
+    methods:{
+        click(index) {
+            if (index == 1) {
+                this.show1 = !this.show1;
+            }
+        },
+        save(formData){
+            this.$refs.refs.validate((valid)=>{
+                if(!valid) {
+                    return
+                }else{
+                api.product.save(formData).then(res=>{     
+                if(res.state==200){
+                    this.sendData =  res.data;
+                    this.$router.push({
+                        path:"/workbench/dataCoding/BatchPrint",
+                        query:{sendData:this.sendData}
+                    })
+                }
+           })
+        }
+                
+        })
+           
+        },
+
+    },
+    created(){
+        
+    }
+}
+</script>
+
+<style lang='scss'>
+#addPreparation{
+       .mb20{
+        margin-bottom: 20px;
+    }
+    .tac{
+        text-align: center;
+        .el-button{
+            width: 114px;
+            height: 50px;
+        } 
+    }
+}
+</style>

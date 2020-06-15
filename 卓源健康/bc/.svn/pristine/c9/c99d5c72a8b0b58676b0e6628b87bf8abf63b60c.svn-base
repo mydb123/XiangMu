@@ -1,0 +1,573 @@
+<template>
+  <div id="rawDetailWaste">
+      <el-breadcrumb>
+        <el-breadcrumb-item :to="{ path: '/workbench/raw/wasteraws'}">原料管理</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/workbench/raw/wasteraws'}">废弃原料</el-breadcrumb-item>
+        <el-breadcrumb-item >原料详情</el-breadcrumb-item>
+      </el-breadcrumb>
+    <el-card>
+    <el-form disabled>
+        <div class="box" style="border:0px">
+            <div class='content'>
+            <el-row >
+                <el-col :span="4"><p>原料编码</p></el-col>
+                <el-col :span="8">
+                    <el-input class="w260" v-model="formData.bizRaw.code">
+                    </el-input>
+                </el-col>
+            </el-row>
+            </div>
+        </div>
+
+        <div class="box" >
+            <p class='clickbox' v-on:click="click(1)">供体信息</p>
+            <div class='content' v-show="show1">
+                <el-form disabled>
+                    <el-row>
+                        <el-col :span="4"><p>供体编码</p></el-col>
+                        <el-col :span="8">
+                            <el-input class="w260" v-model="formData.bizDonator.code"></el-input>
+                        </el-col>
+                        <el-col :span="4"><p>供体姓名</p></el-col>
+                        <el-col :span="8">
+                            <el-input class="w260" v-model="formData.bizDonator.name"></el-input>
+                        </el-col>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="4"><p>供体性别</p></el-col>
+                        <el-col :span="8">
+                            <el-input class="w260" v-model="formData.bizDonator.sex"></el-input>
+                        </el-col>
+                        <el-col :span="4"><p>出生日期</p></el-col>
+                        <el-col :span="8">
+                            <el-date-picker
+                                class="w260"
+                                v-model="formData.bizDonator.birthday"
+                                type="date"
+                                value-format="yyyy-MM-dd">
+                            </el-date-picker>
+                        </el-col>                       
+                    </el-row>
+                    <el-row >
+                        <el-col :span="4"><p>来源地区</p></el-col>
+                        <el-col :span="8">
+                            <el-input class="w260" v-model="sourceArea"></el-input>
+                        </el-col>
+                        <el-col :span="4"><p>入组日期</p></el-col>
+                        <el-col :span="8">
+                            <el-date-picker
+                                class="w260"
+                                v-model="formData.bizDonator.joinDate"
+                                type="date"
+                                value-format="yyyy-MM-dd">
+                            </el-date-picker>
+                        </el-col>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="4"><p>累计废弃数</p></el-col>
+                        <el-col :span="8">
+                            <el-input class="w260" v-model="formData.bizDonator.discardCount"></el-input>
+                        </el-col>
+                        
+                        <el-col :span="4"><p>最近体检日期</p></el-col>
+                        <el-col :span="8">
+                            <el-date-picker
+                                class="w260"
+                                v-model="formData.bizDonator.lastExamDate"
+                                type="date"
+                                value-format="yyyy-MM-dd">
+                            </el-date-picker>
+                        </el-col>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="4"><p>累计使用数</p></el-col>
+                        <el-col :span="8">
+                            <el-input class="w260" v-model="formData.bizDonator.useCount"></el-input>
+                        </el-col>
+                        <el-col :span="4"><p>最近16S日期</p></el-col>
+                        <el-col :span="8">
+                            <el-date-picker
+                                class="w260"
+                                v-model="formData.bizDonator.sixteenDate"
+                                type="date"
+                                value-format="yyyy-MM-dd">
+                            </el-date-picker>
+                        </el-col>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="4"><p>16S结果</p></el-col>
+                        <el-col :span="8">
+                            <el-card class="box-card">
+                                <div v-for="fileItem in formData.fileList.sixteenResultList" :key="fileItem.id" class="text item">
+                                    <el-link type="primary" :href="downloadUrl+fileItem.id">{{fileItem.showName }}</el-link>
+                                </div>
+                            </el-card>
+                        </el-col>
+                        <el-col :span="4"><p>体检结果</p></el-col>
+                        <el-col :span="8">
+                            <el-card class="box-card">
+                                <div v-for="fileItem in formData.fileList.examResultList" :key="fileItem.id" class="text item">
+                                    <el-link type="primary" :href="downloadUrl+fileItem.id">{{fileItem.showName }}</el-link>
+                                </div>
+                            </el-card>
+                        </el-col>
+                        </el-row>
+                </el-form>    
+            </div>
+        </div>
+        <div class="box" >
+            <p class='clickbox' v-on:click="click(2)">原料来源信息</p>
+            <div class='content' v-show="show2">
+                <el-row>
+                    <el-col :span="4"><p>材料名称</p></el-col>
+                    <el-col :span="8">
+                        <el-input class="w260" :disabled="true" v-model="formData.bizRaw.materialName"></el-input>
+                    </el-col>
+                </el-row>
+                <el-row >
+                    <el-col :span="4"><p>采集人员</p></el-col>
+                    <el-col :span="8">
+                        <el-select class="w260" v-model="formData.bizRaw.collectPerson" placeholder="请选择">
+                            <el-option
+                                v-for="item in collectors"
+                                :key="item.id"
+                                :label="item.user"
+                                :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :span="4"><p>接收人员</p></el-col>
+                    <el-col :span="8">
+                        <el-select class="w260" v-model="formData.bizRaw.receivePerson" placeholder="请选择">
+                            <el-option
+                                v-for="item in receptionStaff"
+                                :key="item.id"
+                                :label="item.user"
+                                :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                </el-row >
+                <el-row>
+                    <el-col :span="4"><p>采集日期</p></el-col>
+                    <el-col :span="8">
+                        <el-date-picker
+                            class="w260"
+                            v-model="formData.bizRaw.collectDate"
+                            type="date"
+                            value-format="yyyy-MM-dd">
+                        </el-date-picker>
+                    </el-col>
+                </el-row>
+            </div>
+        </div>
+
+        <div class="box" >
+            <p class='clickbox' v-on:click="click(3)">原料初检信息</p>
+            <div class='content' v-show="show3">
+                <el-row >
+                    <el-col :span="4"><p>初检评分</p></el-col>
+                    <el-col :span="8">
+                        <el-select class="w260" v-model="formData.bizRaw.firstCheckScore" placeholder="请选择">
+                            <el-option
+                                v-for="item in optionsScore"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                </el-row>
+                <el-row>
+                   <el-col :span="4"><p>初检结果</p></el-col>
+                    <el-col :span="8">
+                        <el-select class="w260" v-model="formData.bizRaw.firstCheckResult" placeholder="请选择">
+                            <el-option
+                                v-for="item in optionsResult"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                </el-row>
+                <el-row >
+                     <el-col :span="4"><p>初检性状</p></el-col>
+                    <el-col :span="8">
+                        <el-input
+                            class="mb20"
+                            type="textarea"
+                            :autosize="{ minRows: 5, maxRows: 10}"
+                            v-model="formData.bizRaw.firstCheckCharacter">
+                        </el-input>
+                    </el-col>
+                </el-row>
+            </div>
+        </div>
+
+        <div class="box"  v-if="formData.bizRaw.firstCheckResult == 2">
+            <p class='clickbox' v-on:click="click(4)">原料复检信息</p>
+            <div class='content' v-show="show4">
+                <el-row >
+                    <el-col :span="4"><p>复检结果</p></el-col>
+                    <el-col :span="8">
+                        <el-select class="w260" v-model="formData.bizRaw.recheckResult" placeholder="请选择">
+                            <el-option
+                                v-for="item in resultOptions"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :span="4"><p>质检员</p></el-col>
+                    <el-col :span="8">
+                        <el-select class="w260" v-model="formData.bizRaw.qcPerson" placeholder="请选择">
+                            <el-option
+                                v-for="item in qcPersons"
+                                :key="item.id"
+                                :label="item.user"
+                                :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="4"><p>GES</p></el-col>
+                    <el-col :span="8">
+                        <el-select class="w260" v-model="formData.bizRaw.ges" placeholder="请选择">
+                            <el-option
+                                v-for="item in recheckOptions"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :span="4"><p>stx1</p></el-col>
+                    <el-col :span="8">
+                        <el-select class="w260" v-model="formData.bizRaw.stxFirst" placeholder="请选择">
+                            <el-option
+                                v-for="item in recheckOptions"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="4"><p>VEB</p></el-col>
+                    <el-col :span="8">
+                        <el-select class="w260" v-model="formData.bizRaw.veb" placeholder="请选择">
+                            <el-option
+                                v-for="item in recheckOptions"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :span="4"><p>stx2</p></el-col>
+                    <el-col :span="8">
+                        <el-select class="w260" v-model="formData.bizRaw.stxSecond" placeholder="请选择">
+                            <el-option
+                                v-for="item in recheckOptions"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="4"><p>OXA</p></el-col>
+                    <el-col :span="8">
+                        <el-select class="w260" v-model="formData.bizRaw.oxa" placeholder="请选择">
+                            <el-option
+                                v-for="item in recheckOptions"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :span="4"><p>tcdA</p></el-col>
+                    <el-col :span="8">
+                        <el-select class="w260" v-model="formData.bizRaw.tcda" placeholder="请选择">
+                            <el-option
+                                v-for="item in recheckOptions"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="4"><p>MCR-1</p></el-col>
+                    <el-col :span="8">
+                        <el-select class="w260" v-model="formData.bizRaw.mcrFirst" placeholder="请选择">
+                            <el-option
+                                v-for="item in recheckOptions"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :span="4"><p>tcdB</p></el-col>
+                    <el-col :span="8">
+                        <el-select class="w260" v-model="formData.bizRaw.tcdb" placeholder="请选择">
+                            <el-option
+                                v-for="item in recheckOptions"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="4"><p>vanA</p></el-col>
+                    <el-col :span="8">
+                        <el-select class="w260" v-model="formData.bizRaw.vana" placeholder="请选择">
+                            <el-option
+                                v-for="item in recheckOptions"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :span="4"><p>Ece1</p></el-col>
+                    <el-col :span="8">
+                        <el-select class="w260" v-model="formData.bizRaw.eceFirst" placeholder="请选择">
+                            <el-option
+                                v-for="item in recheckOptions"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="4"><p>附件</p></el-col>
+                    <el-col :span="8">
+                            <el-card class="box-card">
+                                <div v-for="fileItem in formData.fileList.attachment" :key="fileItem.id" class="text item">
+                                    <el-link type="primary" :href="downloadUrl+fileItem.id">{{fileItem.showName }}</el-link>
+                                </div>
+                            </el-card>
+                    </el-col>
+                    <el-col :span="4"><p>称重</p></el-col>
+                    <el-col :span="8">
+                        <el-input  class="w260" v-model="formData.bizRaw.weight">
+                            <template slot="append">g</template>
+                        </el-input>
+                    </el-col>
+                </el-row>
+
+            </div>
+        </div>
+    </el-form>
+            <div class='tac'>
+                <el-button @click="back()" type="primary" round>返回</el-button>
+            </div>
+    </el-card>
+  </div>
+</template>
+
+<script>
+import store from "@/store/index";
+import api from '@/api/index';
+import base from "@/api/base";
+import { provinceAndCityData, regionData, provinceAndCityDataPlus, regionDataPlus, CodeToText, TextToCode } from 'element-china-area-data';
+import { FIRSTCHECK_SCORE,FIRSTCHECK_RESULT,STATION_TYPE,RECHECK,RECHECK_RESULT,FILE_TYPE} from "@/utils/util";
+
+export default {
+  data() {
+    return {
+      downloadUrl: base.sq + "/workbench/download?access_token=" + store.getters.token + "&fileId=", //下载路径
+      show1:true,
+      show2:true,
+      show3:true,
+      show4:true,
+      showFileFlag1:true,
+      sourceArea:'',//来源地区
+      optionsScore:FIRSTCHECK_SCORE,//初检评分
+      optionsResult:FIRSTCHECK_RESULT,//初检结果
+      recheckOptions:RECHECK,//复检信息选项
+      resultOptions:RECHECK_RESULT,//复检结果
+      collectors:[],//采集人员列表
+      receptionStaff:[],//接受人员列表
+      qcPersons:[],//质检员列表
+      formData:{
+        bizDonator:{
+            id:'',//供体id
+            code:'',//供体编码
+            name:'',//供体姓名
+            sex:'',//供体性别
+            birthday:'',//出生日期
+            province: '', //省
+            city: '', //市
+            region: '', //区
+            joinDate:'',//入组日期
+            examResult:'',//体检结果
+            lastExamDate:'',//最近体检日期
+            sixteenResult:'',//16s结果
+            sixteenDate:'',//最近16s日期
+            useCount:'',//累计使用数
+            discardCount:''//累计废弃数
+        },
+        bizRaw:{
+            id:'',
+            code:'',//原料编码
+            materialName:'',//材料名称
+            collectPerson:'',//采集人员
+            receivePerson:'',//接收人员
+            collectDate:'',//采集日期
+            firstCheckScore:'',//初检评分
+            firstCheckCharacter:'',//初检性状
+            firstCheckResult:'',//初检结果
+            recheckResult:'',//复检结果
+            qcPerson:'',//质检员
+            ges:'',//ges
+            stxFirst:'',//stx1
+            veb:'',//VEB
+            stxSecond:'',//stx2
+            oxa:'',//OXA
+            tcda:'',//tcdA
+            mcrFirst:'',//MCR-1
+            tcdb:'',//tcdB
+            vana:'',//vanA
+            eceFirst:'',//Ece1
+            weight:''//称重
+        },
+        //文件列表
+        fileList:{
+            examResultList: [],//体检文件列表
+            sixteenResultList: [],//16s体检文件列表
+            attachment:[],//复检文件列表
+        }
+      }
+    };
+  },
+  methods: {
+    uploadAttachmentMethod(param){
+      let fileObject = param.file;
+      let formData = new FormData();
+      formData.append("file", fileObject);
+      formData.append("type", FILE_TYPE.RECHECK_RESULT);
+      formData.append("foreignId", this.formData.id);
+      api.file.uploadFile(formData).then(response =>{
+          let obj = new Object();
+          obj.id = response.id;
+          obj.name = response.showName;
+          obj.url = response.url;
+          this.uploadFile.attachment.push(obj);
+      }).catch((error)=>{
+          console.log(error)   
+      })
+    },
+    handleRemove(file,fileList){
+      let index = -1;
+      for(let i in this.uploadFile.attachment){
+          if(file.id==this.uploadFile.attachment[i].id){
+              index = i;
+              break;
+          }
+      }
+      if(index!=-1){
+          this.uploadFile.attachment.splice(index,1);
+      }
+      this.deleteFile(file.id);
+    },
+    deleteFile(id){
+      api.file.deleteFile(id).then(response => {
+      }).catch(error => {
+          console.log(error);
+      });
+    },
+    click(index) {
+      if (index == 1) {
+        this.show1 = !this.show1;
+      } else if (index == 2) {
+        this.show2 = !this.show2;
+      } else if (index == 3) {
+        this.show3 = !this.show3;
+      } else if (index == 4) {
+        this.show4 = !this.show4;
+      }
+    },
+    save(){
+      api.raw.reCheckSave(this.formData).then(response =>{
+        this.$router.push("/workbench/raw/rawReInspection")
+      }).catch(error=>{
+        console.log(error)
+      })
+    },
+    back(){
+      this.$router.go(-1);
+    },
+    loadData(){
+      //获取采集人员列表  
+      api.userRelated.getUserList(STATION_TYPE.COLLECT_PERSON).then(response =>{
+          this.collectors = response;
+      }),
+      //获取接收人员列表
+      api.userRelated.getUserList(STATION_TYPE.RECEIVE_PERSON).then(response =>{
+          this.receptionStaff = response;
+      }),
+      //获取质检员列表
+      api.userRelated.getUserList(STATION_TYPE.QC_PERSON).then(response =>{
+          this.qcPersons = response;
+      }),
+      //查询原料详情
+      api.raw.getRawDetails(this.formData.id).then(response =>{
+        //供体信息
+        this.formData.bizDonator = response.bizDonatorDetails.bizDonator;
+        this.formData.fileList.examResultList = response.bizDonatorDetails.examFile;
+        this.formData.fileList.sixteenResultList = response.bizDonatorDetails.sixteenFile;
+        this.sourceArea = this.formData.bizDonator.province +"-"+ this.formData.bizDonator.city +"-"+ this.formData.bizDonator.region;
+        //原料信息
+        this.formData.bizRaw = response.bizRaw;
+        //采集人员
+        let collectPerson = response.bizRaw.collectPerson;
+        this.formData.bizRaw.collectPerson = collectPerson && collectPerson+'';
+        //接受人员
+        let receivePerson = response.bizRaw.receivePerson;
+        this.formData.bizRaw.receivePerson = receivePerson && receivePerson+'';
+        //质检人员
+        let qcPerson = response.bizRaw.qcPerson;
+        this.formData.bizRaw.qcPerson = qcPerson && qcPerson+'';
+        //复检附件
+        this.formData.fileList.attachment = response.recheckFileList;
+      }).catch((error)=>{
+        console.log(error);
+      });
+                 
+    }
+  },
+  created(){
+    this.formData.id = this.$route.query.id;
+    this.loadData(); 
+  }
+}
+</script>
+
+<style lang="scss">
+#rawDetailWaste{
+    .mb20{
+        margin-bottom: 20px;
+    }
+    .tac{
+        text-align: center;
+        .el-button{
+            width: 114px;
+            height: 50px;
+        } 
+    }
+}
+</style>

@@ -1,0 +1,202 @@
+<template>
+    <div >
+        <div>
+        <!--面包屑导航-->
+        <el-breadcrumb>
+            <el-breadcrumb-item >原料管理</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/workbench/raw/donorList'}">供体列表</el-breadcrumb-item>
+            <el-breadcrumb-item >供体详情</el-breadcrumb-item>
+        </el-breadcrumb>
+        </div>
+        <el-card>
+        <div class="wordborder" >
+            <p class='clickbox' v-on:click="click(1)" >供体信息</p>
+            <div class='content' v-show="show1">
+                <el-form disabled>
+                    <el-row>
+                        <el-col :span="5"><p>供体编码</p></el-col>
+                        <el-col :span="8">
+                            <el-input v-model="formData.bizDonator.code"></el-input>
+                        </el-col>
+                        <el-col :span="5"><p>供体姓名</p></el-col>
+                        <el-col :span="4">
+                            <el-input v-model="formData.bizDonator.name"></el-input>
+                        </el-col>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="5"><p>供体性别</p></el-col>
+                        <el-col :span="8">
+                            <el-input v-model="formData.bizDonator.sex"></el-input>
+                        </el-col>
+                        <el-col :span="5"><p>出生日期</p></el-col>
+                        <el-col :span="6">
+                            <el-date-picker
+                                v-model="formData.bizDonator.birthday"
+                                type="date"
+                                value-format="yyyy-MM-dd">
+                            </el-date-picker>
+                        </el-col>                       
+                    </el-row>
+                    <el-row >
+                        <el-col :span="5"><p>来源地区</p></el-col>
+                        <el-col :span="8">
+                            <el-input v-model="sourceArea"></el-input>
+                        </el-col>
+                        <el-col :span="5"><p>入组日期</p></el-col>
+                        <el-col :span="6">
+                            <el-date-picker
+                                v-model="formData.bizDonator.joinDate"
+                                type="date"
+                                value-format="yyyy-MM-dd">
+                            </el-date-picker>
+                        </el-col>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="5"><p>体检结果</p></el-col>
+                        <el-col :span="8">
+                            <el-card class="box-card">
+                                <div v-for="fileItem in formData.fileList.examResultList" :key="fileItem.id" class="text item">
+                                    <el-link type="primary" :href="downloadUrl+fileItem.id">{{fileItem.showName }}</el-link>
+                                </div>
+                            </el-card>
+                        </el-col>
+                        <el-col :span="5"><p>最近体检日期</p></el-col>
+                        <el-col :span="6">
+                            <el-date-picker
+                                v-model="formData.bizDonator.lastExamDate"
+                                type="date"
+                                value-format="yyyy-MM-dd">
+                            </el-date-picker>
+                        </el-col>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="5"><p>16S结果</p></el-col>
+                        <el-col :span="8">
+                            <el-card class="box-card">
+                                <div v-for="fileItem in formData.fileList.sixteenResultList" :key="fileItem.id" class="text item">
+                                    <el-link type="primary" :href="downloadUrl+fileItem.id">{{fileItem.showName }}</el-link>
+                                </div>
+                            </el-card>
+                        </el-col>
+                        <el-col :span="5"><p>最近16S日期</p></el-col>
+                        <el-col :span="6">
+                            <el-date-picker
+                                v-model="formData.bizDonator.sixteenDate"
+                                type="date"
+                                value-format="yyyy-MM-dd">
+                            </el-date-picker>
+                        </el-col>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="5"><p>累计使用数</p></el-col>
+                        <el-col :span="8">
+                            <el-input v-model="formData.bizDonator.useCount"></el-input>
+                        </el-col>
+                        <el-col :span="5"><p>累计废弃数</p></el-col>
+                        <el-col :span="6">
+                            <el-input v-model="formData.bizDonator.discardCount"></el-input>
+                        </el-col>
+                    </el-row>
+                </el-form>
+            </div>
+        </div>
+        <div class='div5'>
+            <el-button @click="back" type="primary" round>返回</el-button>
+        </div>
+        </el-card>
+    </div>   
+             
+</template>
+
+<script>
+import { gender } from "@/utils/util";
+import { provinceAndCityData, regionData, provinceAndCityDataPlus, regionDataPlus, CodeToText, TextToCode } from 'element-china-area-data';
+import store from "@/store/index";
+import api from '@/api/index';
+import base from "@/api/base";
+export default {
+    data(){
+        return{   
+            downloadUrl: base.sq + "/workbench/download?access_token=" + store.getters.token + "&fileId=", //下载路径
+            show1:true,
+            sourceArea:'',//来源地区
+            formData:{
+                bizDonator:{
+                    id:'',//供体id
+                    code:'',//供体编码
+                    name:'',//供体姓名
+                    sex:'',//供体性别
+                    birthday:'',//出生日期
+                    province: '', //省
+                    city: '', //市
+                    region: '', //区
+                    joinDate:'',//入组日期
+                    examResult:'',//体检结果
+                    lastExamDate:'',//最近体检日期
+                    sixteenResult:'',//16s结果
+                    sixteenDate:'',//最近16s日期
+                    useCount:'',//累计使用数
+                    discardCount:''//累计废弃数
+                },
+                //文件列表
+                fileList:{
+                    examResultList: [],
+                    sixteenResultList: [],
+                }
+            }
+    }},
+    methods:{
+        click(index) {
+            if (index == 1) {
+                this.show1 = !this.show1;
+            }
+        },
+        back(){
+            this.$router.go(-1);
+        },
+        loadData(){
+            api.donator.findDonatorDetailsById(this.formData.bizDonator.id).then(response=>{
+                this.formData.bizDonator = response.bizDonator;
+                this.formData.fileList.examResultList = response.examFile;
+                this.formData.fileList.sixteenResultList = response.sixteenFile;
+                this.sourceArea = this.formData.bizDonator.province+ "-" + this.formData.bizDonator.city+ "-" + this.formData.bizDonator.region;
+            })
+        }
+    },
+    mounted(){
+        this.formData.bizDonator.id = this.$route.query.id; 
+        this.loadData();
+    }
+}
+</script>
+
+<style lang='scss'>
+.approval_upload_design_partner {
+  margin: 10px auto;
+  .div2 {
+    position: relative;
+    margin: 25px;
+    min-height: 20px;
+    line-height: 40px;
+    .content {
+      width: 80%;
+      margin: 35px;
+      margin-left: 50px;
+      p {
+        padding: 0px 5px;
+        margin: 0px 10px;
+      }
+    }
+  }
+  .div5 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+}
+.div5 {
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+    left: -40px;
+}
+</style>

@@ -1,0 +1,78 @@
+<template>
+  <div>
+    <el-breadcrumb>
+      <el-breadcrumb-item :to="{ path:'/workbench/stockControl/shipmentList'}">库存管理</el-breadcrumb-item>
+      <el-breadcrumb-item>出货列表</el-breadcrumb-item>
+    </el-breadcrumb>
+    <el-card>
+      <!-- 搜索与添加 --> 
+      <el-row :gutter="20">
+        <el-col :span="7">
+          <el-input clearable :span="7"  v-model="query.code" placeholder="请输入内容"  class="input-with-select">
+            <el-button slot="append" icon="el-icon-search" @click="getFinishedList"></el-button>
+          </el-input>
+        </el-col>
+      </el-row>
+        <!-- 列表数据 -->
+         <el-table :data="pageResult.rows" style="width: 80%" border stripe>
+          <el-table-column prop="code" label="制备批号"></el-table-column>
+          <el-table-column prop="product_date"  label="制配日期"></el-table-column>
+          <el-table-column prop="expiry_date"  label="过期日期"></el-table-column>
+          <el-table-column prop="box_code"  label="箱号编码"></el-table-column>
+          <el-table-column prop="sell_date"  label="出货日期"></el-table-column>
+          <el-table-column prop="sell_date"  label="收货日期"></el-table-column>
+          <el-table-column prop="status"  label="当前状态"></el-table-column>
+        </el-table>
+        <!-- 页码 -->
+         <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="pageResult.currentPage"
+            :page-sizes="[20, 30, 40, 50]"
+            :page-size="pageResult.pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="pageResult.total">
+        </el-pagination>
+    </el-card>
+  </div>
+</template>
+
+<script>
+import api from '@/api/index' // 导入api接口
+import {query} from '@/utils/pageResult'
+import pageResult from '@/utils/pageResult'
+export default {
+
+  data () {
+    return {
+      query:query,
+      pageResult:pageResult
+    }
+  },
+
+  methods: {
+    async getFinishedList(){
+      const res = await api.product.productPage(this.query,this.pageResult)
+      this.pageResult.rows = res.rows
+      this.pageResult.total = res.total
+      console.log(res);
+    },
+    // 页码当前值
+    handleSizeChange(val){
+        this.pageResult.currentPage=val;
+    },
+    // 当前页码
+    handleCurrentChange(val){
+        this.pageResult.pageSize=val;
+    },
+  },
+
+  created () {
+    this.getFinishedList()
+  }
+}
+</script>
+
+<style>
+
+</style>

@@ -1,0 +1,201 @@
+<template>
+  <div>
+       <!-- 面包屑 -->
+    <el-breadcrumb>
+      <el-breadcrumb-item :to="{ path: '/workbench' }">工作台</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/workbench/warehouseMmanagement' }">箱号列表</el-breadcrumb-item>
+      <el-breadcrumb-item>新增出货</el-breadcrumb-item>
+    </el-breadcrumb>
+    <!-- 主题内容 -->
+    <el-card>
+      <!-- 出货信息 -->
+      <div class="wordborder" >
+          <p class='clickbox' @click="dotSwitch(1)">出货信息</p>
+          <div class='content' v-show="show1">
+              <el-row>
+                  <el-col :span="4"><p>出货日期</p></el-col>
+                  <el-col :span="8">
+                      <el-date-picker v-model="formData.date" type="date" placeholder="选择日期" ></el-date-picker>
+                  </el-col>
+                  <el-col :span="4"><p>出货数量</p></el-col>
+                  <el-col :span="8"><el-input v-model="boxList.length"  clearable disabled></el-input>
+                  </el-col>
+              </el-row>
+              <el-row>
+                  <el-col :span="4"><p>客户名称</p></el-col>
+                  <el-col :span="8">
+                      <el-input clearable v-model="formData.name" placeholder="请输入名称"></el-input>
+                  </el-col>
+                  <el-col :span="4"><p>出货地区</p></el-col>
+                  <el-col :span="8">
+                      <el-cascader
+                        size="large"
+                        :options="options"
+                        v-model="selectedOptions"
+                        @change="handleChange"
+                        >
+                      </el-cascader>
+                  </el-col>
+              </el-row> 
+
+              <el-row>
+                <el-col :span="4"><p>出货备注</p></el-col>
+                <el-col :span="20">
+                  <el-input
+                    type="textarea"
+                    :autosize="{ minRows: 2, maxRows: 4}"
+                    placeholder="请输入内容"
+                    v-model="formData.memo">
+                  </el-input>
+                </el-col>
+              </el-row>
+          </div>
+      </div> 
+      <!-- 扫码登记出货 -->
+      <div class="wordborder" >
+          <p class='clickbox' @click="dotSwitch(2)">扫码登记出货</p>
+          <div class='content' v-show="show2">
+            <el-row>
+              <el-col :span="4"><p>制备批号</p></el-col>
+              <el-col :span="8">
+                  <el-input v-model="code"  placeholder="请扫码" @keyup.enter.native="scan"></el-input>
+              </el-col>
+              <el-col :span="4"><p>以扫数量</p></el-col>
+              <el-col :span="8">
+                  <el-input v-model="boxList.length" clearable disabled></el-input>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="4"><p>制备日期</p></el-col>
+              <el-col :span="8">
+                <el-input v-model="boxData.productDate"  disabled></el-input>
+              </el-col>
+              <el-col :span="4"><p>过期日期</p></el-col>
+              <el-col :span="8">
+                <el-input v-model="boxData.expiryDate"  disabled></el-input>
+              </el-col>
+            </el-row>
+          </div>
+      </div>
+      <!-- 本箱成品列表 -->
+      <div class="wordborder" >
+        <p class='clickbox' @click="dotSwitch(3)">本箱成品列表</p>
+        <div class='content' v-show="show3">
+          <el-table :data="boxList" style="width: 80%" border stripe>
+            <el-table-column prop="code" label="制备批号"></el-table-column>
+            <el-table-column prop="productDate"  label="制备日期"></el-table-column>
+            <el-table-column prop="expiryDate"  label="过期日期"></el-table-column>
+            <el-table-column prop="status" label="当前状态">
+              <template slot-scope="scope">
+                <span v-if="scope.row.status==2">库存</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="count" label="操作"> 
+              <el-button  type="danger">删除</el-button>
+            </el-table-column>
+          </el-table>
+        </div>
+      </div>
+        <el-row class="tac">
+          <el-button @click="submit" type="primary" round>提交</el-button>
+        </el-row>
+    </el-card>
+  </div>
+</template>
+
+<script>
+import api from '@/api/index'; 
+import { Message } from 'element-ui';
+import { provinceAndCityData, regionData, provinceAndCityDataPlus, regionDataPlus, CodeToText, TextToCode } from 'element-china-area-data'
+export default {
+
+  data () {
+    return {
+        show1:true,
+        show2:true,
+        show3:true,
+        formData: {
+          date:"",//出货日期
+          name:"",//客户名称
+          province:"",//省
+          city:"",//市
+          region:"",//区
+          memo:"",//出货备注
+          productIds:""//id
+        },
+        options: regionData,
+        selectedOptions: [],// 出货地区
+        boxList:[],//本箱成品列表
+        productIdList:[],//本箱成品id
+        boxData:{
+          productDate:"",//制备日期 
+          expiryDate:""//过期日期
+        },
+        code:"",//制备批号
+    }
+  },
+ 
+  methods: {
+    // 扫码事件
+    async scan(){
+      const res = await api.box.scan(this.code)
+        if(res.status=="success"){
+          for(var i in this.productIdList){
+            if(this.productIdList[i]==res.data.id){
+              this.$message({
+                message: '列表已有相同数据',
+                type: 'warning'
+              });
+              return
+            }
+          }
+          this.boxData = res.data
+          this.boxList.push(this.boxData)
+          this.productIdList.push(res.data.id)
+          console.log(this.productIdList);
+          this.code=""
+        }else{
+          this.$message({
+            duration:"5000",
+            message: res.msg,
+            type: 'error'
+          }); 
+        }
+    },
+    //提交
+    submit(){
+      this.formData.productIds=this.productIdList.toString()
+      api.box.save(this.formData)
+    },
+    //   下拉框的显示和隐藏
+    dotSwitch(index){
+      if(index==1){
+        this.show1=!this.show1
+      }else if(index==2){
+        this.show2=!this.show2
+      }else if(index==3){
+        this.show3=!this.show3
+      }
+    },
+    // 地区的变法
+    handleChange(){
+      // console.log(this.selectedOptions);
+      this.formData.province =CodeToText[this.selectedOptions[0]]
+      this.formData.city =CodeToText[this.selectedOptions[1]]
+      this.formData.region =CodeToText[this.selectedOptions[2]]      
+    }
+  },
+  created () {
+  }
+}
+</script>
+
+<style lang='scss'>
+    .tac{
+      text-align: center;
+      .el-button{
+        width: 114px;
+        height: 50px;
+    } 
+    }
+</style>

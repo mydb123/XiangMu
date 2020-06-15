@@ -1,0 +1,94 @@
+<template>
+  <div>
+    <el-breadcrumb>
+      <el-breadcrumb-item :to="{ path:'/workbench/stockControl/shipmentList'}">库存管理</el-breadcrumb-item>
+      <el-breadcrumb-item>出货列表</el-breadcrumb-item>
+    </el-breadcrumb>
+    <el-card>
+      <!-- 搜索与添加 --> 
+      <el-row :gutter="20">
+        <el-col :span="5">
+          <el-input clearable  v-model="query.code" placeholder="请输入内容"  class="input-with-select"></el-input>
+        </el-col>
+        <el-col :span="12">
+          <el-button type="primary" @click="onSubmit">搜索</el-button>
+        </el-col>
+      </el-row>
+        <!-- 列表数据 -->
+         <el-table :data="pageResult.rows" style="width: 80%" border stripe>
+          <el-table-column  label="制备批号">
+            <template slot-scope="scope">
+              <el-link :underline="false" @click="particularList(scope.row.id)">{{scope.row.code}}</el-link>
+            </template>
+          </el-table-column>
+          <el-table-column prop="product_date"  label="制配日期"></el-table-column>
+          <el-table-column prop="expiry_date"  label="过期日期"></el-table-column>
+          <el-table-column label="箱号编码">
+            <template slot-scope="scope">
+              <el-link :underline="false" @click="ctnParticular(scope.row.id)">{{scope.row.box_code}}</el-link>
+            </template>
+          </el-table-column>
+          <el-table-column prop="sell_date"  label="出货日期"></el-table-column>
+          <el-table-column prop="sell_date"  label="收货日期"></el-table-column>
+          <el-table-column prop="status"  label="当前状态"></el-table-column>
+        </el-table>
+        <!-- 页码 -->
+        <el-pagination
+            @current-change="handleCurrentChange"
+            :current-page="pageRequest.pageNumber"
+            :page-size="pageRequest.pageSize"
+            layout="total, prev, pager, next, jumper"
+            :total="pageResult.total">
+        </el-pagination>
+    </el-card>
+  </div>
+</template>
+
+<script>
+import api from '@/api/index' // 导入api接口
+import {query,pageRequest,pageResult,pageSearch,conditionSearch,createdSearch,getShipmentList} from '@/utils/pageResult';
+import {PRODUCT_STATUS} from '@/utils/util'
+export default {
+
+  data () {
+    return {
+      query:query,
+      pageResult:pageResult,
+      pageRequest:pageRequest
+    }
+  },
+
+  methods: {
+    onSubmit(){
+      conditionSearch(getShipmentList,query,pageRequest,pageResult)
+    },
+    // 当前页码
+    handleCurrentChange(val){
+      this.pageRequest.pageNumber = val
+      pageSearch(getShipmentList,query,pageRequest,pageResult)
+    },
+    // 列表详情页面
+    particularList(id){
+      this.$router.push({
+        path:"/workbench/stockControl/particularsShipment",
+        query:{id:id}
+        })
+    },
+    // 箱号详情页面
+    ctnParticular(id){
+      this.$router.push({
+        path:"/workbench/stockControl/showDetailsShipment",
+        query:{id:id}
+      })
+    },
+  },
+
+  created () {
+    createdSearch(getShipmentList,query,pageRequest,pageResult,PRODUCT_STATUS.SELL)
+  }
+}
+</script>
+
+<style>
+
+</style>

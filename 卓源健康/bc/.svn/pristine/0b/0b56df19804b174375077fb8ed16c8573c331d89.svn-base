@@ -1,0 +1,189 @@
+<template>
+  <div class='create_product_code'>
+    <p class='mybreadcrumb'>
+        <el-breadcrumb separator-class="el-icon-arrow-right">
+            <el-breadcrumb-item :to="{ path: '/productCodeList' }">成品条码</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/productCodeList' }">条码列表</el-breadcrumb-item>
+            <el-breadcrumb-item v-if="showFlag=='add'">生成条码</el-breadcrumb-item>
+            <el-breadcrumb-item v-if="showFlag=='update'">修改条码</el-breadcrumb-item>
+        </el-breadcrumb>
+    </p>
+    <el-form :model="formData" :rules="rules" ref="ruleForm" label-width="80px">
+      <div class="wordborder_no_click" >
+        <p class='clickbox' v-on:click="click()" style="width:120px">原料条码信息</p>
+        <div class='content' v-show="show">
+          <el-row>
+            <el-col :span="3"><p>原料编码</p></el-col>
+            <el-col :span="8" >
+              <el-form-item prop="rawCode">
+                <el-input v-model="formData.rawCode"></el-input>
+              </el-form-item> 
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="3"><p>初检时间</p></el-col>
+            <el-col :span="8" >
+              <el-form-item prop="firstCheckDate">
+                <el-date-picker type="date" placeholder="选择日期" v-model="formData.firstCheckDate" value-format="yyyy-MM-dd" style="width:100%"></el-date-picker>
+              </el-form-item> 
+            </el-col>
+            <el-col :span="3"><p>初检结果</p></el-col>
+            <el-col :span="8" >
+              <el-form-item prop="firstCheckResult">
+                <el-input v-model="formData.firstCheckResult"></el-input>
+              </el-form-item> 
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="3"><p>复检时间</p></el-col>
+            <el-col :span="8" >
+              <el-form-item prop="recheckDate">
+                <el-date-picker type="date" placeholder="选择日期" v-model="formData.recheckDate" value-format="yyyy-MM-dd" style="width:100%"></el-date-picker>
+              </el-form-item>   
+            </el-col>
+            <el-col :span="3"><p>复检结果</p></el-col>
+            <el-col :span="8" >
+              <el-form-item prop="recheckResult">
+                <el-input v-model="formData.recheckResult"></el-input>
+              </el-form-item>     
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="3"><p>是否留样</p></el-col>
+            <el-col :span="8" >
+              <el-form-item prop="reserved"> 
+                <el-select v-model="formData.reserved" placeholder="请选择" style="width:100%">
+                  <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </el-form-item>    
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="3"><p>生产日期</p></el-col>
+            <el-col :span="8" >
+              <el-form-item prop="applyDate">
+                <el-date-picker type="date" placeholder="选择日期" v-model="formData.applyDate" value-format="yyyy-MM-dd" style="width:100%"></el-date-picker>
+              </el-form-item>    
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="3"><p>制备数量</p></el-col>
+            <el-col :span="8" >
+              <el-form-item prop="productCount"> 
+                <el-input v-model.number="formData.productCount"></el-input>
+              </el-form-item>    
+            </el-col>
+          </el-row>
+      </div> 
+        <div class='div5'>
+          <el-button @click="resetForm('ruleForm')">重置</el-button>
+          <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
+        </div>
+      </div>
+    </el-form>
+  </div>
+</template>
+
+
+<script>
+import api from '@/api/index';
+import {Reserved} from '@/utils/util'
+export default {
+  data() {
+    return {
+      options:Reserved,
+      showFlag:'',
+      showFlag2:'',
+      show:true,
+      formData:{
+        id:"",//原料id
+        rawCode:"",//原料编码
+        firstCheckDate:"",//初检时间
+        firstCheckResult:"",//初检结果
+        recheckDate:"",//复检时间
+        recheckResult:"",//复检结果
+        reserved:"",//是否取样
+        applyDate:"",//生产时间
+        productCount:""//制备数量
+      },
+      rules:{
+        rawCode: [
+          { pattern: /^[0-9a-zA-Z]+$/g, required: true, message: '请输入格式正确的原料编码', trigger: 'blur' }
+        ],
+        applyDate: [
+          { required: true, message: '请输入生产日期', trigger: 'change' }
+        ],
+        productCount: [
+          {  type: 'number',required: true, message: '请输入数字', trigger: 'blur' }
+        ]
+      }
+    }
+  },
+  methods: {
+    click(){
+        // this.show = !this.show
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    },
+    submitForm(ruleForm){
+      this.$refs[ruleForm].validate((valid) => {
+        if (valid) {
+          api.product.save(this.formData).then((response)=>{
+            console.log(response);
+            this.$router.push({path:"/productCodePreview",query:{id:response.id,showFlag:this.showFlag2}});
+          }).catch((error)=>{
+            console.log(error);
+          });                    
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });
+    },
+    loadData(){
+      api.raw.findById(this.formData.id).then((response)=>{
+        this.formData.id = response.id;
+        this.formData.rawCode = response.rawCode;
+        this.formData.firstCheckDate = response.firstCheckDate;
+        this.formData.firstCheckResult = response.firstCheckResult;
+        this.formData.recheckDate = response.recheckDate;
+        this.formData.recheckResult = response.recheckResult;
+        this.formData.reserved = response.reserved;
+        this.formData.applyDate = response.applyDate;
+        this.formData.productCount = response.productCount;
+      }).catch((error)=>{
+            console.log(error);
+      });
+    }
+  },
+  mounted: function () {
+    let id = this.$route.query.rawId; //获取路由传值
+    if(typeof(id)!=undefined&&id!=null&&id!=""){
+      this.formData.id = id;
+      this.loadData();
+      this.showFlag = 'update'
+      this.showFlag2 = 'updateTo'
+    }else{
+      this.showFlag = 'add'
+      this.showFlag2 = 'addTo'
+    }
+  },
+}
+</script>
+<style lang='scss'>
+.create_product_code{
+    .div5{
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .mybreadcrumb{
+        margin: 15px 20px 35px 13px;
+    }
+}
+</style>

@@ -1,0 +1,47 @@
+/* 全局样式 */
+.el-card{
+  margin-top: 20px;  
+}
+
+.el-table {
+  margin: 20px 0;
+}
+
+.box-card{
+  position: relative;
+  top: -20px;
+}
+.lh40{
+  line-height: 40px;
+}
+
+.tac{
+  text-align: center;
+}
+.lh40{
+  line-height: 40px;
+}
+.ml20{
+  margin-left: 20px;
+}
+// 全局input宽度 
+.w260{
+  width: 260px!important;
+}
+//  全局*颜色 
+.small{
+  color: red;
+  padding-right: 10px;
+  box-sizing:border-box;
+}
+// 红色小图标的提示
+.fuji{
+  position: relative;
+  .ziji{
+    position: absolute;
+    left: -10px;
+    top: 0;
+    color: red;
+  }
+}
+

@@ -1,0 +1,38 @@
+import base from './base' // 导入接口域名列表
+import {get,post} from '@/utils/http' // 导入http中创建的axios1实例
+import qs from 'qs' // 根据需求是否导入qs模块
+const product = {
+    // 库存管理-成品列表
+    productPage(query,pageRequest) {
+      return get(`${base.sq}/workbench/bizProduct/productPage?` + qs.stringify(query) +'&'+ qs.stringify(pageRequest));
+    },
+    //库存管理/库存列表/过期列表/退货列表
+    stockPage(query,pageRequest) {
+      return get(`${base.sq}/workbench/bizProduct/stockPage?` + qs.stringify(query) +'&'+ qs.stringify(pageRequest) );
+    },
+    //库存管理/出货列表
+    sellPage(query,pageRequest) {
+      return get(`${base.sq}/workbench/bizProduct/sellPage?` + qs.stringify(query) +'&'+ qs.stringify(pageRequest) );
+    },
+    //库存管理-详情页面
+    getProductDetails(id){
+      return get(`${base.sq}/workbench/bizProduct/getProductDetails?id=`+id)
+    },
+    //制备管理-制备列表
+    pageByExample (query,pageRequest) {
+      return get(`${base.sq}/workbench/bizProduct/pageByExample?`+qs.stringify(query) +'&'+ qs.stringify(pageRequest));
+    },
+    //制备管理-新增制备
+    save(formData){
+      return post(`${base.sq}/workbench/bizProduct/save`,qs.stringify(formData));
+    },
+    //制备管理-成品质检
+    qcCheck(formData){
+      return post(`${base.sq}/workbench/bizProduct/qcCheck`,qs.stringify(formData));
+    },
+     // 库存管理-成品列表-补印
+    findById(id){
+      return post(`${base.sq}/workbench/bizProduct/findById?id=`+id);
+    },
+}
+export default product

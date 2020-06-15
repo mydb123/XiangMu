@@ -1,0 +1,172 @@
+<template>
+  <div id="showDetails">
+    <el-breadcrumb>
+      <el-breadcrumb-item :to="{ path: '/workbench/warehouseMmanagement/ctnList'}">出库管理</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/workbench/warehouseMmanagement/ctnList'}">箱号列表</el-breadcrumb-item>
+      <el-breadcrumb-item>列表详情</el-breadcrumb-item>
+    </el-breadcrumb>
+    <el-card>
+        <div class="box" style="border:0px">
+            <div class='content'>
+                <el-row class="lh40">
+                    <el-col :span="4"><p>箱号编码</p></el-col>
+                    <el-col :span="8">
+                        <el-input  class="w260"  disabled v-model="formData.code"></el-input>
+                    </el-col>
+                </el-row>
+            </div>
+        </div>
+        <!-- 出货信息 -->
+        <div class="box" >
+          <p class='clickbox' @click="dotSwitch(1)">出货信息</p>
+          <div class='content' v-show="show1">
+            <el-row>
+                <el-col :span="4">
+                  <p>出货日期</p>
+                </el-col>
+                <el-col :span="8">
+                  <el-date-picker class="w260" v-model="formData.date" type="date" disabled></el-date-picker>
+                </el-col>
+                <el-col :span="4">
+                    <p>出货数量</p>
+                </el-col>
+                <el-col :span="8">
+                    <el-input class="w260" v-model="formData.count" disabled></el-input>
+                </el-col>
+              </el-row> 
+
+              <el-row>
+                <el-col :span="4">
+                    <p>客户名称</p>
+                </el-col>
+                <el-col :span="8">
+                    <el-input class="w260" v-model="formData.name" disabled></el-input>
+                </el-col>
+                <el-col :span="4">
+                    <p>出货地区</p>
+                </el-col>
+                <el-col :span="8">
+                    <el-input :title="sourceArea" class="w260" v-model="sourceArea" disabled></el-input>
+                </el-col>
+              </el-row> 
+
+              <el-row>
+                <el-col :span="4">
+                    <p>出货备注</p>
+                </el-col>
+                <el-col :span="8">
+                    <el-input
+                    disabled
+                    type="textarea"
+                    :autosize="{ minRows: 5, maxRows: 10}"
+                    v-model="formData.memo">
+                    </el-input>
+                </el-col>
+              </el-row> 
+          </div>
+        </div>
+
+        <!-- 出货信息 -->
+        <div class="box" >
+          <p class='clickbox' @click="dotSwitch(2)">本箱成品列表</p>
+        <div class='content' v-show="show2">
+        <!-- 列表数据 -->
+        <el-table :data="showDetailsList.rows" style="width: 80%" border stripe>
+            <el-table-column prop="code" label="制备批号"></el-table-column>
+            <el-table-column prop="product_date"  label="制备日期"></el-table-column>
+            <el-table-column prop="expiry_date"  label="过期日期"></el-table-column>
+            <el-table-column prop="status" label="当前状态">
+            </el-table-column>
+        </el-table>
+        <!-- 页码 -->
+        <el-pagination
+            @current-change="handleCurrentChange"
+            :current-page="pageRequest.pageNumber"
+            :page-size="pageRequest.pageSize"
+            layout="total, prev, pager, next, jumper"
+            :total="total">
+        </el-pagination>
+          </div>
+        </div>
+
+        <el-row class="tac">
+          <el-button @click="goBack" type="primary" round>返回</el-button>
+        </el-row>
+    </el-card>
+  </div>
+</template>
+
+<script>
+import api from '@/api/index' // 导入api接口
+import {query,pageRequest,pageResult,pageSearch,conditionSearch,createdSearch} from '@/utils/pageResult';
+export default {
+  data () {
+    return {
+        show1:true,
+        show2:true,
+        // 查询条件
+        query:query,
+        pageResult:pageResult,
+        pageRequest:pageRequest,
+        total:"",//总条数
+        formData:{
+          bizBox:{
+            date:""//出货日期
+          },
+          id:""//id
+        },
+        sourceArea:"",//地区
+        showDetailsList:[]//列表数据
+    }
+  },
+
+  methods: {
+    // 当前页码
+    handleCurrentChange(val){
+      this.pageRequest.pageNumber = val
+      pageSearch(query,pageRequest,pageResult)
+    },
+    // 显示和隐藏
+    dotSwitch(index){
+        if(index==1){
+        this.show1=!this.show1
+        }else if(index==2){
+        this.show2=!this.show2
+        }
+    },
+    //列表上面的数据
+    async getshowDetail(){
+       const res = await api.box.findById(this.formData.id)
+       this.formData = res
+       this.sourceArea=this.formData.province+'-'+this.formData.city+'-'+this.formData.region
+    },
+    // 列表
+    async DetailsList(){
+      const res = await api.box.productPage(this.formData.id)
+      this.showDetailsList = res
+      this.total = res.total
+    },
+    // 返回
+    goBack(){
+      this.$router.go(-1)
+    }
+  },
+  created () {
+    this.formData.id=this.$route.query.id
+    this.getshowDetail()
+    this.DetailsList()
+  }
+}
+</script>
+
+<style lang='scss'>
+  #showDetails{
+    .tac{
+    text-align: center;
+    .el-button{
+      width: 114px;
+      height: 50px;
+    } 
+    }
+  }
+</style>

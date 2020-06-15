@@ -1,0 +1,13 @@
+/* 全局样式 */
+.el-card{
+  margin-top: 20px;  
+}
+
+.el-table {
+  margin: 20px 0;
+}
+
+.box-card{
+  position: relative;
+  top: -20px;
+}

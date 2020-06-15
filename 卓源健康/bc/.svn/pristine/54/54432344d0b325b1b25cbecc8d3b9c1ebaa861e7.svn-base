@@ -1,0 +1,193 @@
+const statusConstructionPartnerRouter = [
+    {
+        status:0,
+        router:"/construction/partner/failDetail",
+    },
+    {
+        status:1,
+        router:"/construction/partner/approvalPending",
+    },
+    {
+        status:2,
+        router:"/construction/partner/menuUpload",
+    },
+    {
+        status:21,
+        router:"/construction/partner/menuReview",
+    },
+    {
+        status:3,
+        router:"/construction/partner/planUpload",
+    },
+    {
+        status:30,
+        router:"/construction/partner/planSuggest",
+    },
+    {
+        status:31,
+        router:"/construction/partner/planReview",
+    },
+    {
+        status:32,
+        router:"/construction/partner/planUpdate",
+    },
+    {
+        status:33,
+        router:"/construction/partner/planFee",
+    },
+    {
+        status:4,
+        router:"/construction/partner/monthUpload",
+    },
+    {
+        status:40,
+        router:"/construction/partner/monthSuggest",
+    },
+    {
+        status:41,
+        router:"/construction/partner/monthReview",
+    },
+    {
+        status:42,
+        router:"/construction/partner/monthUpdate",
+    },
+    {
+        status:43,
+        router:"/construction/partner/monthFee",
+    },
+    {
+        status:5,
+        router:"/construction/partner/resultUpload",
+    },
+    {
+        status:50,
+        router:"/construction/partner/resultSuggest",
+    },
+    {
+        status:51,
+        router:"/construction/partner/resultReview",
+    },
+    {
+        status:52,
+        router:"/construction/partner/resultUpdate",
+    },
+    {
+        status:6,
+        router:"/construction/partner/appraiseUpload",
+    },
+    {
+        status:61,
+        router:"/construction/partner/appraiseReview",
+    },
+    {
+        status:7,
+        router:"/construction/partner/finishReview",
+    }
+]
+const statusConstructionDeptRouter = [
+    {
+        status:0,
+        router:"/construction/dept/failDetail",
+    },
+    {
+        status:1,
+        router:"/construction/dept/approvalPending",
+    },
+    {
+        status:2,
+        router:"/construction/dept/menuUpload",
+    },
+    {
+        status:21,
+        router:"/construction/dept/menuReview",
+    },
+    {
+        status:3,
+        router:"/construction/dept/planUpload",
+    },
+    {
+        status:30,
+        router:"/construction/dept/planSuggest",
+    },
+    {
+        status:31,
+        router:"/construction/dept/planReview",
+    },
+    {
+        status:32,
+        router:"/construction/dept/planUpdate",
+    },
+    {
+        status:33,
+        router:"/construction/dept/planFee",
+    },
+    {
+        status:4,
+        router:"/construction/dept/monthUpload",
+    },
+    {
+        status:40,
+        router:"/construction/dept/monthSuggest",
+    },
+    {
+        status:41,
+        router:"/construction/dept/monthReview",
+    },
+    {
+        status:42,
+        router:"/construction/dept/monthUpdate",
+    },
+    {
+        status:43,
+        router:"/construction/dept/monthFee",
+    },
+    {
+        status:5,
+        router:"/construction/dept/resultUpload",
+    },
+    {
+        status:50,
+        router:"/construction/dept/resultSuggest",
+    },
+    {
+        status:51,
+        router:"/construction/dept/resultReview",
+    },
+    {
+        status:52,
+        router:"/construction/dept/resultUpdate",
+    },
+    {
+        status:6,
+        router:"/construction/dept/appraiseUpload",
+    },
+    {
+        status:61,
+        router:"/construction/dept/appraiseReview",
+    },
+    {
+        status:7,
+        router:"/construction/dept/finishReview",
+    }
+]
+
+export function getStatusConstructionPartnerRouter(status){
+    let array = statusConstructionPartnerRouter ;
+    for (let index = 0; index < array.length; index++) {
+        const element = array[index];
+        if(status == element.status){
+            return element.router
+        }
+        
+    }
+}
+export function getStatusConstructionDeptRouter(status){
+    let array = statusConstructionDeptRouter ;
+    for (let index = 0; index < array.length; index++) {
+        const element = array[index];
+        if(status == element.status){
+            return element.router
+        }
+        
+    }
+}

@@ -1,0 +1,310 @@
+<template>
+            <div >
+                <div>
+                <el-breadcrumb>
+                    <el-breadcrumb-item >原料管理</el-breadcrumb-item>
+                    <el-breadcrumb-item :to="{ path: '/workbench/raw/donorList'}">供体列表</el-breadcrumb-item>
+                    <el-breadcrumb-item >新增供体</el-breadcrumb-item>
+                </el-breadcrumb>
+                </div>
+            <el-card>    
+            <div class="wordborder">
+                <p class='clickbox' v-on:click="click(1)" >供体信息</p>
+                <div class='content' v-show="show1">
+                    <el-form :model="formData" :rules="rules" ref="ruleForm">
+                    <el-row>
+                        <el-col :span="4">
+                            <p>供体姓名</p>
+                        </el-col>
+                        <el-col :span="4">
+                            <el-form-item  prop="name">
+                                <el-input v-model="formData.name"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="4"><p>供体性别</p></el-col>
+                        <el-col :span="8">
+                            <el-form-item  prop="sex">
+                                <el-select v-model="formData.sex" placeholder="请选择">
+                                    <el-option
+                                        v-for="item in optionsSex"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                    </el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="4">
+                            <span></span>
+                        </el-col>
+                        <el-col :span="4"><p>出生日期</p></el-col>
+                        <el-col :span="6">
+                            <el-form-item  prop="birthday">
+                                <el-date-picker
+                                    v-model="formData.birthday"
+                                    type="date"
+                                    value-format="yyyy-MM-dd">
+                                </el-date-picker>
+                            </el-form-item>
+                        </el-col>                       
+                    </el-row>
+                    <el-row >
+                        <el-col :span="4"><p>来源地区</p></el-col>
+                        <el-col :span="8">
+                            <el-form-item  prop="sourceArea">
+                                <el-cascader
+                                    size="large"
+                                    :options="options"
+                                    v-model="selectedOptions"
+                                    @change="handleChange">
+                                </el-cascader>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="4"><p>入组日期</p></el-col>
+                        <el-col :span="6">
+                            <el-form-item  prop="joinDate">
+                                <el-date-picker
+                                    v-model="formData.joinDate"
+                                    type="date"
+                                    value-format="yyyy-MM-dd">
+                                </el-date-picker>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="4"><p>体检结果</p></el-col>
+                        <el-col :span="8">
+                            <el-upload
+                                class="upload-demo"
+                                action 
+                                :show-file-list="showFileFlag1"
+                                list-type="text"
+                                :http-request="uploadExamFileMethod" 
+                                :file-list="uploadFile.examResult" 
+                                :on-remove="handleRemoveExamResult">
+                                <el-button size="medium" type="primary" class="w216">体检结果上传</el-button>
+                            </el-upload>
+                        </el-col>
+                        <el-col :span="4"><p>最近体检日期</p></el-col>
+                        <el-col :span="6">
+                            <el-form-item  prop="lastExamDate">
+                                <el-date-picker
+                                    v-model="formData.lastExamDate"
+                                    type="date"
+                                    value-format="yyyy-MM-dd">
+                                </el-date-picker>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="4"><p>16S结果</p></el-col>
+                        <el-col :span="8">
+                            <el-upload
+                                class="upload-demo"
+                                action 
+                                :show-file-list="showFileFlag2"
+                                list-type="text" 
+                                :http-request="uploadsixteenFileMethod" 
+                                :file-list="uploadFile.sixteenResult" 
+                                :on-remove="handleRemoveSixteenResult">
+                                <el-button size="medium" type="primary" class="w216">16S结果上传</el-button>
+                            </el-upload>
+                        </el-col>
+                        <el-col :span="4"><p>最近16S日期</p></el-col>
+                        <el-col :span="6">
+                            <el-form-item  prop="sixteenDate">
+                                <el-date-picker
+                                    v-model="formData.sixteenDate"
+                                    type="date"
+                                    value-format="yyyy-MM-dd">
+                                </el-date-picker>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                  </el-form>
+                </div>
+                    <div class="tac">
+                        <el-button @click="save('ruleForm')" type="primary" round>提交</el-button>
+                    </div>
+                </div>
+            </el-card>
+        </div>    
+</template>
+
+<script>
+import { gender } from "@/utils/util";
+import { provinceAndCityData, regionData, provinceAndCityDataPlus, regionDataPlus, CodeToText, TextToCode } from 'element-china-area-data';
+import { FILE_TYPE} from "@/utils/util";
+import api from '@/api/index';
+export default {
+    data(){
+        return{   
+            options: regionData,
+            selectedOptions: [],
+            optionsSex: gender,
+            show1:true,
+            showFileFlag1:true,
+            showFileFlag2:true,
+            formData:{
+                name:'',//供体姓名
+                sex:'',//供体性别
+                birthday:'',//出生日期
+                province: "", //省
+                city: "", //市
+                region: "", //区
+                joinDate:'',//入组日期
+                examResult:'',//体检结果
+                lastExamDate:'',//最近体检日期
+                sixTeenResult:'',//16s结果
+                sixTeenDate:'',//最近16s日期
+            },
+            rules: {
+                name: [
+                    { required: true, message: '请输入供体姓名', trigger: 'blur' },
+                ],
+                sex: [
+                    { required: true, message: '请选择供体性别', trigger: 'change' },
+                ],
+                birthday: [
+                    { required: true, message: '请选择出生日期', trigger: 'change' },
+                ],
+                sourceArea: [
+                    { required: true, message: '请选择来源地区', trigger: 'change' },
+                ],
+                joinDate: [
+                    { required: true, message: '请选择入组日期', trigger: 'change' },
+                ],
+                lastExamDate: [
+                    { required: true, message: '请选择最近体检日期', trigger: 'change' },
+                ],
+                sixteenDate: [
+                    { required: true, message: '请选择最近16s日期', trigger: 'change' },
+                ]
+            },
+            uploadFile: {
+                //文件列表
+                examResult: [],
+                sixteenResult: [],
+            },
+            examIds: [],
+            sixteenIds: [],
+    }},
+    methods:{
+        handleChange(){
+            // console.log(this.selectedOptions);
+            this.formData.province = CodeToText[this.selectedOptions[0]];
+            this.formData.city = CodeToText[this.selectedOptions[1]];
+            this.formData.region = CodeToText[this.selectedOptions[2]];
+        },
+        click(index) {
+            if (index == 1) {
+                this.show1 = !this.show1;
+            }
+        },
+        save(ruleForm){
+            this.formData.examResult = this.examIds.join(',')
+            this.formData.sixTeenResult = this.sixteenIds.join(',')
+            this.$refs[ruleForm].validate((valid) => {
+            if (valid) {
+                api.donator.save(this.formData).then(response =>{
+                    this.$router.push('/workbench/raw/donorList');
+                }).catch(error=>{
+                    console.log(error)
+                })
+            } else {
+                console.log('error submit!!');
+                return false;
+            }
+            });
+        },
+        //体检结果pdf文件上传
+        uploadExamFileMethod(param){
+            let fileObject = param.file;
+            let formData = new FormData();
+            formData.append("file", fileObject);
+            formData.append("type", FILE_TYPE.EXAM_RESULT);
+            api.file.uploadFile(formData).then(response =>{
+                let obj = new Object();
+                obj.id = response.id;
+                obj.name = response.showName;
+                obj.url = response.url;
+                this.uploadFile.examResult.push(obj);
+                this.examIds.push(obj.id);
+            }).catch((error)=>{
+                console.log(error)   
+            })
+        },
+        //文件上传处理
+        beforeUpload(){
+            
+        },
+        //体检结果pdf删除
+        handleRemoveExamResult(){
+            let index = -1;
+            for(let i in this.uploadFile.examResult){
+                if(file.id==this.uploadFile.report[i].id){
+                    index = i;
+                    break;
+                }
+            }
+            if(index!=-1){
+                this.uploadFile.examResult.splice(index,1);
+            }
+            this.deleteFile(file.id);
+        },
+        //16s体检结果删除
+        handleRemoveSixteenResult(){
+            let index = -1;
+            for(let i in this.uploadFile.sixteenResult){
+                if(file.id==this.uploadFile.report[i].id){
+                    index = i;
+                    break;
+                }
+            }
+            if(index!=-1){
+                this.uploadFile.sixteenResult.splice(index,1);
+            }
+            this.deleteFile(file.id);
+        },
+        deleteFile(fileId){
+            api.file.deleteFile(fileId).then(response => {
+                console.log(response);
+            }).catch(error => {
+                console.log(error);
+            });
+        },
+        //16s体检上传
+        uploadsixteenFileMethod(param){
+            let fileObject = param.file;
+            let formData = new FormData();
+            formData.append("file", fileObject);
+            formData.append("type", FILE_TYPE.SIXTEEN_RESULT);
+            api.file.uploadFile(formData).then(response=>{
+                let obj = new Object();
+                obj.id = response.id;
+                obj.name = response.showName;
+                obj.url = response.url;
+                this.uploadFile.sixteenResult.push(obj);
+                this.sixteenIds.push(obj.id);
+            }).catch((error)=>{
+                console.log(error)   
+            })
+        }
+    }
+}
+</script>
+
+<style lang='scss'>
+.w216{
+    width: 216px;
+}
+.tac{
+  text-align: center;
+  .el-button{
+    width: 114px;
+    height: 50px;
+  } 
+}
+</style>

@@ -1,0 +1,98 @@
+<template>
+    <div class="product_code_preview">
+        <p class='mybreadcrumb' >
+            <el-breadcrumb separator-class="el-icon-arrow-right">
+                <el-breadcrumb-item :to="{ path: '/workbench/dataCoding/CodeList' }">数据编码</el-breadcrumb-item>
+                <el-breadcrumb-item :to="{ path: '/workbench/dataCoding/CodeList' }">数据列表</el-breadcrumb-item>
+                <el-breadcrumb-item >批量打印</el-breadcrumb-item>
+            </el-breadcrumb>
+        </p>
+        <el-card class="box-card" v-for="(item,index) in dataList"  :key="index">
+            <div class="text item" >{{item}}</div>
+        </el-card>
+        <div class='div5'>
+            <el-button type="primary" @click="print()">打印条码</el-button>
+        </div>
+    </div>
+</template>
+<script>
+import {getLodop} from '@/utils/LodopFuncs'
+export default {
+  data() {
+    return {
+        dataList:[],
+        LODOP:'',
+    }
+  },
+  methods: {
+    CreateOneFormPage40_40() {
+        LODOP = getLodop();
+        LODOP.SET_PRINT_PAGESIZE (1,'40mm','40mm','');
+        LODOP.SET_PRINT_MODE("POS_BASEON_PAPER",true);
+        LODOP.NewPage();
+        LODOP.ADD_PRINT_TEXT('6mm','4mm','35mm','5mm',this.product.name) 
+        LODOP.SET_PRINT_STYLEA(0, "FontSize", 6);
+        LODOP.SET_PRINT_STYLEA(0,"FontName","微软雅黑");
+        LODOP.ADD_PRINT_TEXT('10mm','4mm','35mm','5mm','制备编号：'+this.product.code)
+        LODOP.SET_PRINT_STYLEA(0, "FontSize", 6);
+        LODOP.SET_PRINT_STYLEA(0,"FontName","微软雅黑");
+        LODOP.ADD_PRINT_TEXT('14mm','4mm','35mm','5mm','有效期至：'+this.product.expiryDate)
+        LODOP.SET_PRINT_STYLEA(0, "FontSize", 6);
+        LODOP.SET_PRINT_STYLEA(0,"FontName","微软雅黑");
+        LODOP.ADD_PRINT_TEXT('18mm','4mm','35mm','5mm',"生产厂商："+this.product.company)
+        LODOP.SET_PRINT_STYLEA(0, "FontSize", 6);
+        LODOP.SET_PRINT_STYLEA(0,"FontName","微软雅黑");
+        LODOP.ADD_PRINT_BARCODE('22mm','4mm','35mm','10mm',"128A",this.product.code);   
+        LODOP.SET_PRINT_STYLEA(0, "FontSize", 6);
+    },
+    print(id_str){//id-str 打印区域的id
+        this.CreateOneFormPage40_40();
+    //        LODOP.PRINT();
+        LODOP.PREVIEW();
+    }
+  },
+  mounted: function () {
+     //判断传递参数是对象还是数组 
+     if(Object.prototype.toString.call(this.$route.query.sendData) === "[object Array]"){
+        for(var i = 0;i < this.$route.query.sendData.length;i++){
+            this.dataList.push(this.$route.query.sendData[i].printCode);
+        }
+     }else {
+        this.dataList.push(this.$route.query.sendData);
+     }
+  },
+}
+
+</script>
+<style lang='scss'>
+    .product_code_preview {
+        .div5 {
+            text-align: center;
+            margin-top:20px;
+            margin-bottom: 20px;
+        }
+        .mybreadcrumb {
+            margin: 15px 20px 35px 13px;
+        }
+        .box-card {
+            position: relative;
+            height: 40px;
+            padding: 0px;
+            margin: 10px auto;
+            width: 165px;
+            font-family:"微软雅黑";
+            text-align: center;
+            line-height: 40px;
+            .text {
+                position: absolute;
+                font-size: 14px;
+                letter-spacing: 4px;
+                bottom: 0px;
+            }
+            .product_code_img {
+                right:75px;
+            }
+        }
+    }
+    
+</style>

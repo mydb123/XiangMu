@@ -1,0 +1,98 @@
+<template>
+  <div>
+    <!-- 原料初检操作 -->
+    <!-- 面包屑 -->
+    <div>
+      <el-breadcrumb>
+        <el-breadcrumb-item :to="{ path: '/workbench' }">操作台</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/workbench/raw'}">原料管理</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/workbench/raw/donorList'}">原料初检</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/workbench/raw/donorList'}">录入原料初检信息</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <!-- 内容主题部分 -->
+    <!-- 供体列表 -->
+    <el-card>
+      <p class='clickbox' v-on:click="click(1)" >立项信息</p>
+      <div class='content' v-show="show1">
+      <el-row :gutter="20">
+        <el-col :span="5">
+          <el-input  v-model="formData.code" class="input-with-select"></el-input>
+        </el-col>
+      </el-row>
+      
+
+
+    </el-card>
+  </div>
+</template>
+
+<script>
+import api from "@/api/index";
+// import pageResult from "@/utils/pageResult";
+import qs from 'qs' // 根据需求是否导入qs模块
+import {pageRequest,pageResult,pageSearch,query,conditionSearch,createdSearch,getRawInspectionList} from "@/utils/pageResult";
+import { RAW_STATUS } from "@/utils/util";
+
+export default {
+  data() {
+    return {
+      query:query,
+      pageResult:pageResult,
+      pageRequest:pageRequest,
+    };
+  },
+  methods: {
+    handleCurrentChange: function(val) {
+      pageRequest.pageNumber = val;
+      pageSearch(getDonatorList,query,pageRequest,pageResult);
+    },
+    //条件查询
+    onSubmit() {
+      conditionSearch(getDonatorList,query,pageRequest,pageResult);
+    },
+    //查看详情
+    lookDetails(id) {
+      this.$router.push({
+        path: "/workbench/raw/donorDetail",
+        query: { id: id }
+      });
+    }
+  },
+  created() {
+    query.status = RAW_STATUS.PENDING_FIRST_CHECK;
+    createdSearch(getRawInspectionList,query,pageRequest,pageResult);
+  }
+};
+</script>
+
+<style lang="scss">
+.approval_upload_design_partner {
+  margin: 10px auto;
+  .div2 {
+    position: relative;
+    margin: 25px;
+    min-height: 20px;
+    line-height: 40px;
+    .content {
+      width: 80%;
+      margin: 35px;
+      margin-left: 50px;
+      p {
+        padding: 0px 5px;
+        margin: 0px 10px;
+      }
+    }
+  }
+  .div5 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+}
+.div5 {
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+    left: -40px;
+}
+</style>

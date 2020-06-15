@@ -1,0 +1,16 @@
+import base from './base' // 导入接口域名列表
+import {get,post} from '@/utils/http' // 导入http中创建的axios1实例
+import qs from 'qs' // 根据需求是否导入qs模块
+const donator = {
+    findById(id){//根据id查询供体
+      return get(`${base.sq}/workbench/bizDonator/findById?id=`+id);
+    },    
+    pageByExample (pageRequest) {
+      return get(`${base.sq}/workbench/bizDonator/pageByExample?`+qs.stringify(pageRequest));
+    },
+    //附件上传
+    uploadFile(type){
+      return post(`${base.sq}/workbench/uploadFile?type=`+type)
+    },
+}
+export default donator

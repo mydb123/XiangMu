@@ -1,0 +1,260 @@
+<template>
+    <!-- <div>
+        状态20.
+        上传图纸待确认页面
+    </div> -->
+    <div class='drawing_review_design_dept'>
+        <DesignStepComponent :index='index'></DesignStepComponent>
+        <div>
+            <el-form disabled>
+            <div class='div2'>
+                <div class='content'>
+                    <el-row>
+                        <el-col :span="5"><p>项目名称</p></el-col>
+                        <el-col :span="8" >
+                            <el-input v-model="formData.name" placeholder="请输入内容" :readonly="readonly"></el-input>
+                        </el-col>
+                        <el-col :span="5"><p>状态</p></el-col>
+                        <el-col :span="6">
+                            <el-input v-model="statusText" placeholder="请输入内容" :readonly="readonly"></el-input>
+                        </el-col>
+                    </el-row>
+                </div>
+            </div>
+            <div class="wordborder" >
+                <p class='clickbox' v-on:click="click(1)">清单信息</p>
+                <div class='content' v-show="show1">
+                    <el-row >
+                        <el-col :span="5"><p>电子版图纸</p></el-col>
+                        <el-col :span="17">
+                            <el-card class="box-card">
+                            <div v-for="fileItem in uploadFile.electronic" :key="fileItem.id" class="text item">
+                                <el-link type="primary" :href="downloadUrl+fileItem.id">{{fileItem.showName }}</el-link>
+                            </div>
+                            </el-card>
+                        </el-col>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="5"><p>智能化图纸</p></el-col>
+                        <el-col :span="17">
+                            <el-card class="box-card">
+                            <div v-for="fileItem in uploadFile.intelligent" :key="fileItem.id" class="text item">
+                                <el-link type="primary" :href="downloadUrl+fileItem.id">{{fileItem.showName }}</el-link>
+                            </div>
+                            </el-card>
+                        </el-col>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="5"><p>装饰效果图</p></el-col>
+                        <el-col :span="17">
+                            <el-card class="box-card">
+                            <div v-for="fileItem in uploadFile.decoration" :key="fileItem.id" class="text item">
+                                <el-link type="primary" :href="downloadUrl+fileItem.id">{{fileItem.showName }}</el-link>
+                            </div>
+                            </el-card>
+                        </el-col>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="5"><p>项目可研报告</p></el-col>
+                        <el-col :span="17">
+                            <el-card class="box-card">
+                            <div v-for="fileItem in uploadFile.report" :key="fileItem.id" class="text item">
+                                <el-link type="primary" :href="downloadUrl+fileItem.id">{{fileItem.showName }}</el-link>
+                            </div>
+                            </el-card>
+                        </el-col>
+                    </el-row>
+                </div>
+            </div>
+            <div class="wordborder" >
+                <p class='clickbox' v-on:click="click(1)">设计需求</p>
+                <div class='content' v-show="show2">
+                    <el-row>
+                        <el-col :span="5"><p>设计成果</p></el-col>
+                        <el-col :span="7" >
+                            <el-input  v-model="formData.designSubmitResult" placeholder="请输入内容"></el-input>
+                        </el-col>
+                        <el-col :span="5"><p>成果提交方式</p></el-col>
+                        <el-col :span="7" >
+                            <el-input  v-model="formData.designSubmitMode" placeholder="请输入内容"></el-input>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col :span="5"><p>提交时间</p></el-col>
+                        <el-col :span="7" >
+                            <el-input  v-model="formData.designSubmitTime" placeholder="请输入内容"></el-input>
+                        </el-col>
+                        <el-col :span="5"><p>成果提交介质</p></el-col>
+                        <el-col :span="7" >
+                            <el-input  v-model="formData.designSubmitMedium" placeholder="请输入内容"></el-input>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col :span="5"><p>基础智能化系统范围</p></el-col>
+                        <el-col :span="19" >
+                            <el-input  v-model="formData.baseSystemScope" placeholder="请输入内容"></el-input>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col :span="5"><p>业务智能化系统范围</p></el-col>
+                        <el-col :span="19" >
+                            <el-input  v-model="formData.businessSystemScope" placeholder="请输入内容"></el-input>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col :span="5"><p>其他要求</p></el-col>
+                        <el-col :span="19" >
+                            <el-input  v-model="formData.otherRequire" placeholder="请输入内容"></el-input>
+                        </el-col>
+                    </el-row>
+                </div>
+            </div>
+            </el-form>
+        </div>
+        <div class='div5'>
+            <el-button @click="submit" type="primary" round>编制方案</el-button>
+        </div>
+    </div>
+</template>
+
+<script>
+import base from '@/api/base'
+import DesignStepComponent from '@/components/DesignStepComponent'
+import api from '@/api/index'
+import store from '../../../../store';
+export default {
+  components: {
+      DesignStepComponent
+  },
+  data() {
+    return {                       
+        downloadUrl:base.sq+"/bizDesign/dept/download?access_token="+store.getters.token+"&fileId=",//下载路径
+        readonly:true,
+        statusText:"方案确认中",
+        index:2,
+        show1:true,
+        show2:true,
+        uploadFile:{
+            electronic:[],//电子版图纸
+            intelligent:[],//智能化图纸
+            decoration:[],//装饰效果图
+            report:[]//项目可研报告
+        },
+        formData:{
+            id:'',
+            name:'',
+            designSubmitResult:'',//设计成果
+            designSubmitMode:'',//成果提交方式
+            designSubmitTime:'',//提交时间
+            designSubmitMedium:'',//成果提交介质
+            baseSystemScope:'',//基础智能化系统范围
+            businessSystemScope:'',//业务智能化系统范围
+            otherRequire:''//其他要求
+        }
+    }
+  },
+  methods: {
+    click(index){
+        if(index==1){
+            this.show1 = !this.show1
+        }else if(index==2){
+            this.show2 = !this.show2
+        }
+    },
+    download(fileId){
+        api.designDept.download(fileId).then(response => {
+
+        }).catch(error => {
+            
+        });
+    },
+    submit() {
+        api.designDept.updateStatus(this.formData.id,3).then(response => {
+            this.$router.push('/design/dept/planUpload'+"?id="+this.formData.id);
+        }).catch(error =>{
+            console.log(error);
+        });
+    },
+    loadData(id) {
+        api.designDept.findById(id).then(response => {
+            this.formData.name = response.name; //项目名称
+            this.formData.designSubmitResult = response.designSubmitResult;//设计成果
+            this.formData.designSubmitMode = response.designSubmitMode;//成果提交方式
+            this.formData.designSubmitTime = response.designSubmitTime;//提交时间
+            this.formData.designSubmitMedium = response.designSubmitMedium;//成果提交介质
+            this.formData.baseSystemScope = response.baseSystemScope;//基础智能化系统范围
+            this.formData.businessSystemScope = response.businessSystemScope;//业务智能化系统范围
+            this.formData.otherRequire = response.otherRequire;//其他要求
+        }).catch(error => {
+          console.log(error);
+        });
+    },
+    loadFileElectronic(){//电子版图纸附件
+        api.designDept.loadFile(this.formData.id,0).then(response =>{
+            this.uploadFile.electronic = response;
+        }).catch(error =>{
+            console.log(error);
+        });
+    },
+    loadFileIntelligent(){//智能化图纸附近
+        api.designDept.loadFile(this.formData.id,1).then(response =>{
+            this.uploadFile.intelligent = response;
+        }).catch(error =>{
+            console.log(error);
+        });
+    },
+    loadFileDecoration(){//装饰化图纸
+        api.designDept.loadFile(this.formData.id,2).then(response =>{
+            this.uploadFile.decoration = response;
+        }).catch(error =>{
+            console.log(error);
+        });
+    },
+    loadFileList(){//项目可研报告
+        api.designDept.loadFile(this.formData.id,3).then(response =>{
+            this.uploadFile.report = response;
+        }).catch(error =>{
+            console.log(error);
+        });
+    }
+  },
+  mounted: function () {
+    this.formData.id = this.$route.query.id; //获取路由传值
+    //加载数据
+    this.loadData(this.formData.id); //项目基本信息
+    this.loadFileElectronic();
+    this.loadFileIntelligent();
+    this.loadFileDecoration();
+    this.loadFileList();
+  },
+}
+</script>
+
+<style lang='scss'>
+.drawing_review_design_dept{
+    margin: 10px auto;
+    border:1px solid #E7E8ED; 
+    .div2{
+        position:relative;
+        margin: 25px;
+        min-height:20px;
+        line-height: 40px;
+        .content{
+            width: 80%;
+            margin: 35px;
+            margin-left:50px;
+            p{
+                padding:0px 5px;   
+                margin:0px 10px; 
+            }
+        }
+    }
+    .div5{
+        text-align: center;
+        margin-bottom: 20px;
+    }
+}
+.text {
+    font-size: 14px;
+}
+</style>

@@ -1,0 +1,203 @@
+<template>
+  <div>
+      <!-- 面包屑 -->
+        <div>
+        <el-breadcrumb>
+            <el-breadcrumb-item :to="{ path: '/backstageManagement' }">信息微调</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/backstageManagement/Information'}">出货信息修改</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/backstageManagement/Information/shipmentDetail'}">出货数据微调</el-breadcrumb-item>
+        </el-breadcrumb>
+        </div>
+       <!-- 主体部分 -->
+    <el-card>
+        <el-row class="lh40">
+            <el-col :span="2">
+                箱号编码
+            </el-col>
+            <el-col :span="5">
+                <el-input disabled v-model="formData.bizBox.code"></el-input>
+            </el-col>
+        </el-row>
+        <!-- 出货信息 -->
+        <div class="wordborder" >
+          <p class='clickbox' @click="dotSwitch(1)">出货信息</p>
+          <div class='content' v-show="show1">
+            <el-row>
+                <el-col :span="3">
+                  <p>出货日期</p>
+                </el-col>
+                <el-col :span="6">
+                  <el-date-picker v-model="formData.bizBox.date" type="date" ></el-date-picker>
+                </el-col>
+                <el-col :span="3">
+                    <p>出货数量</p>
+                </el-col>
+                <el-col :span="6">
+                    <el-input v-model="formData.bizBox.count" disabled></el-input>
+                </el-col>
+              </el-row> 
+
+              <el-row>
+                <el-col :span="3">
+                    <p>客户名称</p>
+                </el-col>
+                <el-col :span="6">
+                    <el-input v-model="formData.bizBox.name" ></el-input>
+                </el-col>
+                <el-col :span="3">
+                    <p>出货地区</p>
+                </el-col>
+                <el-col :span="6">
+                    <el-input v-model="sourceArea" ></el-input>
+                </el-col>
+              </el-row> 
+
+              <el-row>
+                 <el-col :span="3">
+                    <p>出货备注</p>
+                </el-col>
+                <el-col :span="8">
+                    <el-input
+                    type="textarea"
+                    :autosize="{ minRows: 3, maxRows: 8}"
+                    v-model="formData.bizBox.memo">
+                    </el-input>
+                </el-col>
+              </el-row> 
+          </div>
+        </div>
+
+        <!-- 出货信息 -->
+        <div class="wordborder" >
+          <p class='clickbox' @click="dotSwitch(2)">本箱成品列表</p>
+        <div class='content' v-show="show2">
+        <!-- 列表数据 -->
+        <el-table :data="formData.list"  border stripe>
+            <el-table-column prop="code" label="制备批号"></el-table-column>
+            <el-table-column prop="expiryDate"  label="制备日期"></el-table-column>
+            <el-table-column prop="productDate"  label="过期日期"></el-table-column>
+            <el-table-column label="当前状态">
+              <template slot-scope="scope">
+                <span v-if="scope.row.status==0">废弃</span>
+                <span v-else-if="scope.row.status==1">制配中</span>
+                <span v-else-if="scope.row.status==2">库存</span>
+                <span v-else-if="scope.row.status==3">过期</span>
+                <span v-else-if="scope.row.status==4">已出货</span>
+                <span v-else-if="scope.row.status==5">已签收</span>
+                <span v-else-if="scope.row.status==6">退货</span>
+              </template>
+            </el-table-column>
+        </el-table>
+        <!-- 页码 -->
+        <el-pagination
+            @current-change="handleCurrentChange"
+            :current-page="pageRequest.pageNumber"
+            :page-size="pageRequest.pageSize"
+            layout="total, prev, pager, next, jumper"
+            :total="pageResult.total">
+        </el-pagination>
+          </div>
+        </div>
+
+        <el-row class="tac">
+          <el-button @click="save" type="primary" round>提交</el-button>
+        </el-row>
+    </el-card>
+  </div>
+</template>
+
+<script>
+import api from '@/api/index' // 导入api接口
+import {query,pageRequest,pageResult,pageSearch,conditionSearch,createdSearch} from '@/utils/pageResult';
+export default {
+  data () {
+    return {
+        show1:true,
+        show2:true,
+        // 查询条件
+        query:query,
+        pageResult:pageResult,
+        pageRequest:pageRequest,
+        formData:{
+          bizBox:{
+            date:""//出货日期
+          },
+          id:""//id
+        },
+        sourceArea:""//地区
+        
+    }
+  },
+
+  methods: {
+    // 当前页码
+    handleCurrentChange(val){
+      this.pageRequest.pageNumber = val
+      pageSearch(query,pageRequest,pageResult)
+    },
+    // 显示和隐藏
+    dotSwitch(index){
+        if(index==1){
+        this.show1=!this.show1
+        }else if(index==2){
+        this.show2=!this.show2
+        }
+    },
+    async getshowDetail(){
+       const res = await api.box.getBizBoxDetails(this.formData.id)
+       this.formData = res
+       this.sourceArea=this.formData.bizBox.province+'-'+this.formData.bizBox.city+'-'+this.formData.bizBox.region
+       console.log(this.formData);
+    },
+    // 返回
+    // goBack(){
+    //   this.$router.go(-1)
+    // }
+    save(){
+            for(let i = 0; i < this.uploadFile.examResult.length; i++){
+                this.fileIds += this.uploadFile.examResult[i].id +',';
+                if(i == this.uploadFile.examResult.length-1){
+                    this.fileIds += this.uploadFile.examResult[i].id
+                }
+            }
+            for(let i = 0; i < this.uploadFile.sixteenResult.length;i++){
+                if( i == 0){
+                    this.fileIds += ','+ this.uploadFile.examResult[i].id +','
+                }else if(i == this.uploadFile.examResult.length-1){
+                    this.fileIds += this.uploadFile.examResult[i].id
+                }
+                this.fileIds += this.uploadFile.examResult[i].id +',';
+            }
+            //提交
+            api.donator.save(this.formData,this.fileIds).then(response =>{
+                this.$router.push('/backstageManagement/Information/shipmentModification');
+            }).catch(error=>{
+                console.log(error)
+            })
+        },
+
+
+
+  },
+
+  created () {
+    this.formData.id=this.$route.query.id
+    // console.log(this.formData.id);
+    // createdSearch(query,pageRequest,pageResult)
+    this.getshowDetail()
+  }
+}
+</script>
+
+<style lang='scss'>
+    .tac{
+      text-align: center;
+      .el-button{
+        width: 76px;
+        height: 40px;
+    }
+    }
+    .wordborder{
+      margin:50px;
+    }
+</style>

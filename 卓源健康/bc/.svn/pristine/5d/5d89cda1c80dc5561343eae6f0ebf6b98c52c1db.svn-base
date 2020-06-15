@@ -1,0 +1,215 @@
+<template>
+  <div class="app">
+    <el-container >
+        <el-header class="app-header" style='background:#1c1f21'>
+          <div class="app-side-logo" style='line-height:55px;background:#1c1f21;'>
+            <img src="@/assets/logo2.png" style='vertical-align: middle;'
+                width="225"
+                height="25" />
+          </div>
+          <div style="width: 60px; cursor: pointer;"
+               >
+          </div>
+          <!-- 我是样例菜单 -->
+          <el-menu  :default-active=defaultactive
+                    router
+                    class="el-menu-demo tab-page"
+                    mode="horizontal"
+                    @select="handleSelect"
+                    active-text-color="#409EFF">
+            <el-menu-item index="/">卓源健康</el-menu-item>
+            <el-menu-item v-show='submenu.name' v-for ='(submenu, subidx) in addRouters' :index="submenu.path" :key="subidx" >{{submenu.name}}</el-menu-item>
+          </el-menu>
+
+          <div class="app-header-userinfo" style='cursor: pointer;'>
+            <el-dropdown trigger="hover"
+                         :hide-on-click="false">
+              <span class="el-dropdown-link">
+                {{ username?username:'游客，请登录' }}
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item divided
+                                  @click.native="logout">{{username?'退出登录':'请您登录'}}
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </div>
+        </el-header>
+    <el-container style='height:80%'>
+        <el-aside class="app-side app-side-left" 
+          :class="'app-side-expanded'">
+          <Sidebar :collapse="isCollapse" :routes="routes" :parent = "defaultactive" :temp= "mytimestamp"/>
+        </el-aside>
+        <el-main class="app-body">
+          <template>
+            <router-view :key="$route.fullPath"></router-view>
+          </template>
+        </el-main>
+      </el-container>
+        <el-footer style='background:#1c1f21;'><strong><span style="font-family: 微软雅黑, &quot;Microsoft YaHei&quot;; font-size: 20px; color: rgb(255,255,255);  line-height: 60px;">卓源健康科技股份有限公司</span></strong></el-footer>
+    </el-container>
+  </div>
+</template>
+
+<script>
+import Sidebar from '@/components/Sidebar'
+import {asyncRouterMap} from '../router'
+import permission from '../store/modules/permissions'
+import store from '../store'
+import routeToMenu from '@/utils/routeToMenu'
+import {methodRouteMenu} from '@/utils/routeToMenu'
+export default {
+  name: 'Container',
+  components: {
+    Sidebar
+  },
+  data() {
+    return {
+      username: '',
+      isCollapse: false,
+      routes:this.$router.options.routes[2].children,
+      defaultactive:'/',
+      addRouters:store.getters.addRouters,
+      mytimestamp:new Date(),
+    }
+  },
+  computed:{
+	    key(){
+	        return this.$route.name + new Date().getTime();
+	    }
+	},
+  methods: {
+    logout: function () {
+      this.$confirm('请您确认?', '提示', {})
+        .then(() => {
+          sessionStorage.removeItem('user');
+          this.$store.dispatch('FedLogOut')
+            .then(() => {
+              this.$router.push('/login');
+              location.reload()
+            })
+        })
+        .catch(() => { });
+    },
+    handleOpen(key, keyPath) {
+      console.log(key, keyPath);
+    },
+    handleClose(key, keyPath) {
+      console.log(key, keyPath);
+    },
+    handleSelect(key, keyPath) {
+      this.mytimestamp = new Date();
+
+      let element = methodRouteMenu.getRouteMenu(key)
+      let _second = methodRouteMenu.getSecond(element)
+      this.routes = methodRouteMenu.getRoutes(key,this.$router)
+      
+      sessionStorage.setItem('defaultactive',key)
+      sessionStorage.setItem('defaultactive2',_second)
+      this.defaultactive = key
+    },
+  },
+  mounted: function () {
+    this.mytimestamp = new Date();
+    this.username = sessionStorage.getItem("user")
+    let element = methodRouteMenu.getRouteMenu(this.$route.path)
+    let _second = methodRouteMenu.getSecond(element)
+    this.routes = methodRouteMenu.getRoutes(element.first,this.$router)
+
+    sessionStorage.setItem('defaultactive',element.first)
+    sessionStorage.setItem('defaultactive2',_second)
+    this.defaultactive = element.first
+
+  },
+  watch: {
+    $route(to,from){
+      let toPath = to.path
+      
+      let element = methodRouteMenu.getRouteMenu(toPath)
+      let _second = methodRouteMenu.getSecond(element)
+      this.routes = methodRouteMenu.getRoutes(element.first,this.$router)
+
+      sessionStorage.setItem('defaultactive',element.first)
+      sessionStorage.setItem('defaultactive2',_second)
+      this.defaultactive = element.first
+
+      this.mytimestamp = sessionStorage.getItem('defaultactive');
+    }
+      
+  },
+}
+</script>
+
+<style lang=''>
+  html {
+    height: 100%;
+  }
+  body {
+    position: relative;
+    top: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+  .el-menu--horizontal>.el-menu-item{
+    color: #fff!important;
+  }
+  .el-footer {
+    text-align: center;
+    line-height: 60px;
+  }
+  .el-menu-vertical-demo .el-menu-item{
+    height: 50px;
+    font-size:14px;
+    display: block;
+    text-align: center;
+    font-family:Microsoft YaHei;
+    background-color:#1c1f21;
+    color: black;
+  }
+  .el-menu-item{
+    font-size:16px;
+    font-weight: 600;
+  }
+  .el-menu-item:hover{
+    background-color: black!important;
+  }
+  .el-submenu__title{
+    background-color:#1c1f21;
+    color: #fff !important;
+  }
+  .el-menu-item.is-active{
+    color:rgb(255, 208, 75);
+  }
+   .el-aside{
+    background-color:#1c1f21;
+    height: 100%;
+    max-height: 100%;
+  } 
+  .app-header{
+    border-bottom: 0!important;
+  }
+  .el-menu.el-menu--horizontal{
+    border: 0;
+  }
+  .el-menu-demo{
+    background:#1c1f21;
+    font-size: 20px;
+  }
+  .app-side-left {
+    background-color: #262626!important;
+}
+  .el-menu{
+    background-color: rgb(28, 31, 33)!important;
+    border-right:0!important; 
+  }
+  .app-side{
+    max-height: 100%!important;
+  }
+</style>

@@ -1,0 +1,252 @@
+<template>
+  <div id="shipmentDetail">
+    <!-- 面包屑 -->
+    <div>
+    <el-breadcrumb>
+        <el-breadcrumb-item :to="{ path: '/backstageManagement' }">信息微调</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/backstageManagement/Information'}">出货信息修改</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/backstageManagement/Information/shipmentDetail'}">出货数据微调</el-breadcrumb-item>
+    </el-breadcrumb>
+    </div>
+    <el-card>
+        <el-row class="lh40">
+            <el-col :span="2">
+                箱号编码
+            </el-col>
+            <el-col :span="5">
+                <el-input disabled v-model="formData.code"></el-input>
+            </el-col>
+        </el-row>
+        <!-- 出货信息 -->
+        <div class="wordborder" >
+          <p class='clickbox' @click="dotSwitch(1)">出货信息</p>
+          <div class='content' v-show="show1">
+            <el-form :model="shipmentList" :rules="rules" ref="ruleForm">
+              <el-row>
+                <el-col :span="3">
+                  <p>出货日期</p>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item prop="date">
+                    <el-date-picker v-model="shipmentList.date" type="date" value-format="yyyy-MM-dd"></el-date-picker>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="3">
+                    <p>出货数量</p>
+                </el-col>
+                <el-col :span="6">
+                    <el-input v-model="formData.count" disabled></el-input>
+                </el-col>
+              </el-row> 
+
+              <el-row>
+                <el-col :span="3">
+                    <p>客户名称</p>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item prop="name">
+                    <el-input v-model="shipmentList.name" ></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="3">
+                    <p>出货地区</p>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item prop="sourceArea">
+                      <el-cascader
+                        size="large"
+                        :options="options"
+                        v-model="sourceArea"
+                        @change="handleChange">
+                      </el-cascader>
+                  </el-form-item>
+                </el-col>
+              </el-row> 
+              <el-row>
+                <el-col :span="3">
+                    <p>出货备注</p>
+                </el-col>
+                <el-col :span="8">
+                    <el-input
+                      type="textarea"
+                      :autosize="{ minRows: 3, maxRows: 8}"
+                      v-model="shipmentList.memo">
+                    </el-input>
+                </el-col>
+              </el-row>
+              <el-row class="mt20">
+                <el-col :span="3">
+                    <p>退货数量</p>
+                </el-col>
+                <el-col :span="6">
+                    <el-input v-model="formData.count" disabled></el-input>
+                </el-col>
+              </el-row>  
+              </el-form>
+          </div>
+        </div>
+
+        <!-- 出货信息 -->
+        <div class="wordborder" >
+          <p class='clickbox' @click="dotSwitch(2)">出货信息</p>
+        <div class='content' v-show="show2">
+        <!-- 列表数据 -->
+        <el-table :data="showDetailsList.rows" style="width: 80%" border stripe>
+            <el-table-column prop="code" label="制备批号"></el-table-column>
+            <el-table-column prop="product_date"  label="制备日期"></el-table-column>
+            <el-table-column prop="expiry_date"  label="过期日期"></el-table-column>
+            <el-table-column prop="status" label="当前状态"></el-table-column>
+            <el-table-column prop="status" label="操作">
+              <template slot-scope="scope">
+                <el-button type="" v-if="scope.row.status==6">签收</el-button>
+                <el-button type="" v-else-if="scope.row.status==5">退货</el-button>
+                <span v-else-if="4"></span>
+              </template>
+            </el-table-column>
+        </el-table>
+        <!-- 页码 -->
+        <el-pagination
+            @current-change="handleCurrentChange"
+            :current-page="pageRequest.pageNumber"
+            :page-size="pageRequest.pageSize"
+            layout="total, prev, pager, next, jumper"
+            :total="total">
+        </el-pagination>
+          </div>
+        </div>
+        <el-row class="tac">
+          <el-button @click="submit('ruleForm')" type="primary" round>提交</el-button>
+        </el-row>
+    </el-card>
+  </div>
+</template>
+
+<script>
+import api from '@/api/index' // 导入api接口
+import {query,pageRequest,pageResult,pageSearch,conditionSearch,createdSearch} from '@/utils/pageResult';
+import { provinceAndCityData, regionData, provinceAndCityDataPlus, regionDataPlus, CodeToText, TextToCode } from 'element-china-area-data'
+export default {
+  data () {
+    var checkSourceArea = (rule, value, callback) =>{
+      value = this.sourceArea;
+      console.log(value+"+++++++++++++++")
+      if(value == null || value == ''){
+          callback(new Error('请选择出货地区'))
+      }
+      callback()
+    };
+    return {
+        options: regionData,
+        show1:true,
+        show2:true,
+        // 查询条件
+        query:query,
+        pageResult:pageResult,
+        pageRequest:pageRequest,
+        total:0,//总条数
+        formData:{
+          bizBox:{
+            date:""//出货日期
+          },
+          id:""//id
+        },
+        sourceArea:[],//出货地区
+        showDetailsList:[],//列表数据
+        shipmentList:{
+          id:"",//id
+          date:"",//日期
+          name:"",//名称
+          province:"",//省
+          city:"",//市
+          region:"",//区
+          memo:""//出货备注 
+        },
+        rules: {
+          date: [
+              { required: true, message: '请选择出货日期', trigger: 'change' },
+          ],
+          name: [
+              { required: true, message: '请输入客户名称', trigger: 'blur' },
+          ],
+          sourceArea: [
+              { validator:checkSourceArea, trigger: 'change' },
+          ],
+        },
+    }
+  },
+  methods: {
+    // 当前页码
+    handleCurrentChange(val){
+      this.pageRequest.pageNumber = val
+      pageSearch(query,pageRequest,pageResult)
+    },
+    // 显示和隐藏
+    dotSwitch(index){
+        if(index==1){
+        this.show1=!this.show1
+        }else if(index==2){
+        this.show2=!this.show2
+        }
+    },
+    //列表上面的数据
+    async getshowDetail(){
+       const res = await api.admin.findById(this.formData.id)
+       this.formData = res
+       this.shipmentList.date = res.date  
+       this.shipmentList.name = res.name  
+       this.shipmentList.memo = res.memo  
+       this.sourceArea=this.formData.province+'-'+this.formData.city+'-'+this.formData.region
+    },
+    // 列表
+    async DetailsList(){
+      const res = await api.admin.productPage(this.formData.id)
+      this.showDetailsList = res
+      // console.log(this.showDetailsList);
+      this.total=this.showDetailsList.total
+    },
+    //地区的变化
+    handleChange(){
+        this.detaliList.province = CodeToText[this.sourceArea[0]]
+        this.detaliList.city = CodeToText[this.sourceArea[1]]
+        this.detaliList.region = CodeToText[this.sourceArea[2]]
+    },
+    //提交
+    submit(ruleForm){
+      this.$refs[ruleForm].validate((valid) => {
+        if (valid) {
+            api.admin.chuhuoUpdate(this.shipmentList)
+            this.$message.success("操作成功")
+            this.$router.push({
+              path:"/backstageManagement/Information/shipmentModification"
+            })
+        } else {
+            console.log('error submit!!');
+            return false;
+        }
+        });
+    }
+  },
+  created () {
+    this.formData.id=this.$route.query.id
+    this.shipmentList.id=this.$route.query.id
+    this.getshowDetail()
+    this.DetailsList()
+  }
+}
+</script>
+
+<style lang='scss'>
+  #shipmentDetail{
+    .tac{
+    text-align: center;
+    .el-button{
+      width: 114px;
+      height: 50px;
+    } 
+    }
+    .mt20{
+      margin-top: 20px;
+    }
+  }
+</style>
+

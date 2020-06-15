@@ -1,0 +1,202 @@
+import Container from '@/container/Container'
+/**
+ * 工作台相关路由
+ */
+const workbenchRouter = {
+  path: '/workbench',
+  component: Container,
+  name: '工作台',
+  meta: {title: '工作台',roles: ['/workbench']},
+  redirect: '/workbench/raw/donorList',
+  children: [
+    // 原料操作
+    {
+      path: 'raw',
+      name: '原料操作',
+      hidden: false,
+      redirect: '/workbench/raw/donorList',
+      component: () => import('@/views/workbench/raw'),
+      meta: {title: '原料操作',icon: 'fa fa-cog fa-lg',roles: ['/workbench']},
+      children: [
+        {
+          path: 'donorList',
+          name: '供体列表',
+          component: () => import('@/views/workbench/raw/donorList'),
+          meta: { title: '供体列表', icon: 'form', roles: ['/workbench']}
+        },
+        {
+          path: 'rawList',
+          name: '原料列表',
+          component: () => import('@/views/workbench/raw/rawList'),
+          meta: { title: '原料列表', icon: 'form', roles: ['/workbench'] }         
+        },
+        {
+          path: 'rawInspection',
+          name: '原料初检',
+          component: () => import('@/views/workbench/raw/rawInspection'),
+          meta: { title: '原料初检', icon: 'form', roles: ['/workbench'] }         
+        },
+        {
+          path: 'rawReinspection',
+          name: '原料复检',
+          component: () => import('@/views/workbench/raw/rawReinspection'),
+          meta: { title: '原料复检', icon: 'form', roles: ['/workbench'] }         
+        },
+        {
+          path: 'rawRepertory',
+          name: '原料库存',
+          component: () => import('@/views/workbench/raw/rawRepertory'),
+          meta: { title: '原料库存', icon: 'form', roles: ['/workbench'] }         
+        },
+        {
+          path: 'wasteraws',
+          name: '废弃原料',
+          component: () => import('@/views/workbench/raw/wasteraws'),
+          meta: { title: '废弃原料', icon: 'form', roles: ['/workbench'] }         
+        },
+        // 供体新增页面
+        {
+          path :'addDonor',
+          name :'新增供体',
+          hidden:true,
+          component :() => import('@/views/workbench/raw/addDonor')
+        },
+        // 供体详情页面
+        {
+          path :'donorDetail',
+          name :'供体详情',
+          hidden:true,
+          component :() => import('@/views/workbench/raw/donorDetail')
+        },
+        // 原料新增页面
+        {
+          path :'addRaw',
+          name :'新增原料',
+          hidden:true,
+          component :() => import('@/views/workbench/raw/addRaw')
+        },
+        //原料详情页面
+        {
+          path :'rawDetail',
+          name :'原料详情',
+          hidden:true,
+          component :() => import('@/views/workbench/raw/rawDetail')
+        }
+      ]
+    },
+    // 制备管理
+    {
+      path: 'management',
+      name: '制备管理',
+      hidden: false,
+      redirect: '/workbench/management/preparationList',
+      component: () => import('@/views/workbench/management'),
+      meta: {title: '制备管理',icon: 'fa fa-cog fa-lg',roles: ['/workbench']},
+      children:[
+        {
+          path: 'preparationList',
+          name: '制备列表',
+          component: () => import('@/views/workbench/management/preparationList'),
+          meta: { title: '制备列表', icon: 'form', roles: ['/workbench'] }   
+        },
+        {
+          path: 'productInspection',
+          name: '成品质检',
+          component: () => import('@/views/workbench/management/productInspection'),
+          meta: { title: '成品质检', icon: 'form', roles: ['/workbench'] }   
+        },
+        {
+          path: 'wasteProducts',
+          name: '废弃成品',
+          component: () => import('@/views/workbench/management/wasteProducts'),
+          meta: { title: '废弃成品', icon: 'form', roles: ['/workbench'] }   
+        }
+      ]
+    },
+    // 出库管理
+    {
+      path: 'warehouseMmanagement',
+      name: '出库管理',
+      hidden: false,
+      redirect: '/workbench/warehouseMmanagement/ctnList',
+      component: () => import('@/views/workbench/warehouseMmanagement'),
+      meta: {title: '出库管理',icon: 'fa fa-cog fa-lg',roles: ['/workbench']},
+      children:[
+        {
+        path: 'ctnList',
+        name: '箱号列表',
+        component: () => import('@/views/workbench/warehouseMmanagement/ctnList'),
+        meta: { title: '箱号列表', icon: 'form', roles: ['/workbench'] },
+        },
+        {
+          path: 'aftersaleList',
+          name: '售后列表',
+          component: () => import('@/views/workbench/warehouseMmanagement/aftersaleList'),
+          meta: { title: '售后列表', icon: 'form', roles: ['/workbench'] }    
+        },
+        // 出库管理详情页面
+        {
+          path: 'addctnList',
+          name: '新增出货',
+          hidden: true,
+          component: () => import('@/views/workbench/warehouseMmanagement/addctnList'),
+        },
+        {
+          path: 'showDetails',
+          name: '详情页面',
+          hidden: true,
+          component: () => import('@/views/workbench/warehouseMmanagement/showDetails'),
+        }
+      ]
+    },
+    //库存管理
+    {
+      path: 'stockControl',
+      name: '库存管理',
+      hidden: false,
+      redirect: '/workbench/stockControl/finishedproductList',
+      component: () => import('@/views/workbench/stockControl'),
+      meta: {title: '库存管理',icon: 'fa fa-cog fa-lg',roles: ['/workbench']},
+      children:[
+        {
+        path: 'finishedproductList',
+        name: '成品列表',
+        component: () => import('@/views/workbench/stockControl/finishedproductList'),
+        meta: { title: '成品列表', icon: 'form', roles: ['/workbench'] }    
+        },
+        {
+          path: 'inventoryList',
+          name: '库存列表',
+          component: () => import('@/views/workbench/stockControl/inventoryList'),
+          meta: { title: '库存列表', icon: 'form', roles: ['/workbench'] }    
+        },
+        {
+          path: 'shipmentList',
+          name: '出货列表',
+          component: () => import('@/views/workbench/stockControl/shipmentList'),
+          meta: { title: '出货列表', icon: 'form', roles: ['/workbench'] }    
+        },
+        {
+          path: 'pastdueList',
+          name: '过期列表',
+          component: () => import('@/views/workbench/stockControl/pastdueList'),
+          meta: { title: '过期列表', icon: 'form', roles: ['/workbench'] }    
+        },
+        {
+          path: 'salesreturnList',
+          name: '退货列表',
+          component: () => import('@/views/workbench/stockControl/salesreturnList'),
+          meta: { title: '退货列表', icon: 'form', roles: ['/workbench'] }    
+        },
+        //库存管理详情所有页面
+        {
+          path: 'particulars',
+          name: '库存详情',
+          hidden: true,
+          component: () => import('@/views/workbench/stockControl/particulars'),
+        }
+      ]
+    },
+  ]
+}
+export default workbenchRouter

@@ -1,0 +1,155 @@
+<template>
+    <div id="ctnList">
+        <el-breadcrumb>
+            <el-breadcrumb-item :to="{ path: '/workbench/warehouseMmanagement/ctnList'}">出库管理</el-breadcrumb-item>
+            <el-breadcrumb-item>箱号列表</el-breadcrumb-item>
+        </el-breadcrumb>
+        <el-card>
+        <el-row class="mb20" :gutter="10">
+            <el-col :span="4" class="lh40">请输入箱号编码</el-col>
+            <el-col :span="5"><el-input v-model="query.code" placeholder="请输入箱号编码"></el-input></el-col>
+            <el-col :span="2" class="lh40">状态</el-col>
+            <el-col :span="4">
+                <el-select clearable  v-model="query.status" placeholder="请选择" >
+                    <el-option
+                        v-for="item in boxStatusSelect"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                    </el-option>
+                </el-select>
+            </el-col>
+            <el-col :span="2" class="lh40">采集日期</el-col>
+            <el-col :span="7">
+                <el-date-picker
+                    style="width:90%"
+                    v-model="birthday"
+                    type="daterange"
+                    align="right"
+                    unlink-panels
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    value-format="yyyy-MM-dd">
+                </el-date-picker>
+            </el-col>
+        </el-row>
+        <el-row class="mb20" :gutter="10">
+            <el-col :span="4" class="lh40">客户名称</el-col>
+            <el-col :span="5"><el-input  v-model="query.name" placeholder="客户名称"></el-input></el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="2"><el-button type="warning" @click="onSubmit">搜索</el-button></el-col>
+            <el-col :span="18"><el-button type="warning" @click="donorListexport">导出</el-button></el-col>
+            <el-col :span="4" ><el-button @click="addShipment" type="primary">新增出货</el-button></el-col>
+        </el-row>
+            <!-- 列表数据 -->
+            <el-table :data="pageResult.rows"  border stripe>
+                <el-table-column label="箱号编码">
+                    <template slot-scope="scope">
+                        <el-link type="primary" @click="ctnParticular(scope.row.id)">{{scope.row.code}}</el-link>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="date"  label="出货日期"></el-table-column>
+                <el-table-column prop="name"  label="客户名称"></el-table-column>
+                <el-table-column label="出货地区"> 
+                    <template slot-scope="scope">
+                        {{scope.row.province}}-{{scope.row.city}}-{{scope.row.region}}
+                    </template>  
+                </el-table-column>
+                <el-table-column prop="count" label="本箱数量"> </el-table-column>
+                <el-table-column prop="status" label="售后状态"></el-table-column>
+            </el-table>
+            <!-- 页码 -->
+            <el-pagination
+                @current-change="handleCurrentChange"
+                :current-page="pageRequest.pageNumber"
+                :page-size="pageRequest.pageSize"
+                layout="total, prev, pager, next, jumper"
+                :total="pageResult.total">
+            </el-pagination>
+        </el-card>
+    </div>
+</template>
+
+<script>
+import api from '@/api/index' // 导入api接口
+import {query,pageRequest,pageResult,pageSearch,conditionSearch,createdSearch,getCtnList} from '@/utils/pageResult';
+import { boxStatusSelect } from "@/utils/util";
+export default {
+
+    data () {
+        return {
+            // 查询条件
+            query:query,
+            pageResult:pageResult,
+            pageRequest:pageRequest,
+            boxStatusSelect:boxStatusSelect,
+            birthday:""//日期
+        }
+    },
+    methods: {
+        // 点击查询
+        onSubmit(){
+            this.paramterCollection()
+            conditionSearch(getCtnList,query,pageRequest,pageResult)
+        },
+        // 当前页码
+        handleCurrentChange(val){
+            this.paramterCollection()
+            this.pageRequest.pageNumber = val
+            pageSearch(getCtnList,query,pageRequest,pageResult)
+        },
+        // 新增出货
+        addShipment(){
+            this.$router.push({path:"/workbench/warehouseMmanagement/addctnList"})
+        },
+        // 箱号详情页面
+        ctnParticular(id){
+            this.$router.push({
+                path:"/workbench/warehouseMmanagement/showDetailsCtn",
+                query:{id:id}
+            })
+        },
+        //导出
+        async donorListexport(){
+            this.paramterCollection()
+            let response = await api.box.exportExcel(query)
+            var blob = new Blob([response.data])
+            var downloadElement = document.createElement('a');
+            var href = window.URL.createObjectURL(blob); //创建下载的链接
+            downloadElement.href = href;
+            // downloadElement.download = response.headers['content-disposition'].split(';')[1].split('=')[1]; //下载后文件名
+            downloadElement.download = decodeURI(response.headers['filename']) //下载后文件名
+            document.body.appendChild(downloadElement);
+            downloadElement.click(); //点击下载
+            document.body.removeChild(downloadElement); //下载完成移除元素
+            window.URL.revokeObjectURL(href); //释放掉blob对象 
+        },
+        //时间区间
+        paramterCollection(){
+            if(this.birthday&&this.birthday.length>0){
+                this.query.dateBegin = this.birthday[0]
+                this.query.dateEnd = this.birthday[1]
+            }else{
+                this.query.dateBegin = ''
+                this.query.dateEnd = ''
+            }
+        }
+    },
+    created () {
+        createdSearch(getCtnList,query,pageRequest,pageResult)
+    }
+}
+</script>
+
+<style lang="scss">
+#ctnList{
+	.mb20{
+		margin-bottom: 20px;
+		.lh40{
+			line-height: 40px;
+		}
+	}
+}
+</style>

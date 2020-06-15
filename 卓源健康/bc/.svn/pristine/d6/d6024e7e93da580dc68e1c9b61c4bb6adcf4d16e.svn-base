@@ -1,0 +1,253 @@
+<template>
+    <div >
+        <div>
+            <el-breadcrumb>
+                <el-breadcrumb-item >原料管理</el-breadcrumb-item>
+                <el-breadcrumb-item :to="{ path: '/workbench/management/preparationList'}">制备列表</el-breadcrumb-item>
+                <el-breadcrumb-item >新增制备</el-breadcrumb-item>
+            </el-breadcrumb>
+        </div>
+    <el-card>    
+        <div class="wordborder">
+            <p class='clickbox' v-on:click="click(1)">成品制备信息</p>
+                <div class='content' v-show="show1">
+                    <el-form :model="formData" :rules="rules" ref="ruleForm">
+                        <el-row>
+                            <el-col :span="5"><p>原料编码</p></el-col>
+                            <el-col :span="4">
+                                <el-form-item prop="code">
+                                    <el-input v-model="formData.code"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="4">
+                                <el-button type="primary" @click="dialogTableVisible = true" >请选择</el-button>
+                                <el-dialog title="原料编码列表" :visible.sync="dialogTableVisible" @open="open()">
+                                <el-row :gutter="20">
+                                    <el-col :span="5">
+                                    <el-input  v-model="query.name" placeholder="请输入姓名"  class="input-with-select"></el-input>
+                                    </el-col>
+                                    <el-col :span="12">
+                                    <el-button type="primary" @click="onSubmit">搜索</el-button>
+                                    </el-col>
+                                </el-row>
+                                <el-table :data="pageResult.rows" border>
+                                    <el-table-column  width="65">
+                                        <template slot-scope="scope">
+                                            <el-radio :label="scope.row.id" v-model="templateRadio" @change.native="dialogTableVisible=false,formData.code = scope.row.code,formData.rawId = scope.row.id">&nbsp;</el-radio>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column prop="code" label="原料编码" width="200"></el-table-column>
+                                    <el-table-column prop="name" label="供体姓名">
+                                    <template slot-scope="scope">
+                                        <el-link type="primary" @click="lookDetails(scope.row.id)">{{scope.row.name}}</el-link>
+                                    </template>
+                                    </el-table-column>
+                                </el-table>
+                                <el-pagination
+                                    @current-change="handleCurrentChange"
+                                    :current-page="pageRequest.pageNumber"
+                                    :page-size="pageRequest.pageSize"
+                                    layout="total, prev, pager, next, jumper"
+                                    :total="pageResult.total">
+                                </el-pagination>
+                                </el-dialog>
+                            </el-col>
+                            <el-col :span="5"><p>制备数量</p></el-col>
+                            <el-col :span="6">
+                                    <el-input-number v-model="formData.count" controls-position="right" :min="1" :max="30">
+
+                                    </el-input-number>
+                            </el-col>
+                        </el-row>
+                        <el-row >
+                            <el-col :span="5"><p>制备日期</p></el-col>
+                            <el-form disabled>
+                            <el-col :span="8">
+                                <el-date-picker
+                                    v-model="formData.productDate"
+                                    type="date"
+                                    value-format="yyyy-MM-dd"
+                                    :readonly="readonly">
+                                </el-date-picker>
+                            </el-col>      
+                            </el-form>  
+                            <el-col :span="5"><p>过期日期</p></el-col>
+                            <el-form disabled>
+                            <el-col :span="6">
+                                <el-date-picker
+                                    v-model="formData.expiryDate"
+                                    type="date"
+                                    value-format="yyyy-MM-dd"
+                                    :readonly="readonly">
+                                </el-date-picker>
+                            </el-col>      
+                            </el-form>
+                        </el-row>
+                        <el-row >
+                            <el-col :span="5"><p>主制备人员</p></el-col>
+                            <el-col :span="8">
+                                <el-form-item prop="mainPerson">
+                                    <el-select v-model="formData.mainPerson" placeholder="请选择">
+                                        <el-option
+                                            v-for="item in mainPersons"
+                                            :key="item.value"
+                                            :label="item.label"
+                                            :value="item.value">
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="5"><p>辅制备人员</p></el-col>
+                            <el-col :span="6">
+                                <el-form-item prop="supportPerson">
+                                    <el-select v-model="formData.supportPerson" placeholder="请选择">
+                                        <el-option
+                                            v-for="item in supportPersons"
+                                            :key="item.value"
+                                            :label="item.label"
+                                            :value="item.value">
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                    </el-form>
+                </div>
+            </div>
+            <div class='div5'>
+                <el-button @click="save('ruleForm')" type="primary" round>提交</el-button>
+            </div>
+        </el-card>
+    </div>    
+</template>
+
+<script>
+import {pageRequest,pageResult,pageSearch,query,conditionSearch,createdSearch,getRawList} from "@/utils/pageResult";
+import { provinceAndCityData, regionData, provinceAndCityDataPlus, regionDataPlus, CodeToText, TextToCode } from 'element-china-area-data';
+import { STATION_TYPE ,RAW_STATUS} from "@/utils/util";
+import api from '@/api/index';
+export default {
+
+    data(){
+        return{ 
+            readonly: true,
+            mainPersons:[],//主制备人员列表
+            supportPersons:[],//辅制备人员列表
+            show1:true,
+            templateRadio:'',
+            formData:{
+                rawId:'',//原料id
+                code:'',//原料编码
+                count:'',//制备数量
+                productDate:new Date(),//制备日期
+                expiryDate:new Date().setFullYear(new Date().getFullYear()+1),//过期日期
+                mainPerson:'',//主制备人员
+                supportPerson:'',//辅制备人员
+                name:'标准化粪菌制备(40mL)'
+            },
+            dialogTableVisible:false,//dialog
+            query:query,
+            pageResult:pageResult,
+            pageRequest:pageRequest,
+            rules:{
+                code: [
+                    { required: true, message: '请选择原料编码', trigger: 'change' },
+                ],
+                mainPerson: [
+                    { required: true, message: '请选择主制备人员', trigger: 'blur' },
+                ],
+                supportPerson: [
+                    { required: true, message: '请选择辅制备人员', trigger: 'blur' },
+                ]
+            }
+    }},
+    methods:{
+        handleCurrentChange: function(val) {
+            pageRequest.pageNumber = val;
+            pageSearch(getRawList,query,pageRequest,pageResult);
+        },
+        open(){
+            createdSearch(getRawList,query,pageRequest,pageResult,RAW_STATUS.PENDING_PRODUCT);
+        },
+        //条件查询
+        onSubmit() {
+            conditionSearch(getRawList,query,pageRequest,pageResult);
+        },
+        click(index) {
+            if (index == 1) {
+                this.show1 = !this.show1;
+            }
+        },
+        //新增制备提交
+        save(ruleForm){
+            this.$refs[ruleForm].validate((valid) => {
+                if (valid) {
+                        api.product.save(this.formData).then(response =>{
+                        // this.$router.push('/workbench/management/preparationList');
+                        this.$router.push({
+                            path:"/workbench/management/addPreparationPrinting",
+                            query:{data:response.data}
+                        })
+                    }).catch((error)=>{
+                        console.log(error)
+                    })
+                } else {
+                console.log('error submit!!');
+                return false;
+            }});
+        },
+        loadData(){
+            //主制备人员列表
+            api.userRelated.getUserList(STATION_TYPE.MAIN_PERSON).then(response =>{
+                for(let i=0;i<response.length;i++){
+                    this.mainPersons.push({"value":response[i].id,"label":response[i].user})
+                }
+            }),
+            //辅制备人员列表
+            api.userRelated.getUserList(STATION_TYPE.SUPPORT_PERSON).then(response =>{
+                for(let i=0;i<response.length;i++){
+                    this.supportPersons.push({"value":response[i].id,"label":response[i].user})
+                }
+            })
+        }
+    },
+    created(){
+        //设置过期时间
+        let expiryDate = new Date();
+        expiryDate.setFullYear(expiryDate.getFullYear()+1);
+        this.formData.expiryDate = expiryDate;
+        this.loadData();
+    }
+}
+</script>
+
+<style lang='scss'>
+.approval_upload_design_partner {
+  margin: 10px auto;
+  .div2 {
+    position: relative;
+    margin: 25px;
+    min-height: 20px;
+    line-height: 40px;
+    .content {
+      width: 80%;
+      margin: 35px;
+      margin-left: 50px;
+      p {
+        padding: 0px 5px;
+        margin: 0px 10px;
+      }
+    }
+  }
+  .div5 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+}
+  .div5 {
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+    left: -40px;
+  }
+</style>

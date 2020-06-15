@@ -1,0 +1,78 @@
+<template>
+        <!-- 数据编码 -->
+    <div id="preparationList">
+        <el-breadcrumb>
+            <el-breadcrumb-item :to="{ path: '/workbench/dataCoding/CodeList'}">附加功能</el-breadcrumb-item>
+            <el-breadcrumb-item>编码列表</el-breadcrumb-item>
+        </el-breadcrumb>
+        <el-card>
+            <el-row :gutter="10" class="mb20">
+                 <el-col :span="3"><el-button   @click="addCode"  type="primary">添加打印</el-button></el-col>
+            </el-row>
+            <el-table :data="pageResult.rows" border>
+                <el-table-column prop="print_code" label="编码"></el-table-column>
+                <el-table-column prop="login_name" label="操作人"></el-table-column>
+                <el-table-column prop="create_date" label="操作时间"></el-table-column>
+                <el-table-column label="操作">
+                    <template slot-scope="scope">
+                        <el-button type="info" @click="print(scope.row.print_code)">补印</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <!-- 分页 -->
+            <el-pagination
+                @current-change="handleCurrentChange"
+                :current-page="pageRequest.pageNumber"
+                :page-size="pageRequest.pageSize"
+                layout="total, prev, pager, next, jumper"
+                :total="pageResult.total">
+            </el-pagination>
+        </el-card>
+    </div>
+</template>
+
+<script>
+import api from "@/api/index";
+import {pageRequest,pageResult,pageSearch,query,conditionSearch,createdSearch,page} from "@/utils/pageResult";
+export default {
+    data() {
+        return {
+            sendData:{},
+            query:query,
+            pageResult:pageResult,
+            pageRequest:pageRequest,
+        };
+    },
+    methods: {
+        handleCurrentChange: function(val) {
+            pageRequest.pageNumber = val;
+            pageSearch(page,query,pageRequest,pageResult);
+        },
+       
+        addCode() {
+            this.$router.push("/workbench/dataCoding/print");
+        },
+        print(id) {
+            this.$router.push({
+                path:"/workbench/dataCoding/singleBatchPrint",
+                query:{sendData:id}
+            })
+        }
+    },
+    created() {
+        createdSearch(page,query,pageRequest,pageResult);
+    }
+};
+
+</script>
+
+<style lang="scss" >
+#preparationList{
+	.mb20{
+		margin-bottom: 20px;
+		.lh40{
+			line-height: 40px;
+		}
+	}
+}
+</style>

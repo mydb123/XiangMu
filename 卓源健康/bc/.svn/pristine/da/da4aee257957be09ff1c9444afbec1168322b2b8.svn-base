@@ -1,0 +1,12 @@
+<template>
+    <div>出货信息微调
+    </div>
+</template>
+<script>
+export default {
+    
+}
+</script>
+<style lang="scss">
+
+</style>

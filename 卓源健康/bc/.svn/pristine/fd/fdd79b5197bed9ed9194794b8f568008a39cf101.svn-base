@@ -1,0 +1,175 @@
+<template>
+    <div id="donorList">
+		<el-breadcrumb>
+			<el-breadcrumb-item :to="{ path: '/workbench/raw/donorList'}">原料管理</el-breadcrumb-item>
+			<el-breadcrumb-item >供体列表</el-breadcrumb-item>
+		</el-breadcrumb>
+		<el-card>
+			<div class='content'>
+				<el-row :gutter="20" class="mb20">
+					<el-col :span="2" class="lh40">请输入姓名</el-col>
+					<el-col :span="5">
+						<el-input class="w260"  v-model="query.name" placeholder="请输入姓名"></el-input>
+					</el-col>
+					<el-col :span="2" class="lh40">出生日期</el-col>
+					<el-col :span="6">
+						<el-date-picker
+							v-model="birthday"
+							type="daterange"
+							align="right"
+							unlink-panels
+							range-separator="至"
+							start-placeholder="开始日期"
+							end-placeholder="结束日期"
+							value-format="yyyy-MM-dd">
+						</el-date-picker>
+					</el-col>
+					<el-col :span="2" class="lh40">入组日期</el-col>
+					<el-col :span="5">
+						<el-date-picker
+							v-model="joinDate"
+							type="daterange"
+							align="right"
+							unlink-panels
+							range-separator="至"
+							start-placeholder="开始日期"
+							end-placeholder="结束日期"
+							value-format="yyyy-MM-dd">
+						</el-date-picker>
+					</el-col>
+				</el-row>
+			</div>
+			<el-row>
+				<el-col :span="2">
+					<el-button type="warning" @click="onSubmit">搜索</el-button>
+				</el-col>
+				 <el-col :span="18">
+					<el-button type="warning" @click="donorListexport">导出</el-button>
+				</el-col>
+				<el-col :span="4" >
+					<el-button   @click="addDonor"  type="primary">新增供体</el-button>
+				</el-col>
+			</el-row>
+			<el-table :data="pageResult.rows" border>
+				<el-table-column prop="code" label="供体编码"></el-table-column>
+				<el-table-column prop="name" label="供体姓名">
+					<template slot-scope="scope">
+						<el-link type="primary"  @click="lookDetails(scope.row.id)">{{scope.row.name}}</el-link>
+					</template>
+				</el-table-column>
+				<el-table-column prop="sex" label="供体性别"></el-table-column>
+				<el-table-column prop="birthday" label="出生日期"></el-table-column>
+				<el-table-column prop="join_date" label="入组日期"></el-table-column>
+				<el-table-column prop="sourceArea" label="来源地区" width="160px">
+					<template slot-scope="scope">{{scope.row.province+"-"}}{{scope.row.city+"-"}}{{scope.row.region}}</template>
+				</el-table-column>
+				<el-table-column prop="last_exam_date" label="最近体检日期"></el-table-column>
+				<el-table-column prop="sixteen_date" label="最近16S日期"></el-table-column>
+				<el-table-column prop="use_count" label="累计使用数"></el-table-column>
+				<el-table-column prop="discard_count" label="累计废弃数"></el-table-column>
+			</el-table>
+			<!-- 分页 -->
+			<el-pagination
+				@current-change="handleCurrentChange"
+				:current-page="pageRequest.pageNumber"
+				:page-size="pageRequest.pageSize"
+				layout="total, prev, pager, next, jumper"
+				:total="pageResult.total">
+			</el-pagination>
+		</el-card>
+    </div>
+</template>
+
+<script>
+// import store from "@/store/index";
+// import base from "@/api/base";
+import api from "@/api/index";
+import qs from 'qs' // 根据需求是否导入qs模块
+import {pageRequest,pageResult,pageSearch,query,conditionSearch,createdSearch,getDonatorList} from "@/utils/pageResult";
+export default {
+  data() {
+		return {
+			query:query,
+			pageResult:pageResult,
+			pageRequest:pageRequest,
+			birthday:'',
+			joinDate:'',
+		};
+	},
+	methods: {
+		handleCurrentChange: function(val) {
+			this.paramterCollection()
+			pageRequest.pageNumber = val;
+			pageSearch(getDonatorList,query,pageRequest,pageResult);
+		},
+		//条件查询
+		onSubmit() {
+			this.paramterCollection()
+			conditionSearch(getDonatorList,query,pageRequest,pageResult);
+		},
+		//查看详情
+		lookDetails(id) {
+			this.$router.push({
+				path: "/workbench/raw/donorDetail",
+				query: { id: id }
+			});
+		},
+		addDonor() {
+			this.$router.push("/workbench/raw/addDonor");
+		},
+		// 导出
+		async donorListexport(){
+			this.paramterCollection()
+			let response = await api.donator.exportExcel(query)
+			var blob = new Blob([response.data])
+			var downloadElement = document.createElement('a');
+			var href = window.URL.createObjectURL(blob); //创建下载的链接
+			downloadElement.href = href;
+			// downloadElement.download = response.headers['content-disposition'].split(';')[1].split('=')[1]; //下载后文件名
+			downloadElement.download = decodeURI(response.headers['filename']) //下载后文件名
+			document.body.appendChild(downloadElement);
+			downloadElement.click(); //点击下载
+			document.body.removeChild(downloadElement); //下载完成移除元素
+			window.URL.revokeObjectURL(href); //释放掉blob对象 
+		},
+		//时间区间
+		paramterCollection(){
+			if(this.birthday&&this.birthday.length>0){
+				this.query.birthdayBegin = this.birthday[0]
+				this.query.birthdayEnd = this.birthday[1]
+			}else{
+				this.query.birthdayBegin = ''
+				this.query.birthdayEnd = ''
+			}
+			if(this.joinDate&&this.joinDate.length>0){
+				this.query.joinDateBegin = this.joinDate[0]
+				this.query.joinDateEnd = this.joinDate[1]
+			}else{
+				this.query.joinDateBegin = ''
+				this.query.joinDateEnd = ''
+			}
+		},
+		//dd
+		// exportExcel(){
+        //                 window.location.href = "http://192.168.3.187:8088/api-bc/workbench/bizDonator/exportExcel?access_token=" + store.getters.token ;
+        //         }
+	},
+	created() {
+		createdSearch(getDonatorList,query,pageRequest,pageResult);
+	}
+};
+</script>
+
+<style lang="scss" >
+#donorList{
+	.mb20{
+		margin-bottom: 20px;
+		.lh40{
+			line-height: 40px;
+		}
+	}
+	
+}
+</style>
+
+

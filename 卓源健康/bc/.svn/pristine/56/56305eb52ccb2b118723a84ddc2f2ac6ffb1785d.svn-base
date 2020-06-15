@@ -1,0 +1,43 @@
+import base from './base' // 导入接口域名列表
+import {get,post} from '@/utils/http' // 导入http中创建的axios1实例
+import qs from 'qs' // 根据需求是否导入qs模块
+
+const admin = {
+    // 后台管理-供体信息
+    pageByExample (query,pageRequest) {
+        return get(`${base.sq}/manage/bizDonator/pageByExample?`+qs.stringify(query) +'&'+ qs.stringify(pageRequest));
+    },
+    //后台管理-成品信息
+    productPage () {
+        return get(`${base.sq}/manage/bizProduct/productPage`);
+    },
+    //后台管理-出货信息
+    manufacture (query,pageRequest) {
+        return get(`${base.sq}/manage/bizBox/pageByExample?`+qs.stringify(query) +'&'+ qs.stringify(pageRequest));
+    },
+    //后台管理-修改接口
+    update(SubmitList) {
+        return post(`${base.sq}/manage/bizDonator/update`, qs.stringify(SubmitList));
+    },
+    //后台管理-成品详情 
+    getProductDetails(id) {
+        return get(`${base.sq}/manage/bizProduct/getProductDetails?id=`+id);
+    },
+    //后台管理-成品信息修改修改接口
+    updateproduct(detaliList) {
+        return post(`${base.sq}/manage/bizProduct/update`, qs.stringify(detaliList));
+    },
+    // 箱号详情-箱号列表上面数据
+    findById(id){
+        return get(`${base.sq}/manage/bizBox/findById?id=`+id);
+    },
+     // 箱号详情-箱号列表
+    productPage(query,pageRequest) {
+        return get(`${base.sq}/workbench/bizProduct/productPage?` + qs.stringify(query) +'&'+ qs.stringify(pageRequest));
+    },
+    //后台管理-出货信息修改
+    chuhuoUpdate(SubmitList) {
+        return post(`${base.sq}/manage/bizBox/update`, qs.stringify(SubmitList));
+    },
+}
+export default admin

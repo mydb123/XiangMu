@@ -1,0 +1,61 @@
+<template>
+   <div>
+      <!-- 面包屑 -->
+      <el-breadcrumb>
+         <el-breadcrumb-item :to="{ path: '/' }">操作台</el-breadcrumb-item>
+         <el-breadcrumb-item>原料管理</el-breadcrumb-item>
+         <el-breadcrumb-item>供体列表</el-breadcrumb-item>
+      </el-breadcrumb>
+
+      <!-- 内容主题部分 -->
+            <!-- 供体列表 -->
+      <!-- 分页 -->
+      <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage4"
+            :page-sizes="[20, 40, 100, 200]"
+            :page-size="100"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="400">
+      </el-pagination>       
+  </div>
+</template>
+
+<script>
+export default {
+
+  data () {
+    return {
+       queryData:{                           
+            query:"", //关键字
+            pagenum:1, //当前的页码
+            pagesize:2, //展示的数据量
+        },
+      //   总条数
+        total:0,
+
+    }
+  },
+
+  methods: {
+   //   pageSize 改变时会触发
+     handleSizeChange(val){
+        this.queryData.pagesize=val
+     },
+   //   当前页数是多少
+     handleCurrentChange(val){
+        this.queryData.pagenum=val
+     },
+
+
+  },
+
+  created () {
+  }
+}
+</script>
+
+<style>
+
+</style>

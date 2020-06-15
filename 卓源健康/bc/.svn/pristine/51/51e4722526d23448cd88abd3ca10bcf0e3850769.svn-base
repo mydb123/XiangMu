@@ -1,0 +1,222 @@
+<template>
+  <div>
+    <el-breadcrumb>
+      <el-breadcrumb-item :to="{path:'/workbench/stockControl/finishedproductList'}">库存管理</el-breadcrumb-item>
+      <el-breadcrumb-item>列表详情</el-breadcrumb-item>
+    </el-breadcrumb>
+    <el-card>
+        <el-row class="lh40">
+            <el-col :span="2">
+                成品编码
+            </el-col>
+            <el-col :span="5">
+                <el-input disabled v-model="formData.code"></el-input>
+            </el-col>
+        </el-row>
+        <!-- 成品制备信息 -->
+        <div class="wordborder" >
+          <p class='clickbox' @click="dotSwitch(1)">成品制备信息</p>
+          <div class='content' v-show="show1">
+              <el-row>
+                <el-col :span="3">
+                    <p>原料编码</p>
+                </el-col>
+                <el-col :span="8">
+                    <el-input v-model="formData.code" disabled></el-input>
+                </el-col>
+              </el-row> 
+            <el-row>
+                <el-col :span="3">
+                    <p>制备日期</p>
+                </el-col>
+                <el-col :span="6">
+                    <el-input v-model="formData.productDate" disabled></el-input>
+                </el-col>
+                <el-col :span="3">
+                    <p>过期日期</p>
+                </el-col>
+                <el-col :span="6">
+                    <el-input v-model="formData.expiryDate" disabled></el-input>
+                </el-col>
+              </el-row> 
+               <el-row>
+                <el-col :span="3">
+                    <p>主制备人员</p>
+                </el-col>
+                <el-col :span="6">
+                    <el-input v-model="formData.mainPerson" disabled></el-input>
+                </el-col>
+                <el-col :span="3">
+                    <p>辅制备人员</p>
+                </el-col>
+                <el-col :span="6">
+                    <el-input v-model="formData.supportPerson" disabled></el-input>
+                </el-col>
+              </el-row>
+          </div>
+        </div> 
+
+        <!-- 成品质检信息 -->
+        <div class="wordborder" >
+          <p class='clickbox' @click="dotSwitch(2)">成品质检信息</p>
+          <div class='content' v-show="show2">
+            <el-row>
+                <el-col :span="3">
+                    <p>OD</p>
+                </el-col>
+                <el-col :span="6">
+                    <el-input v-model="formData.OD" disabled></el-input>
+                </el-col>
+                <el-col :span="3">
+                    <p>质检结果</p>
+                </el-col>
+                <el-col :span="6">
+                    <el-input v-model="formData.qcResult" disabled></el-input>
+                </el-col>
+              </el-row> 
+          </div>
+        </div>
+
+        <!-- 成品出货信息 -->
+        <div class="wordborder" >
+          <p class='clickbox' @click="dotSwitch(3)">成品出货信息</p>
+          <div class='content' v-show="show3">
+            <el-row>
+                <el-col :span="3">
+                    <p>出货日期</p>
+                </el-col>
+                <el-col :span="8">
+                    <el-input v-model="formData.sellDate" disabled></el-input>
+                </el-col>
+            </el-row> 
+            <el-row>
+                <el-col :span="3">
+                    <p>客户名称</p>
+                </el-col>
+                <el-col :span="6">
+                    <el-input v-model="formData.name" disabled></el-input>
+                </el-col>
+                <el-col :span="3">
+                    <p>出货地区</p>
+                </el-col>
+                <el-col :span="6">
+                    <el-input v-model="formData.name" disabled></el-input>
+                </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="3">
+                <p>出货备注</p>
+              </el-col>
+              <el-col :span="10">
+                <el-input
+                    disabled
+                    type="textarea"
+                    :autosize="{ minRows: 4, maxRows: 10}"
+                    v-model="formData.memo">
+                </el-input>
+              </el-col>
+            </el-row>
+          </div>
+        </div>
+
+        <!-- 成品售后信息 -->
+        <div class="wordborder" >
+          <p class='clickbox' @click="dotSwitch(4)">成品售后信息</p>
+          <div class='content' v-show="show4">
+            <el-row>
+                <el-col :span="3">
+                    <p>售后状态</p>
+                </el-col>
+                <el-col :span="8">
+                    <el-input v-model="formData.status" disabled></el-input>
+                </el-col>
+            </el-row> 
+            <el-row>
+                <el-col :span="3">
+                    <p>接受日期</p>
+                </el-col>
+                <el-col :span="6">
+                    <el-input v-model="formData.name" disabled></el-input>
+                </el-col>
+                <el-col :span="3">
+                    <p>接受是否化冻</p>
+                </el-col>
+                <el-col :span="6">
+                    <el-input v-model="formData.name" disabled></el-input>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="3">
+                    <p>FOLLOW-UP</p>
+                </el-col>
+                <el-col :span="8">
+                    <el-input v-model="formData.status" disabled></el-input>
+                </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="3">
+                <p>出货备注</p>
+              </el-col>
+              <el-col :span="10">
+                <el-input
+                    disabled
+                    type="textarea"
+                    :autosize="{ minRows: 4, maxRows: 10}"
+                    v-model="formData.memo">
+                </el-input>
+              </el-col>
+            </el-row>
+          </div>
+        </div>
+    </el-card>
+  </div>
+</template>
+
+<script>
+export default {
+
+  data () {
+    return {
+        show1:true,
+        show2:true,
+        show3:true,
+        show4:true,
+        formData: {
+            code:"",//成品编码
+            productDate:"",//制备日期
+            expiryDate:"",//过期日期
+            mainPerson:"",//主制备人员
+            supportPerson:"",//辅制备人员
+            OD:"",//OD
+            qcResult:"",//质检结果
+            name:"",//客户名称
+            memo:"",//出货备注
+            status:""//状态
+        }
+    }
+  },
+
+  methods: {
+    //   下拉的隐藏与显示
+    dotSwitch(index){
+        if(index==1){
+            this.show1=!this.show1
+        }else if(index==2){
+            this.show2=!this.show2
+        }else if(index==3){
+            this.show3=!this.show3
+        }else if(index==4){
+            this.show4=!this.show4
+
+        }
+    }
+  },
+
+  created () {
+  }
+}
+</script>
+
+<style lang='scss'>
+
+</style>

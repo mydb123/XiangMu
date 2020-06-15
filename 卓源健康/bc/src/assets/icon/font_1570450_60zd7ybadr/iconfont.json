@@ -1,0 +1,37 @@
+{
+  "id": "1570450",
+  "name": "no name",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-yuanliaoguanli",
+  "description": "卓源原料",
+  "glyphs": [
+    {
+      "icon_id": "2532351",
+      "name": "库存 (2)",
+      "font_class": "kucun",
+      "unicode": "e6c7",
+      "unicode_decimal": 59079
+    },
+    {
+      "icon_id": "6334930",
+      "name": "样品制备",
+      "font_class": "yangpinzhibei",
+      "unicode": "e628",
+      "unicode_decimal": 58920
+    },
+    {
+      "icon_id": "8000559",
+      "name": "原料管理",
+      "font_class": "yuanliaoguanli",
+      "unicode": "e624",
+      "unicode_decimal": 58916
+    },
+    {
+      "icon_id": "8289397",
+      "name": "出库",
+      "font_class": "icon",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    }
+  ]
+}

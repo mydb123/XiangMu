@@ -1,0 +1,115 @@
+<template>
+  <div>
+    <!-- 原料列表 -->
+    <!-- 面包屑 -->
+    <div>
+      <el-breadcrumb>
+        <el-breadcrumb-item :to="{ path: '/workbench/raw/rawList'}">原料管理</el-breadcrumb-item>
+        <el-breadcrumb-item>原料列表</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <!-- 内容主题部分 -->
+    <!-- 供体列表 -->
+    <el-card>
+      <el-row :gutter="20">
+        <el-col :span="5">
+          <el-input  v-model="query.name" placeholder="请输入姓名"  class="input-with-select"></el-input>
+        </el-col>
+        <el-col :span="15">
+          <el-button type="primary" @click="onSubmit">搜索</el-button>
+        </el-col>
+        <el-col :span="4" >
+          <el-button   @click="addRaw"  type="primary">新增原料</el-button>
+        </el-col>
+      </el-row>
+
+      <el-table :data="pageResult.rows" border>
+        <el-table-column prop="code" label="原料编码"></el-table-column>
+        <el-table-column prop="name" label="供体姓名">
+          <template slot-scope="scope">
+            <el-link type="primary" @click="lookDetails(scope.row.id)">{{scope.row.name}}</el-link>
+          </template>
+        </el-table-column>
+        <el-table-column prop="collect_date" label="采集日期"></el-table-column>
+        <el-table-column prop="first_check_result" label="初检结果"></el-table-column>
+        <el-table-column prop="recheck_result" label="复检结果"></el-table-column>
+        <el-table-column prop="weight" label="称重"></el-table-column>
+        <el-table-column prop="status" label="当前状态"></el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+              <el-button type="info" @click="print(scope.row.id)">补印</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- 分页 -->
+      <el-pagination
+        @current-change="handleCurrentChange"
+        :current-page="pageRequest.pageNumber"
+        :page-size="pageRequest.pageSize"
+        layout="total, prev, pager, next, jumper"
+        :total="pageResult.total">
+      </el-pagination>
+    </el-card>
+  </div>
+</template>
+
+<script>
+import api from "@/api/index";
+import {pageRequest,pageResult,pageSearch,query,conditionSearch,createdSearch,getRawList} from "@/utils/pageResult";
+export default {
+  data() {
+    return {
+      query:query,
+      pageResult:pageResult,
+      pageRequest:pageRequest,
+    };
+  },
+  methods: {
+    handleCurrentChange: function(val) {
+      pageRequest.pageNumber = val;
+      pageSearch(getRawList,query,pageRequest,pageResult);
+    },
+    //条件查询
+    onSubmit() {
+      conditionSearch(getRawList,query,pageRequest,pageResult);
+    },
+    //查看详情
+    lookDetails(id) {
+      this.$router.push({
+        path: "/workbench/raw/rawDetailList",
+        query: { id: id }
+      });
+    },
+    //补印
+    print(id){
+      this.$router.push({
+        path:"/workbench/raw/rawMaterialReprints",
+        query:{id:id}
+      })
+    },
+    addRaw() {
+      this.$router.push("/workbench/raw/addRaw");
+    }
+  },
+  created() {
+    createdSearch(getRawList,query,pageRequest,pageResult);
+  }
+};
+</script>
+
+<style lang="scss" >
+.all_design_partner {
+  margin: 0 auto;
+  padding: 15px 25px;
+  position: relative;
+  .title {
+    position: absolute;
+    right: 85px;
+    z-index: 1000;
+    top: 68px;
+  }
+}
+</style>>
+
+
+

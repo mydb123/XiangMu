@@ -1,0 +1,8 @@
+// const productRouter = [
+//     {
+//         path: '/productCodePreview',
+//         hidden: true,
+//         component: () => import('@/views/product/productCodePreview'),
+//     }
+// ];
+// export default productRouter

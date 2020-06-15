@@ -1,0 +1,334 @@
+<template>
+    <!-- <div>
+        状态4.
+        月采购计划待提交
+    </div> -->
+    <div class='month_upload_purchase_dept'>
+        <StepComponent :index='index'></StepComponent>
+        <div>
+            <el-form disabled>
+            <div class="wordborder" >
+                <p class='clickbox' v-on:click="click(1)">项目信息</p>
+                <div class='content' v-show="show1">
+                    <el-row>
+                        <el-col :span="5"><p>项目名称</p></el-col>
+                        <el-col :span="8" >
+                            <el-input  v-model="formData.name" placeholder="请输入内容" :readonly="readonly"></el-input>
+                        </el-col>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="5"><p>采购人员</p></el-col>
+                        <el-col :span="8">
+                            <el-input  v-model="formData.buyer" placeholder="请输入内容" :readonly="readonly"></el-input>
+                        </el-col>
+                        <el-col :span="5"><p>联系方式</p></el-col>
+                        <el-col :span="6">
+                            <el-input  v-model="formData.buyerPhone" placeholder="请输入内容" :readonly="readonly"></el-input>
+                        </el-col>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="5"><p>经营目标预算</p></el-col>
+                        <el-col :span="19">
+                            <div v-for="item in targetFile" :key="item.id" class="text item">
+                                <el-link type="primary" :href="downloadUrl+item.id">{{item.name}}</el-link>
+                            </div>    
+                        </el-col>
+                    </el-row>
+                </div>
+            </div>
+            </el-form>
+            <div class="wordborder" >
+                <p class='clickbox' v-on:click="click(2)">采购记录</p>
+                <div class='content' v-show="show2">
+                    <el-form disabled>
+                        <div class="box" v-for="(item,index) in previousMonthFormData" v-bind:key="item.id" >
+                            <p class='clickbox' v-on:click="click2(index)" style='margin: -10px 0 0 26px;padding: 0 9px 0 18px;'>第{{index+1}}次采购</p>
+                            <div class='content' v-show="item.flag" style='width: 91%;'>
+                                <el-row>
+                                    <el-col :span="5"><p>采购月次</p></el-col>
+                                    <el-col :span="19"><el-date-picker v-model="item.purchasingMonth" type="date" placeholder="选择日期" format="yyyy-MM"></el-date-picker></el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col :span="5"><p>本次采购清单</p></el-col>
+                                    <el-col :span="19">
+                                        <div v-for="fileItem in item.fileList" :key="fileItem.id" class="text item">
+                                            <el-link type="primary" :href="downloadUrl+fileItem.id">{{fileItem.showName }}</el-link>
+                                        </div>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col :span="5"><p>本次采购费用</p></el-col>
+                                    <el-col :span="19">
+                                        <el-input  v-model="item.cost" placeholder="请输入内容"></el-input>
+                                    </el-col>
+                                </el-row>
+                            </div> 
+                        </div>
+                    </el-form>
+                    <el-form :model="monthFormData" :rules="monthRules" ref="monthRuleForm">
+                    <div class="box">
+                        <p class='clickbox' v-on:click="currentShow()" style='margin: -10px 0 0 26px;padding: 0 9px 0 18px;'>第{{count}}次采购</p>
+                        <div class='content' v-show="flag" style='width: 91%;'>
+                            <el-row>
+                                <el-col :span="5"><p>采购月次</p></el-col>
+                                <el-col :span="19">
+                                    <el-form-item prop="purchasingMonth">
+                                        <el-date-picker v-model="monthFormData.purchasingMonth" type="month" placeholder="选择日期" value-format="yyyy-MM-dd" :picker-options="pickerOptions"></el-date-picker>
+                                     </el-form-item>       
+                                </el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col :span="5"><p>本次采购清单</p></el-col>
+                                <el-col :span="19">
+                                    <el-upload class="upload-demo" action :http-request="uploadMonthFileMethod" list-type="text" :file-list="fileList" :on-remove="handleRemove">
+                                        <el-button size="medium" type="primary" style="width:200px;">采购清单上传</el-button>
+                                    </el-upload>
+                                </el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col :span="5"><p>本次采购费用</p></el-col>
+                                <el-col :span="19">
+                                    <el-form-item prop="cost">
+                                        <el-input  v-model.number="monthFormData.cost" placeholder="请输入内容"></el-input>
+                                    </el-form-item>     
+                                </el-col>
+                            </el-row>
+                        </div> 
+                    </div>
+                    </el-form>
+                </div>
+            </div>
+        </div>
+        <div class='div5'>
+            <el-button @click="submit('monthRuleForm')" type="primary" round>提交</el-button>
+        </div>
+    </div>
+</template>
+
+<script>
+import store from '@/store/index'
+import base from '@/api/base'
+import StepComponent from '@/components/StepComponent'
+import {Industry,ProjectMode} from '@/utils/util'
+import api from '@/api/index'
+export default {
+    components: {
+        StepComponent
+    },
+    data() {
+        return {
+            downloadUrl:base.sq+"/bizPurchase/dept/download?access_token="+store.getters.token+"&fileId=",//下载路径            
+            show1:true,
+            show2:true,
+            show3:true,
+            index:4,
+            flag:true,
+            readonly:true,
+            pickerOptions: {
+                disabledDate(time) {
+                    return time.getTime() < Date.now() - 8.64e7;
+                }
+            },             
+            formData:{//项目基本信息
+                id:"",
+                name:"",//项目名称
+                buyer:"",//采购人姓名
+                buyerPhone:""//采购人联系方式
+            },
+            targetFile:[],//经营目标预算
+            previousMonthFormData:[],//在此之前的月度采购信息
+            monthFormData:{//本次采购信息
+                purchaseId:"",//采购项目id
+                purchaseingMonth:"",//采购月次
+                cost:"",//本次采购费用
+                operator:sessionStorage.getItem("user"),
+                userName:sessionStorage.getItem("user"),
+                fileIds:""//本次采购清单附件id
+            },
+            monthRules: {
+                purchasingMonth: [
+                    { required: true, message: '请选择采购月次', trigger: 'change' }
+                ],
+                cost: [
+                    { pattern: /^\d+$|^\d*\.\d+$/g, required: true, message: '请输入有效数字', trigger: 'blur' }
+                ]
+            },
+            count:"",
+            fileList:[]//本次采购清单文件列表
+        }
+    },
+    methods: {
+        click(index){
+            if(index==1){
+                this.show1 = !this.show1
+            }else if(index==2){
+                this.show2 = !this.show2
+            }else if(index==3){
+                this.show3 = !this.show3
+            }
+        },
+        currentShow(){
+            this.flag = !this.flag;
+        },
+        submit(ruleForm) {//提交月度表单
+            this.$refs[ruleForm].validate((valid) => {
+                if (valid) {
+                    let fileIdList = new Array();
+                    for(let i in this.fileList){
+                        fileIdList.push(this.fileList[i].id);
+                    }
+                    this.monthFormData.fileIds = fileIdList.join(",");
+                    api.purchaseDept.saveBizPurchaseMonth(this.monthFormData).then(response => {
+                        if(response==false){
+                            this.$message({message: '当前月度采购尚未完成，请勿重复提交',type: 'warning'});
+                        }else{
+                            this.$router.push('/purchase/dept/monthReview');
+                        }
+                    }).catch(error => {
+                        console.log(error);
+                    });               
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+        },
+        click2(index){          
+            this.previousMonthFormData[index].flag = !this.previousMonthFormData[index].flag
+        },
+        loadData(id) {
+            api.purchaseDept.findById(id).then(response => {
+                this.formData.id = response.id;
+                this.formData.name = response.name; //项目名称
+                this.formData.buyer = response.buyer;//采购人员
+                this.formData.buyerPhone = response.buyerPhone;//采购人员电话
+                // this.formData.manageCost = response.manageCost;//管理费
+                // this.formData.procurementScope = response.procurementScope;//采购范围
+                // this.formData.count = response.count;//采购次数
+                // this.formData.intendedCompleteTime = response.intendedCompleteTime;//拟完成时间
+                // this.formData.accountRequire = response.accountRequire;//账期要求
+                // this.formData.arrivalRequire = response.arrivalRequire;//到货要求
+                // this.formData.otherRequire = response.otherRequire;//其他要求
+                // this.formData.leader = response.leader;//项目负责人
+                // this.formData.submitDate = response.submitDate;//创建日期
+                // this.formData.industry = response.industry;//行业
+                // this.formData.province = response.province//省
+                // this.formData.city = response.city;//市
+                // this.formData.region = response.region;//区
+                // this.formData.buildingAddr = response.buildingAddr;//建筑地址
+                // this.formData.scale = response.scale;//项目规模
+                // this.formData.buildingAddr = response.buildingAddr;//项目地址
+                // 采购信息
+                // this.formData.projectMode = response.projectMode;//项目模式
+                // this.formData.acquisitionStage = response.acquisitionStage;//采购阶段
+                // this.formData.purchasingTarget = response.purchasingTarget;//采购目标
+                // this.formData.estimatedPurchaseTime = response.estimatedPurchaseTime;//预计采购时间
+                // this.formData.otherDescription = response.otherDescription;//其他说明
+
+            }).catch(error => {
+                console.log(error);
+            });
+        },
+        loadMonthData(id){
+            api.purchaseDept.findMouthListByExample(this.formData.id).then(response => {
+                this.count = response.length+1;
+                for(let i in response){
+                    let monthObject = new Object();
+                    let fileList = new Array();
+                    if(response[i].used=="Y"){
+                        monthObject.id = response[i].id;
+                        monthObject.purchasingMonth = response[i].purchasingMonth;
+                        monthObject.cost = response[i].cost;
+                        monthObject.fileList = response[i].fileList;
+                        monthObject.flag=false;//当月度已审核，默认关闭表单
+                        this.previousMonthFormData.push(monthObject);
+                    }
+                }
+            }).catch(error => {
+                    console.log(error);
+            });
+        },        
+        uploadMonthFileMethod(param) {//上传月度文件
+            let fileObject = param.file;
+            let monthFormData = new FormData();
+            monthFormData.append("file", fileObject);
+            monthFormData.append("projectId", this.formData.id);
+            monthFormData.append("fileType",4);//月度采购清单文件
+            monthFormData.append("operator", this.monthFormData.operator);
+            monthFormData.append("userName", this.monthFormData.userName);
+            api.purchaseDept.uploadMonthFile(monthFormData).then(response => {
+                let fileObject = new Object();
+                fileObject.id = response.id;
+                fileObject.name = response.showName;
+                fileObject.url = response.url;
+                this.fileList.push(fileObject);
+            }).catch(error => {
+                console.log(error);
+            });
+        },
+        handleRemove(file,fileList){//删除文件方法
+            console.log(file.id);
+            let index = -1;
+            for(let i in this.fileList){
+                if(file.id==this.fileList[i].id){
+                    index = i;
+                    break;
+                }
+            }
+            if(index!=-1){
+                this.fileList.splice(index,1);
+            }
+        },
+        loadTargetFile(){//加载上传的成果附件
+            api.purchaseDept.loadFile(this.formData.id,6).then(response =>{
+                console.log(response);
+                response.forEach(element => {
+                    let obj = new Object();
+                    obj.id = element.id;
+                    obj.name = element.showName;
+                    obj.url = element.url;
+                    this.targetFile.push(obj);
+                });
+            }).catch(error =>{
+                console.log(error);
+            });
+        }
+    },
+    mounted: function () {
+        this.formData.id = this.$route.query.id; //获取路由传值
+        this.monthFormData.purchaseId = this.$route.query.id;//写入项目id用于月度表单提交
+        //加载数据
+        this.loadData(this.formData.id); //项目基本信息
+        this.loadMonthData(this.formData.id);//月度采购信息
+        //加载经营目标预算文件
+        this.loadTargetFile();        
+    },
+}
+</script>
+
+<style lang='scss'>
+.month_upload_purchase_dept{
+    margin: 10px auto;
+    border:1px solid #E7E8ED; 
+    .div2{
+        position:relative;
+        margin: 25px;
+        min-height:20px;
+        line-height: 40px;
+        .content{
+            width: 80%;
+            margin: 35px;
+            margin-left:50px;
+            p{
+                padding:0px 5px;   
+                margin:0px 10px; 
+            }
+        }
+    }
+    .div5{
+        text-align: center;
+        margin-bottom: 20px;
+    }
+}
+
+</style>

@@ -1,0 +1,113 @@
+<template>
+    <div class="product_code_preview">
+        <p class='mybreadcrumb' >
+            <el-breadcrumb separator-class="el-icon-arrow-right">
+                <el-breadcrumb-item :to="{ path: '/workbench/management/PreparationOfReprints' }">制备管理</el-breadcrumb-item>
+                <el-breadcrumb-item :to="{ path: '/workbench/management/PreparationOfReprints' }">制备列表</el-breadcrumb-item>
+                <el-breadcrumb-item >制备补印</el-breadcrumb-item>
+            </el-breadcrumb>
+        </p>
+        <el-card class="box-card">
+            <div class="text item" style="line-height:22px">{{product.name}}</div>
+            <div class="text item" style="line-height:22px">制备编号：{{product.code}}</div>        
+            <div class="text item" style="line-height:22px">有效期至：{{product.expiryDate}}</div>    
+            <div class="text item" style="line-height:22px">生产厂商：{{product.company}}</div>      
+            <div class="text item">
+                <el-image class="product_code_img" :src="url">
+                    <div slot="error" class="image-slot"><i class="el-icon-loading"></i></div>
+                </el-image>
+            </div>                  
+        </el-card>
+        <div class='div5'>
+            <el-button type="primary" @click="print()">打印条码</el-button>
+        </div>
+    </div>
+</template>
+<script>
+import api from '@/api/index';
+import base from '@/api/base';
+import store from '@/store/index'
+import {getLodop} from '@/utils/LodopFuncs'
+export default {
+  data() {
+    return {
+        showFlag:'',
+        barCodeUrl:base.sq+"/workbench/bizProduct/getBarCode?access_token="+store.getters.token+"&id=",//下载路径        
+        formData:{
+            id:""
+        },
+        url:"",
+        product:{
+            name:"",//成品名称
+            code:"",//制备编号
+            expiryDate:"",//到期时间
+            company:""//公司名称
+        },
+        LODOP:'',
+    }
+  },
+  methods: {
+    loadData(){
+        api.product.findById(this.formData.id).then((response)=>{
+            this.url = this.barCodeUrl + response.id;
+            this.product = response;
+            this.product.company = "卓源健康科技有限公司";
+        }).catch((error)=>{
+            console.log(error);
+        });
+    },
+    CreateOneFormPage40_40() {
+        LODOP = getLodop();
+        LODOP.SET_PRINT_PAGESIZE (1,'40mm','40mm','');
+        LODOP.SET_PRINT_MODE("POS_BASEON_PAPER",true);
+        LODOP.NewPage();
+        LODOP.ADD_PRINT_TEXT('6mm','4mm','35mm','5mm',this.product.name) 
+        LODOP.SET_PRINT_STYLEA(0, "FontSize", 6);
+        LODOP.SET_PRINT_STYLEA(0,"FontName","微软雅黑");
+        LODOP.ADD_PRINT_TEXT('10mm','4mm','35mm','5mm','制备编号：'+this.product.code)
+        LODOP.SET_PRINT_STYLEA(0, "FontSize", 6);
+        LODOP.SET_PRINT_STYLEA(0,"FontName","微软雅黑");
+        LODOP.ADD_PRINT_TEXT('14mm','4mm','35mm','5mm','有效期至：'+this.product.expiryDate)
+        LODOP.SET_PRINT_STYLEA(0, "FontSize", 6);
+        LODOP.SET_PRINT_STYLEA(0,"FontName","微软雅黑");
+        LODOP.ADD_PRINT_TEXT('18mm','4mm','35mm','5mm',"生产厂商："+this.product.company)
+        LODOP.SET_PRINT_STYLEA(0, "FontSize", 6);
+        LODOP.SET_PRINT_STYLEA(0,"FontName","微软雅黑");
+        LODOP.ADD_PRINT_BARCODE('22mm','4mm','35mm','10mm',"128A",this.product.code);   
+        LODOP.SET_PRINT_STYLEA(0, "FontSize", 6);
+    },
+    print(id_str){//id-str 打印区域的id
+        this.CreateOneFormPage40_40();
+    //        LODOP.PRINT();
+        LODOP.PREVIEW();
+    }
+  },
+  mounted: function () {
+    this.formData.id = this.$route.query.id; //获取路由传值
+    this.loadData(this.formData.id); //加载数据
+  },
+}
+
+</script>
+<style lang='scss'>
+    .product_code_preview{
+        .div5{
+            text-align: center;
+            margin-top:20px;
+            margin-bottom: 20px;
+        }
+        .mybreadcrumb{
+            margin: 15px 20px 35px 13px;
+        }
+        .box-card {
+            margin: 0 auto;
+            width: 400px;
+            font-family:"微软雅黑";
+            font-size:12px;
+            .product_code_img {
+                right:75px;
+            }
+        }
+    }
+    
+</style>

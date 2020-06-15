@@ -1,0 +1,170 @@
+<template>
+  <div>
+       <!-- 面包屑 -->
+    <el-breadcrumb>
+      <el-breadcrumb-item :to="{ path: '/workbench' }">工作台</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/workbench/warehouseMmanagement' }">箱号列表</el-breadcrumb-item>
+      <el-breadcrumb-item>新增出货</el-breadcrumb-item>
+    </el-breadcrumb>
+    <!-- 主题内容 -->
+    <el-card>
+      <!-- 出货信息 -->
+      <div class="wordborder" >
+          <p class='clickbox' @click="dotSwitch(1)">出货信息</p>
+          <div class='content' v-show="show1">
+              <el-row>
+                  <el-col :span="4"><p>出货日期:</p></el-col>
+                  <el-col :span="8">
+                      <el-date-picker v-model="value1" type="date" placeholder="选择日期" ></el-date-picker>
+                  </el-col>
+                  <el-col :span="4"><p>出货数量:</p></el-col>
+                  <el-col :span="8"><el-input  clearable disabled>
+                      </el-input>
+                  </el-col>
+              </el-row>
+
+                <el-row>
+                  <el-col :span="4"><p>客户名称</p></el-col>
+                  <el-col :span="8">
+                      <el-input clearable  placeholder="请输入名称"></el-input>
+                  </el-col>
+                  <el-col :span="4"><p>出货地区:</p></el-col>
+                  <el-col :span="8">
+                      <el-cascader
+                        size="large"
+                        :options="options"
+                        v-model="selectedOptions"
+                        >
+                      </el-cascader>
+                  </el-col>
+              </el-row> 
+
+              <el-row>
+                <el-col :span="4"><p>出货地区</p></el-col>
+                <el-col :span="20">
+                  <el-input
+                    type="textarea"
+                    :autosize="{ minRows: 2, maxRows: 4}"
+                    placeholder="请输入内容"
+                    v-model="deliveryArea">
+                  </el-input>
+                </el-col>
+              </el-row>
+          </div>
+      </div>
+      <!-- 扫码登记出货 -->
+      <div class="wordborder" >
+          <p class='clickbox' @click="dotSwitch(2)">扫码登记出货</p>
+          <div class='content' v-show="show2">
+                <el-row>
+                  <el-col :span="4"><p>制备批号</p></el-col>
+                  <el-col :span="8">
+                      <el-input clearable  placeholder="请扫码"></el-input>
+                  </el-col>
+                  <el-col :span="4"><p>以扫数量</p></el-col>
+                  <el-col :span="8">
+                      <el-input  clearable disabled></el-input>
+                  </el-col>
+              </el-row>
+              <el-row>
+                  <el-col :span="4"><p>制备日期</p></el-col>
+                  <el-col :span="8">
+                      <el-input   disabled></el-input>
+                  </el-col>
+                  <el-col :span="4"><p>过期日期</p></el-col>
+                  <el-col :span="8">
+                      <el-input   disabled></el-input>
+                  </el-col>
+              </el-row>
+          </div>
+      </div>
+      <!-- 本箱成品列表 -->
+      <div class="wordborder" >
+        <p class='clickbox' @click="dotSwitch(3)">本箱成品列表</p>
+        <div class='content' v-show="show3">
+          <el-table :data="finishedList" style="width: 80%" border stripe>
+              <el-table-column prop="code" label="制备批号"></el-table-column>
+              <el-table-column prop="productDate"  label="制备日期"></el-table-column>
+              <el-table-column prop="expiryDate"  label="过期日期"></el-table-column>
+              <el-table-column prop="expiryDate" label="当前状态"></el-table-column>
+              <el-table-column prop="count" label="操作"> </el-table-column>
+          </el-table>
+        </div>
+    </div>
+    </el-card>
+  </div>
+</template>
+
+<script>
+import { regionData } from 'element-china-area-data'
+export default {
+
+  data () {
+    return {
+        show1:true,
+        show2:true,
+        show3:true,
+        formData: {
+                leader: sessionStorage.getItem("user"), //项目负责人
+                submitDate: new Date(), //提交日期
+                name: "", //项目名称
+                industry: "", //行业
+                floorArea: "", //建筑面积
+                buildingAddr: "", //项目建筑地址
+                exploitUnit: "", //项目使用单位
+                managementUnit: "", //项目管理单位
+                province: "", //省
+                city: "", //市
+                region: "", //区
+                projectMode: "", //项目模式
+                tenderMode: "", //招标模式
+                demandUser: "", //业主需求对接人
+                demandUserPhone: "", //联系方式
+                scale: "", //项目规模
+                content: "", //项目内容简介
+                status: 1, //项目状态
+                userName: sessionStorage.getItem("user"),//日志操作人
+            },
+      //日期
+        value1:"",
+        options: regionData,
+        selectedOptions: [],
+        // 出货地区
+        deliveryArea:"",
+        finishedList:[],
+    }
+  },
+
+  methods: {
+    //   下拉框的显示和隐藏
+      dotSwitch(index){
+          if(index==1){
+              this.show1=!this.show1
+          }else if(index==2){
+              this.show2=!this.show2
+          }else if(index==3){
+              this.show3=!this.show3
+          }
+      },
+  },
+
+  created () {
+  }
+}
+</script>
+
+<style lang='scss'>
+  .clickbox{
+      text-align: center;
+      width: 120px;
+    .content {
+      width: 80%;
+      margin: 35px;
+      margin-left: 50px;
+      p {
+        padding: 0px 5px;
+        margin: 0px 10px;
+      }
+  }
+ }
+</style>

@@ -1,0 +1,85 @@
+
+import {asyncRouterMap} from '@/router'
+import store from '@/store'
+//一级菜单、二级菜单配置
+const routeToMenu = [
+  {
+    path: '/workbench',
+    first:'/workbench',
+    second:'/workbench/raw/rawList',
+  },
+  {
+    path: '/workbench/raw/rawList',
+    first:'/workbench',
+    second:'/workbench/raw/rawList',
+  },
+  {
+    path: '/',
+    first:'/',
+    second:'/productCodeList',
+  },
+  {
+    path: '/createProductCode',
+    first:'/',
+    second:'/productCodeList',
+  },
+  {
+    path: '/productCodeList',
+    first:'/',
+    second:'/productCodeList',
+  },
+  {
+    path: '/productCodePreview',
+    first:'/',
+    second:'/productCodeList',
+  },
+  {
+    path: '/singleProductCodePreview',
+    first:'/',
+    second:'/productCodeList',
+  },
+]
+
+
+
+
+const methodRouteMenu = {
+  getRoutes:function(firstUrl,router){
+    if(firstUrl =='/'){
+      return router.options.routes[2].children
+    }
+    for (let index = 0; index < asyncRouterMap.length; index++) {
+      const element = asyncRouterMap[index];
+      if(element.path ==  firstUrl){
+        return element.children  
+      }
+    }
+  },
+  getRouteMenu:function(path){
+    for (let index = 0; index < routeToMenu.length; index++) {
+      const element = routeToMenu[index];
+      if(path == element.path){
+        return element
+      }
+    }
+    return ;
+  },
+  getSecond:function(element){
+    let _second 
+    if(!element.second){
+      let temp1 = store.getters.permission_routers ? store.getters.permission_routers : constantRouterMap
+      for (let index = 0; index <temp1.length; index++) {
+        const _element = temp1[index];
+        if(_element.path ==  element.first){
+          _second = _element.children[0].redirect || _element.redirect ||_element.path
+        }
+      }
+    }else{
+      _second = element.second
+    }
+    return _second
+  }
+}
+
+export  {methodRouteMenu}
+export default routeToMenu

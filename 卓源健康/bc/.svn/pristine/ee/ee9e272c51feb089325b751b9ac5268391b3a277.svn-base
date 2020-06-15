@@ -1,0 +1,109 @@
+<template>
+  <div>
+    <!-- 原料列表 -->
+    <!-- 面包屑 -->
+    <div>
+      <el-breadcrumb>
+        <el-breadcrumb-item :to="{ path: '/workbench/management/productInspection'}">制备管理</el-breadcrumb-item>
+        <el-breadcrumb-item>成品质检</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <!-- 内容主题部分 -->
+    <!-- 供体列表 -->
+    <el-card>
+      <el-row :gutter="20">
+        <el-col :span="5">
+          <el-input  v-model="query.code"  placeholder="请输入制备批号"  class="input-with-select"></el-input>
+        </el-col>
+        <el-col :span="12">
+          <el-button type="primary" @click="onSubmit">搜索</el-button>
+        </el-col>
+      </el-row>
+
+      <el-table :data="pageResult.rows" border>
+        <el-table-column prop="code" label="制备批号">
+          <template slot-scope="scope">
+            <el-link type="primary" @click="lookDetails(scope.row.id)">{{scope.row.code}}</el-link>
+          </template>
+        </el-table-column>
+        <el-table-column prop="product_date" label="制备日期">
+        </el-table-column>
+        <el-table-column prop="expiry_date" label="过期日期"></el-table-column>
+        <el-table-column prop="main_person" label="主制备人"></el-table-column>
+        <el-table-column prop="support_person" label="辅制备人"></el-table-column>
+        <el-table-column prop="raw_code" label="关联原料编码"></el-table-column>
+        <el-table-column prop="status" label="当前状态"></el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button type="primary" @click="qualityTesting(scope.row.code,scope.row.id)">质检</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- 分页 -->
+      <el-pagination
+        @current-change="handleCurrentChange"
+        :current-page="pageRequest.pageNumber"
+        :page-size="pageRequest.pageSize"
+        layout="total, prev, pager, next, jumper"
+        :total="pageResult.total">
+      </el-pagination>
+    </el-card>
+  </div>
+</template>
+
+<script>
+import api from "@/api/index";
+import {pageRequest,pageResult,pageSearch,query,conditionSearch,createdSearch,getProductList} from "@/utils/pageResult";
+import { PRODUCT_STATUS } from "@/utils/util";
+export default {
+  data() {
+    return {
+      query:query,
+      pageResult:pageResult,
+      pageRequest:pageRequest,
+    };
+  },
+  methods: {
+    handleCurrentChange: function(val) {
+      pageRequest.pageNumber = val;
+      pageSearch(getProductList,query,pageRequest,pageResult);
+    },
+    //条件查询
+    onSubmit() {
+      conditionSearch(getProductList,query,pageRequest,pageResult);
+    },
+    //查看详情
+    lookDetails(id) {
+      this.$router.push({
+        path: "/workbench/management/preparationDetailTest",
+        query: { id: id}
+      });
+    },
+    //成品质检
+    qualityTesting(code,id){
+      this.$router.push({
+        path:"/workbench/management/qualityTesting",
+        query: { code: code,id: id }
+      });
+    }
+  },
+  created() {
+    createdSearch(getProductList,query,pageRequest,pageResult,PRODUCT_STATUS.PRODUCE);
+  }
+};
+</script>
+
+<style lang="scss" >
+.all_design_partner {
+  margin: 0 auto;
+  padding: 15px 25px;
+  position: relative;
+  .title {
+    position: absolute;
+    right: 85px;
+    z-index: 1000;
+    top: 68px;
+  }
+}
+</style>>
+

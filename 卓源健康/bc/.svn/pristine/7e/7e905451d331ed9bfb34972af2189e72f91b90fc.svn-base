@@ -1,0 +1,265 @@
+<template>
+    <div id="addRaw">
+        <div>
+            <el-breadcrumb>
+                <el-breadcrumb-item :to="{ path: '/workbench/raw/rawList'}">原料管理</el-breadcrumb-item>
+                <el-breadcrumb-item :to="{ path: '/workbench/raw/rawList'}">原料列表</el-breadcrumb-item>
+                <el-breadcrumb-item>新增原料</el-breadcrumb-item>
+            </el-breadcrumb>
+        </div>
+    <el-card>    
+        <div class="box">
+            <p class='clickbox' v-on:click="click(1)">原料来源信息</p>
+                <div class='content' v-show="show1">
+                    <el-form :model="formData" :rules="rules" ref="ruleForm" v-if="names">
+                        <el-row>
+                            <el-col :span="4"><p>材料名称</p></el-col>
+                            <el-col :span="8"><el-input class="w260" :disabled="true" v-model="formData.materialName"></el-input></el-col>
+                        </el-row>
+                        <el-row >
+                            <el-col :span="4"><p class="fuji"><i class="ziji">*</i>姓名</p></el-col>
+                            <el-col :span="8">
+                                <el-form-item  prop="name">
+                                    <el-autocomplete
+                                        class="inline-input w260"
+                                        v-model="name"
+                                        :fetch-suggestions="querySearch"
+                                        placeholder="请输入姓名"
+                                        :trigger-on-focus="false"
+                                        @select="handleSelect"
+                                        :clearable="true">
+                                    </el-autocomplete>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="4">
+                                <span></span>
+                            </el-col>
+                            <el-col :span="4"><p>出生日期</p></el-col>
+                            <el-form disabled>
+                            <el-col :span="8">
+                                <el-date-picker
+                                    class="w260"
+                                    v-model="bizDonator.birthday"
+                                    type="date"
+                                    value-format="yyyy-MM-dd">
+                                </el-date-picker>
+                            </el-col>      
+                            </el-form>                 
+                        </el-row>
+                        <el-row >
+                            <el-col :span="4"><p>来源地区</p></el-col>
+                                <el-form disabled>
+                                    <el-col :span="8">
+                                        <el-input class="w260" v-model="sourceArea"></el-input>
+                                    </el-col>
+                                </el-form>
+                            <el-col :span="4"><p>入组日期</p></el-col>
+                                <el-form disabled>
+                                    <el-col :span="6">
+                                        <el-date-picker
+                                            class="w260"
+                                            v-model="bizDonator.joinDate"
+                                            type="date"
+                                            value-format="yyyy-MM-dd">
+                                        </el-date-picker>
+                                    </el-col>
+                                </el-form>
+                        </el-row>
+                        <el-row >
+                            <el-col :span="4"><p class="fuji"><i class="ziji">*</i>采集人员</p></el-col>
+                            <el-col :span="8">
+                                <el-form-item   prop="collectPerson">
+                                    <el-select class="w260"  v-model="formData.collectPerson" placeholder="请选择" style="width:260px;">
+                                        <el-option
+                                            v-for="item in collectors"
+                                            :key="item.id"
+                                            :label="item.user"
+                                            :value="item.id">
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="4"><p class="fuji"><i class="ziji">*</i>接收人员</p></el-col>
+                            <el-col :span="8">
+                                <el-form-item  prop="receivePerson">
+                                    <el-select class="w260" v-model="formData.receivePerson" placeholder="请选择">
+                                        <el-option
+                                            v-for="item in receptionStaff"
+                                            :key="item.id"
+                                            :label="item.user"
+                                            :value="item.id">
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row >
+                            <el-col :span="4"><p class="fuji"><i class="ziji">*</i>本供体此次样本数量</p></el-col>
+                            <el-col :span="8">
+                                <el-form-item  prop="count">
+                                    <el-input-number class="w260" v-model="formData.count" controls-position="right" :min="1" :max="9">
+                                    </el-input-number>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="4"><p class="fuji"><i class="ziji">*</i>采集日期</p></el-col>
+                            <el-col :span="8">
+                                <el-form-item  prop="collectDate">
+                                    <el-date-picker
+                                        class="w260"
+                                        v-model="formData.collectDate"
+                                        type="date"
+                                        value-format="yyyy-MM-dd">
+                                    </el-date-picker>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                    </el-form>
+                </div>
+            </div>
+            <div class='tac'>
+                <el-button @click="save('ruleForm')" type="primary" round>提交</el-button>
+            </div>
+        </el-card>
+        
+    </div>    
+</template>
+
+<script>
+import { provinceAndCityData, regionData, provinceAndCityDataPlus, regionDataPlus, CodeToText, TextToCode } from 'element-china-area-data';
+import { STATION_TYPE} from "@/utils/util";
+import api from '@/api/index';
+export default {
+    data(){
+        var checkName = (rule, value, callback) =>{
+            value = this.name;
+            if(value == null || value == ''){
+                callback(new Error('请输入供体姓名'))
+            }
+            for (let item of this.names) {
+                if (item.value === value) {
+                    callback()
+                    return
+                }
+            }
+        };
+        return{ 
+            collectors:[],//采集人员列表
+            receptionStaff:[],//接受人员列表
+            names:[],//姓名列表,校验列表
+            name,//供体姓名
+            sourceArea:'',//来源地区
+            show1:true,
+            bizDonator:{
+                id:'',
+                birthday:'',//出生日期
+                joinDate:'',//入组日期
+            },
+            formData:{
+                materialName:'粪便',//材料名称
+                donatorId:'',//供体id
+                collectPerson:'',//采集人员
+                receivePerson:'',//接收人员
+                count:'',//本供体此次样本
+                collectDate:''//采集日期    
+            },
+            rules: {
+                name: [
+                    { validator:checkName,trigger: 'change' },
+                ],
+                collectPerson: [
+                    { required: true, message: '请选择采集人员', trigger: 'change' },
+                ],
+                receivePerson: [
+                    { required: true, message: '请选择接收人员', trigger: 'change' },
+                ],
+                collectDate: [
+                    { required: true, message: '请选择采集日期', trigger: 'change' },
+                ],
+                count: [
+                    { required: true, message: '请输入本供体此次样本数量', trigger: 'change' },
+                ],
+            },
+    }},
+
+    methods:{
+        //回显数据
+        handleSelect(item){
+            this.findById(item.id)
+            this.formData.donatorId = item.id
+        },
+        //根据id查询
+        findById(id){
+            api.donator.findById(id).then(response =>{
+                this.bizDonator.birthday = response.birthday;
+                this.bizDonator.joinDate = response.joinDate;
+                this.sourceArea = response.province + response.city + response.region;
+            })
+        },
+        //输入建议数据
+        querySearch(querystring,cb){
+            api.donator.findByName(querystring).then(response =>{
+                this.names = [];
+                for(let i=0;i<response.length;i++){
+                    this.names.push({"value":response[i].name,"id":response[i].id})
+                }
+                cb(this.names)
+            }).catch((error)=>{
+                console.log(error)
+            })
+        },
+        click(index) {
+            if (index == 1) {
+                this.show1 = !this.show1;
+            }
+        },
+        //提交表单
+        save(ruleForm){
+            this.$refs[ruleForm].validate((valid) => {
+            if (valid) {
+                api.raw.save(this.formData).then(response =>{
+                    if(response.status == 200){
+                        var list = response.data
+                        this.$router.push({
+                            path:"/workbench/raw/addMaterialPrinting",
+                            query:{data:list.toString()}
+                        });
+                    }else{
+                        this.$message.error(response.msg);
+                    }
+                }).catch((error)=>{
+                    console.log(error)
+                })
+            } else {
+                console.log('error submit!!');
+                return false;
+            }
+            });
+        },
+        //初始化数据
+        loadData(){
+            api.userRelated.getUserList(STATION_TYPE.COLLECT_PERSON).then(response =>{
+                this.collectors = response
+            }),
+            api.userRelated.getUserList(STATION_TYPE.RECEIVE_PERSON).then(response =>{
+                this.receptionStaff = response
+            })
+        }
+    },
+    created(){
+        this.loadData();
+    }
+}
+</script>
+
+<style lang='scss'>
+#addRaw{
+	.tac{
+  		text-align: center;
+  		.el-button{
+			width: 114px;
+			height: 50px;
+		} 
+	}
+}
+
+</style>

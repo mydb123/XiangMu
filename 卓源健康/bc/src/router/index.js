@@ -1,0 +1,83 @@
+import Vue from 'vue'
+import Router from 'vue-router'
+import Login from '@/views/login/login'
+import Container from '@/container/Container'
+import Page404 from '@/views/404'
+import createProductCode  from '@/views/product/createProductCode'
+import productCodeList  from '@/views/product/productCodeList'
+/** router modules */
+import workbenchRouter from './modules/workbench'
+import backstageRouter from './modules/backstage'
+
+
+const originalPush = Router.prototype.push
+Router.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+}
+Vue.use(Router)
+
+export const constantRouterMap = [
+  {
+    path: '/login',
+    hidden: true,
+    component: Login
+  },
+  {
+    path: '/404',
+    hidden: true,
+    component: Page404
+  },
+  {
+    path: '/',
+    redirect: '/productCodeList',
+    component: Container,
+    name: '首页',
+    hidden: false,
+    meta: { title: '首页', icon: '', noCache: true },
+    children: [
+      {
+        path: 'productCodeList',
+        name: '介绍',
+        component: productCodeList,
+        meta: { title: '介绍', icon: '', noCache: true }
+      },
+      {
+        path: 'createProductCode',
+        name: '生成成品条码g',
+        hidden: true,
+        component: createProductCode,
+        meta: { title: '简介g', icon: 'fa fa-dashboard fa-lg', noCache: true },
+      },
+      {
+        path: '/productCodePreview',
+        name: '成品条码信息g',
+        hidden: true,
+        component: () => import('@/views/product/productCodePreview'),
+        meta: { title: '原料条码信息g', icon: '', noCache: true }
+      },
+      {
+        path: '/singleProductCodePreview',
+        name: '单条成品条码信息g',
+        hidden: true,
+        component: () => import('@/views/product/singleProductCodePreview'),
+        meta: { title: '单条原料条码信息g', icon: '', noCache: true }
+      }
+      // { path: '*', redirect: '/404', hidden: true }
+    ]
+  },
+]
+
+export default new Router({
+  mode: 'history',
+  base: '/bc/',
+  scrollBehavior: () => ({ y: 0 }),
+  routes: constantRouterMap
+})
+
+export const asyncRouterMap = [
+  /** 其他的异步路由表 */
+  workbenchRouter,
+  backstageRouter,
+  { path: '*', redirect: '/404', hidden: true }
+]
+

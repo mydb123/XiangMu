@@ -1,0 +1,107 @@
+<template>
+  <div>
+    <!-- 面包屑 -->
+    <el-breadcrumb>
+      <el-breadcrumb-item :to="{ path: '/workbench' }">工作台</el-breadcrumb-item>
+      <el-breadcrumb-item>箱号列表</el-breadcrumb-item>
+    </el-breadcrumb>
+    <!-- 卡片试图 -->
+    <el-card>
+      <!-- 搜索与添加 -->
+      <el-row :gutter="20">
+            <el-col :span="7">
+                <el-input :span="7"  v-model="queryData.query" placeholder="请输入内容"  class="input-with-select">
+                <el-button slot="append" icon="el-icon-search" @click="getTableData"></el-button>
+                </el-input>
+            </el-col>
+            <el-col :span="5">
+                <el-button @click="addShipment"  type="primary">新增出货</el-button>
+            </el-col>
+        </el-row>
+        <!-- 列表数据 -->
+         <el-table :data="tableData" style="width: 80%" border stripe>
+          <el-table-column prop="code" label="箱号编码"></el-table-column>
+          <el-table-column prop="date"  label="出货日期"></el-table-column>
+          <el-table-column prop="name"  label="客户名称"></el-table-column>
+          <el-table-column prop="chuhuodiqu" label="出货地区"> </el-table-column>
+          <el-table-column prop="count" label="本箱数"> </el-table-column>
+        </el-table>
+        <!-- 页码 -->
+         <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="queryData.pagenum"
+          :page-sizes="[30, 60, 100, 200]"
+          :page-size="100"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total">
+        </el-pagination>
+    </el-card>
+
+    <!-- 弹出层 -->
+
+  </div>
+</template>
+
+<script>
+export default {
+
+  data () {
+    return {
+      queryData:{
+        query:"",
+        pagenum:1,
+        pagesize:2
+      },
+      // 总条数
+      total:400,
+      // 列表数据
+      tableData:[
+        {
+          code:"11111",
+          date:"556554",
+          name:"asas",
+          chuhuodiqu:"assa",
+          count:"2"
+        },
+        {
+          code:"11111",
+          date:"556554",
+          name:"asas",
+          chuhuodiqu:"assa",
+          count:"2"
+        }
+      ]
+    }
+  },
+
+  methods: {
+    // 页码当前值
+    handleSizeChange(val){
+      this.queryData.pagenum=val;
+    },
+    // 当前页码
+    handleCurrentChange(val){
+      this.queryData.pagesize=val;
+    },
+    // 添加按钮方法
+    addDialogVisible(){
+
+    },
+    // 新增出货
+    addShipment(){
+        this.$router.push({path:"/workbench/warehouseMmanagement/addctnList"})
+    },
+    getTableData(){
+
+    }
+  },
+
+  created () {
+  }
+}
+</script>
+
+<style>
+
+</style>

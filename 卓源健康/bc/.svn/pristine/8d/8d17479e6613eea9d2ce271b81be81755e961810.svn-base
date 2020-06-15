@@ -1,0 +1,372 @@
+<template>
+    <div id="informationChangesDetail">
+        <div>
+            <el-breadcrumb>
+                <el-breadcrumb-item :to="{ path: '/backstageManagement' }">信息微调</el-breadcrumb-item>
+                <el-breadcrumb-item :to="{ path: '/backstageManagement/Information'}">供体信息修改</el-breadcrumb-item>
+                <el-breadcrumb-item>供体数据微调</el-breadcrumb-item>
+            </el-breadcrumb>
+        </div>
+        <el-card>
+            <div class="box" style="border:0px">
+                <div class='content'>
+                    <el-row class="lh40">
+                        <el-col :span="4"><p>供体编码</p></el-col>
+                        <el-col :span="8" >
+                            <el-input class="w260" disabled v-model="formData.bizDonator.code"></el-input>
+                        </el-col>
+                    </el-row>
+                </div>
+            </div>
+            <div class="box" >
+                <p class='clickbox' v-on:click="click(1)" >供体信息</p>
+                <div class='content' v-show="show1">
+                    <el-form >
+                        <el-row >
+                            <el-col :span="4"><p>供体姓名</p></el-col>
+                            <el-col :span="8">
+                                <el-input class="w260" disabled v-model="formData.bizDonator.name"></el-input>
+                            </el-col>
+                        </el-row>
+                        <el-row >
+                            <el-col :span="4"><p>供体性别</p></el-col>
+                            <el-col :span="8">
+                                <el-input class="w260" disabled v-model="formData.bizDonator.sex"></el-input>
+                            </el-col>
+                            <el-col :span="4"><p>出生日期</p></el-col>
+                            <el-col :span="8">
+                                <el-date-picker
+                                    class="w260"
+                                    v-model="formData.bizDonator.birthday"
+                                    type="date" disabled
+                                    value-format="yyyy-MM-dd">
+                                </el-date-picker>
+                            </el-col>                       
+                        </el-row>
+                        <el-row >
+                            <el-col :span="4"><p>来源地区</p></el-col>
+                            <el-col :span="8">
+                                <el-input class="w260" disabled v-model="sourceArea"></el-input>
+                            </el-col>
+                            <el-col :span="4"><p>入组日期</p></el-col>
+                            <el-col :span="8">
+                                <el-date-picker
+                                    class="w260"
+                                    v-model="formData.bizDonator.joinDate"
+                                    type="date" disabled
+                                    value-format="yyyy-MM-dd">
+                                </el-date-picker>
+                            </el-col>
+                        </el-row>
+                        <el-form :model="SubmitList" :rules="saleRules" ref="ruleForm">
+                            <el-row >
+                                <el-col :span="4"><p>累计废弃数</p></el-col>
+                                <el-col :span="8">
+                                    <el-form-item prop="discardCount">
+                                        <el-input class="w260" v-model="SubmitList.discardCount"></el-input>
+                                    </el-form-item >
+                                </el-col>
+                                <el-col :span="4"><p>最近体检日期</p></el-col>
+                                <el-col :span="8">
+                                    <el-form-item prop="lastExamDate">
+                                        <el-date-picker class="w260" v-model="SubmitList.lastExamDate"  type="date"></el-date-picker>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                            <el-row >
+                                <el-col :span="4"><p>累计使用数</p></el-col>
+                                <el-col :span="8">
+                                    <el-form-item prop="useCount">
+                                    <el-input class="w260" v-model="SubmitList.useCount"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="4"><p>最近16S日期</p></el-col>
+                                <el-col :span="8">
+                                    <el-form-item prop="sixteenDate">
+                                    <el-date-picker class="w260" v-model="SubmitList.sixteenDate" type="date"></el-date-picker>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                        </el-form>
+                        <el-row>
+                            <el-col :span="4"><p>16S结果</p></el-col>
+                            <el-col :span="8">
+                                <el-upload
+                                    class="upload-demo"
+                                    action 
+                                    :show-file-list="showFileFlag2"
+                                    list-type="text" 
+                                    :before-upload="beforeUpload"
+                                    :http-request="uploadsixteenFileMethod" 
+                                    :file-list="uploadFile.sixteenResult" 
+                                    :on-remove="handleRemoveSixteenResult">
+                                    <el-button size="medium" type="primary" class="w220">16S结果上传</el-button>
+                                    <el-progress v-if="flag2 == true" type="line" :percentage="uploadPercent2" style="margin-top:30px;"></el-progress>
+                                </el-upload>
+                            </el-col>
+                            <el-col :span="4"><p>体检结果</p></el-col>
+                            <el-col :span="8">
+                                <el-upload
+                                    class="upload-demo"
+                                    action 
+                                    :show-file-list="showFileFlag1"
+                                    list-type="text"
+                                    :before-upload="beforeUpload"
+                                    :http-request="uploadExamFileMethod" 
+                                    :file-list="uploadFile.examResult" 
+                                    :on-remove="handleRemoveExamResult">
+                                    <el-button size="medium" type="primary" class="w220">体检结果上传</el-button>
+                                    <el-progress v-if="flag1 == true" type="line" :percentage="uploadPercent1" style="margin-top:30px;"></el-progress>
+                                </el-upload>
+                            </el-col>
+                        </el-row>
+                    </el-form>
+                </div>
+            </div>    
+            <div class="tac">
+                <el-button class='submit' @click="save('ruleForm')" type="primary" round>提交</el-button>
+            </div>
+        </el-card>
+    </div>
+</template>
+<script>
+import { gender,FILE_TYPE } from "@/utils/util";
+import { provinceAndCityData, regionData, provinceAndCityDataPlus, regionDataPlus, CodeToText, TextToCode } from 'element-china-area-data';
+import store from "@/store/index";
+import api from '@/api/index';
+import base from "@/api/base";
+export default {
+    data(){
+        return{   
+            downloadUrl: base.sq + "/workbench/download?access_token=" + store.getters.token + "&fileId=", //下载路径
+            flag1:false,
+            flag2:false,
+            show1:true,
+            uploadPercent1:0,
+            uploadPercent2:0,
+            sourceArea:'',//来源地区
+            showFileFlag1:true,
+            showFileFlag2:true,
+            examIds: [],
+            sixteenIds: [],
+            formData:{
+                bizDonator:{
+                    id:'',//供体id
+                    code:'',//供体编码
+                    name:'',//供体姓名
+                    sex:'',//供体性别
+                    birthday:'',//出生日期
+                    province: '', //省
+                    city: '', //市
+                    region: '', //区
+                    joinDate:'',//入组日期
+                    examResult:'',//体检结果
+                    sixTeenResult:'',//16s结果
+                },
+                fileList:{
+                    examResultList:[],
+                    sixteenResultList:[]
+                }
+            },
+            uploadFile: {
+                //文件列表
+                examResult: [],
+                sixteenResult: [],
+            },
+            //需要上传的数据列表
+            SubmitList:{
+                id:'',//供体id
+                discardCount:'',//累计废弃数
+                lastExamDate:'',//最近体检日期
+                useCount:'',//累计使用数
+                sixteenDate:'',//最近16s日期
+            },
+            //校验规则
+            saleRules:{
+                discardCount:[
+                    { required: true, message: '请输入数量', trigger: 'blur' }
+                ],
+                lastExamDate:[
+                    { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+                ],
+                useCount:[
+                    { required: true, message: '请输入数量', trigger: 'blur' }
+                ],
+                sixteenDate:[
+                    { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+                ],
+            }
+    }},
+    methods:{
+        click(index) {
+            if (index == 1) {
+                this.show1 = !this.show1;
+            }
+        },
+        loadData(){
+            api.donator.findDonatorDetailsById(this.formData.bizDonator.id).then(response=>{
+                this.formData.bizDonator = response.bizDonator;                
+                this.SubmitList.discardCount = response.bizDonator.discardCount
+                this.SubmitList.lastExamDate = new Date(response.bizDonator.lastExamDate)
+                this.SubmitList.useCount = response.bizDonator.useCount
+                this.SubmitList.sixteenDate = new Date(response.bizDonator.sixteenDate)
+                this.sourceArea = this.formData.bizDonator.province+"-"+ this.formData.bizDonator.city +"-"+ this.formData.bizDonator.region;
+            })
+        },
+         //提交
+         save(ruleForm){
+            this.$refs[ruleForm].validate((valid)=>{
+                if(!valid) return;
+                this.formData.examResult = this.examIds.join(',')
+                this.formData.sixTeenResult = this.sixteenIds.join(',')
+                api.admin.update(this.SubmitList)
+                this.$message.success("操作成功")
+                this.$router.push({
+                    path:"/backstageManagement/Information/informationChanges"
+                })
+            })            
+        },
+        //体检结果pdf文件上传
+        uploadExamFileMethod(param){
+            if(this.flag1){
+                this.$message("请等待当前文件上传完毕")
+                return
+            }
+            this.showFileFlag1 = false
+            this.flag1 = true;
+            this.uploadPercent1 = 1;
+            let timer = setInterval(()=>{
+                if(this.uploadPercent1<95){
+                this.uploadPercent1 += Math.ceil(Math.random()*5);
+                }
+            }, 700);
+            let fileObject = param.file;
+            let formData = new FormData();
+            formData.append("file", fileObject);
+            formData.append("type", FILE_TYPE.EXAM_RESULT);
+            api.file.uploadFile(formData).then(response =>{
+                clearInterval(timer)
+                this.uploadPercent1 = 100;
+                setTimeout(()=>{
+                    this.flag1 = false;
+                    this.uploadPercent1 = 0;
+                    this.showFileFlag1 = true
+                },700)
+                let obj = new Object();
+                obj.id = response.id;
+                obj.name = response.showName;
+                obj.url = response.url;
+                this.uploadFile.examResult.push(obj);
+                console.log(this.uploadFile.examResult);
+                this.examIds.push(obj.id);
+            }).catch((error)=>{
+                console.log(error)   
+            })
+        },
+        //文件上传大小处理
+        beforeUpload(file){
+            let fileSize = file.size/1024/1024 <100;
+            if(!fileSize){
+                this.$message("上传文件不得大于100M")
+                return false
+            }  
+        },
+        //体检结果pdf删除
+        handleRemoveExamResult(file,fileList){
+            let index = -1;
+            for(let i in this.uploadFile.examResult){
+                if(file.id==this.uploadFile.examResult[i].id){
+                    index = i;
+                    break;
+                }
+            }
+            if(index!=-1){
+                this.uploadFile.examResult.splice(index,1);
+                this.examIds.splice(index,1);
+            }
+            this.deleteFile(file.id);
+        },
+        //16s体检结果删除
+        handleRemoveSixteenResult(file,fileList){
+            let index = -1;
+            for(let i in this.uploadFile.sixteenResult){
+                if(file.id==this.uploadFile.sixteenResult[i].id){
+                    index = i;
+                    break;
+                }
+            }
+            if(index!=-1){
+                this.uploadFile.sixteenResult.splice(index,1);
+                this.sixteenIds.splice(index,1);
+            }
+            this.deleteFile(file.id);
+        },
+        deleteFile(id){
+            api.file.deleteFile(id).then(response => {
+                
+            }).catch(error => {
+                console.log(error);
+            });
+        },
+        //16s体检上传
+        uploadsixteenFileMethod(param){
+            if(this.flag2){
+                this.$message("请等待当前文件上传完毕")
+                return
+            }
+            this.showFileFlag2 = false
+            this.flag2 = true;
+            this.uploadPercent2 = 1;
+            let timer = setInterval(()=>{
+                // alert()
+                if(this.uploadPercent2<95){
+                this.uploadPercent2 += Math.ceil(Math.random()*5);
+                }
+            }, 700);
+            let fileObject = param.file;
+            let formData = new FormData();
+            formData.append("file", fileObject);
+            formData.append("type", FILE_TYPE.SIXTEEN_RESULT);
+            api.file.uploadFile(formData).then(response=>{
+                clearInterval(timer)
+                this.uploadPercent2 = 100;
+                setTimeout(()=>{
+                    this.flag2 = false;
+                    this.uploadPercent2 = 0;
+                    this.showFileFlag2 = true
+                },700)
+                let obj = new Object();
+                obj.id = response.id;
+                obj.name = response.showName;
+                obj.url = response.url;
+                this.uploadFile.sixteenResult.push(obj);
+                this.sixteenIds.push(obj.id);
+            }).catch((error)=>{
+                console.log(error)   
+            })
+        }
+
+    },
+    created(){
+        this.formData.bizDonator.id = this.$route.query.id; 
+        this.SubmitList.id = this.$route.query.id;
+        this.loadData();
+        // this.loadFiles();
+    }
+}
+</script>
+
+<style lang='scss'>
+#informationChangesDetail{
+    .w220{
+        width: 220px;
+    }
+    .tac{
+        text-align: center;
+        .el-button{
+        width: 114px;
+        height: 50px;
+        } 
+    }
+}
+</style>

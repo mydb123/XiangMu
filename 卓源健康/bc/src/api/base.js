@@ -1,0 +1,8 @@
+/**
+ * 接口域名的管理
+ */
+const base = {    
+    // sq: 'http://localhost/api-bc',  //todo 发布时修改该位置
+    sq: 'http://jk.zctcn.com:2020/api-bc',  //外网域名
+}
+export default base;

@@ -1,0 +1,228 @@
+<template>
+  <div class='detail_design_partner'>
+    <!-- 原料初检操作 -->
+    <!-- 面包屑 -->
+    <div>
+      <el-breadcrumb>
+        <el-breadcrumb-item :to="{ path: '/workbench' }">操作台</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/workbench/raw'}">原料管理</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/workbench/raw/donorList'}">原料初检</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/workbench/raw/donorList'}">录入原料初检信息</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <!-- 内容主题部分 -->
+    <!-- 供体列表 -->
+    <el-card>
+    <el-form disabled>
+        <div class="box" style="border:0px">
+            <div class='content'>
+            <el-row >
+                <el-col :span="5"><p>原料编码</p></el-col>
+                <el-col :span="8">
+                    <el-input  v-model="bizRaw.code">
+                        
+                    </el-input>
+                </el-col>
+            </el-row>
+            </div>
+        </div>
+        <div class="box" >
+            <p class='clickbox' v-on:click="click(1)">原料来源信息</p>
+            <div class='content' v-show="show1">
+                <el-row >
+                    <el-col :span="5"><p>材料名称</p></el-col>
+                    <el-col :span="6">
+                        <el-input  v-model="bizRaw.materialName" placeholder="请输入内容">
+                            
+                        </el-input>
+                    </el-col>
+                </el-row>
+
+                <el-row >
+                    <el-col :span="5"><p>采集人员</p></el-col>
+                    <el-col :span="8">
+                        <el-select v-model="bizRaw.collectPerson" placeholder="请选择">
+                            <el-option
+                                v-for="item in collectors"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :span="5"><p>接收人员</p></el-col>
+                    <el-col :span="6">
+                        <el-select v-model="bizRaw.receivePerson" placeholder="请选择">
+                            <el-option
+                                v-for="item in receptionStaff"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                </el-row>
+
+                <el-row >
+                        <el-col :span="5"><p>采集日期</p></el-col>
+                        <el-col :span="6">
+                            <el-date-picker
+                                v-model="bizRaw.collectDate"
+                                type="date"
+                                value-format="yyyy-MM-dd">
+                            </el-date-picker>
+                        </el-col>
+                </el-row>
+            </div>
+        </div>
+    </el-form>
+
+        <div class="box" >
+            <p class='clickbox' v-on:click="click(2)">原料初检信息</p>
+            <div class='content' v-show="show2">
+                <el-row >
+                    <el-col :span="5"><p>初检评分</p></el-col>
+                    <el-col :span="8">
+                        <el-select v-model="formData.firstCheckScore" placeholder="请选择">
+                            <el-option
+                                v-for="item in optionsScore"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="5"><p>初检性状</p></el-col>
+                    <el-col :span="6">
+                        <el-input type="textarea" :rows="3" placeholder="请输入内容" v-model="formData.firstCheckCharacter"></el-input>
+                    </el-col>
+                </el-row>
+                <el-row >
+                    <el-col :span="5"><p>初检结果</p></el-col>
+                    <el-col :span="8">
+                        <el-select v-model="formData.firstCheckResult" placeholder="请选择">
+                            <el-option
+                                v-for="item in optionsResult"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                </el-row>
+            </div>
+        </div>
+        <div class='div5'>
+            <el-button @click="save" type="primary" round>提交</el-button>
+        </div>
+    </el-card>
+  </div>
+</template>
+
+<script>
+import api from "@/api/index";
+import { FIRSTCHECK_SCORE,FIRSTCHECK_RESULT,STATION_TYPE } from "@/utils/util";
+
+export default {
+  data() {
+    return {
+      show1:false,
+      show2:true,
+      optionsScore:FIRSTCHECK_SCORE,
+      optionsResult:FIRSTCHECK_RESULT,
+      collectors:[],//采集人员列表
+      receptionStaff:[],//接受人员列表
+      bizRaw:{
+        code:'',//原料编码
+        materialName:'',//材料名称
+        collectPerson:'',//采集人员
+        receivePerson:'',//接收人员
+        collectDate:'',//采集日期
+      },
+      formData:{
+        id:'',
+        firstCheckScore:'',//初检评分
+        firstCheckCharacter:'',//初检性状
+        firstCheckResult:''//初检结果
+      }
+    };
+  },
+  methods: {
+    click(index) {
+      if (index == 1) {
+        this.show1 = !this.show1;
+      } else if (index == 2) {
+        this.show2 = !this.show2;
+      } 
+    },
+    save(){
+      api.raw.firstCheckSave(this.formData).then(response =>{
+        this.$router.push("/workbench/raw/rawInspection")
+      }).catch(error=>{
+        console.log(error)
+      })
+    },
+    loadData(){
+      api.userRelated.getUserList(STATION_TYPE.COLLECT_PERSON).then(response =>{
+        for(let i=0;i<response.length;i++){
+            this.collectors.push({"value":response[i].id,"label":response[i].user})
+        }
+      }),
+      api.userRelated.getUserList(STATION_TYPE.RECEIVE_PERSON).then(response =>{
+        for(let i=0;i<response.length;i++){
+            this.receptionStaff.push({"value":response[i].id,"label":response[i].user})
+        }
+      })
+      api.raw.findById(this.formData.id).then(response =>{
+        this.bizRaw = response;
+        this.bizRaw.collectPerson = this.bizRaw.collectPerson + ""
+        this.bizRaw.receivePerson = this.bizRaw.receivePerson + ""
+      }).catch((error)=>{
+        console.log(error);
+      });
+    }
+  },
+  created(){
+    this.formData.id = this.$route.query.id;
+    this.loadData(); 
+  }
+}
+</script>
+
+<style lang="scss">
+  .detail_design_partner {
+  margin: 0 auto;
+  .distpicker-address-wrapper {
+    select {
+      color: #c0c4cc;
+      background: #f5f7fa;
+      // appearance:none;
+      // -moz-appearance:none; /* Firefox */
+      // -webkit-appearance:none; /* Safari 和 Chrome */
+    }
+  }
+}
+  .div5 {
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+    left: -40px;
+  }
+
+.disabled-select select {
+  background-color: #e7e8ed;
+  // cursor: not-allowed;
+
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  border: none;
+
+  // width:20%;
+  margin: 0;
+  padding: 0;
+  height: 28px;
+}
+</style>

@@ -1,0 +1,107 @@
+Date.prototype.format = function(fmt) { 
+  var o = { 
+     "M+" : this.getMonth()+1,                 //月份 
+     "d+" : this.getDate(),                    //日 
+     "h+" : this.getHours(),                   //小时 
+     "m+" : this.getMinutes(),                 //分 
+     "s+" : this.getSeconds(),                 //秒 
+     "q+" : Math.floor((this.getMonth()+3)/3), //季度 
+     "S"  : this.getMilliseconds()             //毫秒 
+ }; 
+ if(/(y+)/.test(fmt)) {
+         fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length)); 
+ }
+  for(var k in o) {
+     if(new RegExp("("+ k +")").test(fmt)){
+          fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+      }
+  }
+ return fmt; 
+}
+
+//是否取样
+const Reserved = [{
+    value: 'Y',
+    label: '是'
+},{
+    value: 'N',
+    label: '否'
+}]
+
+const ctool ={
+    setObj : function (key, obj) {
+        obj = JSON.stringify(obj);
+        sessionStorage.setItem(key, obj);
+    },
+    getObj : function (key) {
+        var obj = JSON.parse(sessionStorage.getItem(key));
+        return obj;
+    }
+}
+
+const gender =[{
+    value: '男',
+    label: '男'
+},{
+    value: '女',
+    label: '女'
+}]
+
+// 本供体此次样本数量
+const COUNT = [
+    {
+        "value": "1",
+        "label": "1"},
+    {
+        value: '2',
+        label: '2'
+    },{
+        value: '3',
+        label: '3'
+    },{
+        value: '4',
+        label: '4'
+    },{
+        value: '5',
+        label: '5'
+    },{
+        value: '6',
+        label: '6'
+    },{
+        value: '7',
+        label: '7'
+    },{
+        value: '8',
+        label: '8'
+    },{
+        value: '9',
+        label: '9'
+    }]
+
+//上传文件类型
+const FILE_TYPE = {
+    EXAM_RESULT:"1",
+    SIXTEEN_RESULT:"2"
+}
+   
+// 状态
+const PRODUCT_STATUS = { 
+    DISCARD:'0',//废弃
+    PRODUCE:'1',//制配中
+    STOCK:"2",//库存
+    EXPIRE:"3",//过期
+    SELL:"4",//已出货
+    SIGN:"5",//已签收
+    RETURN:"6"//退货
+}
+
+// 岗位类型
+const STATION_TYPE = { 
+    COLLECT_PERSON:'1',//采集人员
+    RECEIVE_PERSON:'2',//接收人员
+}
+
+
+
+
+export {ctool,Reserved,gender,FILE_TYPE,PRODUCT_STATUS,COUNT,STATION_TYPE} 

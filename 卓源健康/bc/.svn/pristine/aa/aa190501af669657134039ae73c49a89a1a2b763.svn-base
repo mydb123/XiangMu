@@ -1,0 +1,232 @@
+<template>
+    <div >
+        <div>
+            <el-breadcrumb>
+                <el-breadcrumb-item :to="{ path: '/workbench' }">操作台</el-breadcrumb-item>
+                <el-breadcrumb-item :to="{ path: '/workbench/raw'}">原料管理</el-breadcrumb-item>
+                <el-breadcrumb-item :to="{ path: '/workbench/raw/donorList'}">供体列表</el-breadcrumb-item>
+                <el-breadcrumb-item :to="{ path: '/workbench/raw/addDonor'}">新增原料</el-breadcrumb-item>
+            </el-breadcrumb>
+        </div>
+    <el-card>    
+        <div class="wordborder">
+            <p class='clickbox' v-on:click="click(1)">原料来源信息</p>
+                <div class='content' v-show="show1">
+                    <el-row>
+                        <el-col :span="5"><p>材料名称</p></el-col>
+                        <el-col :span="8">
+                            <el-input :disabled="true" v-model="formData.materialName"></el-input>
+                        </el-col>
+                    </el-row>
+
+                    <el-row >
+                        <el-col :span="5"><p>姓名</p></el-col>
+                        <el-col :span="8">
+                                <el-autocomplete
+                                    class="inline-input"
+                                    v-model="name"
+                                    :fetch-suggestions="querySearch"
+                                    placeholder="请输入内容"
+                                    :trigger-on-focus="false"
+                                    @select="handleSelect"
+                                    :clearable="true"
+                                ></el-autocomplete>
+                        </el-col>
+                        <el-col :span="5">
+                            <span></span>
+                        </el-col>
+                        <el-col :span="5"><p>出生日期</p></el-col>
+                        <el-form disabled>
+                        <el-col :span="6">
+                            <el-date-picker
+                                v-model="bizDonator.birthday"
+                                type="date"
+                                value-format="yyyy-MM-dd">
+                            </el-date-picker>
+                        </el-col>      
+                        </el-form>                 
+                    </el-row>
+
+                    <el-row >
+                        <el-col :span="5"><p>来源地区</p></el-col>
+                            <el-form disabled>
+                                <el-col :span="8">
+                                    <el-input v-model="sourceArea"></el-input>
+                                </el-col>
+                            </el-form>
+                        <el-col :span="5"><p>入组日期</p></el-col>
+                            <el-form disabled>
+                                <el-col :span="6">
+                                    <el-date-picker
+                                        v-model="bizDonator.joinDate"
+                                        type="date"
+                                        value-format="yyyy-MM-dd">
+                                    </el-date-picker>
+                                </el-col>
+                            </el-form>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="5"><p>采集人员</p></el-col>
+                        <el-col :span="8">
+                            <el-select v-model="formData.collectPerson" placeholder="请选择">
+                                <el-option
+                                    v-for="item in collectors"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+                        <el-col :span="5"><p>接收人员</p></el-col>
+                        <el-col :span="6">
+                            <el-select v-model="formData.receivePerson" placeholder="请选择">
+                                <el-option
+                                    v-for="item in receptionStaff"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="5"><p>本供体此次样本数量</p></el-col>
+                        <el-col :span="8">
+                                <el-input-number v-model="formData.count" controls-position="right" :min="1" :max="9">
+
+                                </el-input-number>
+                        </el-col>
+                        <el-col :span="5"><p>采集日期</p></el-col>
+                        <el-col :span="6">
+                            <el-date-picker
+                                v-model="formData.collectDate"
+                                type="date"
+                                value-format="yyyy-MM-dd">
+                            </el-date-picker>
+                        </el-col>
+                    </el-row>
+                </div>
+            </div>
+            <div class='div5'>
+                <el-button @click="save" type="primary" round>提交</el-button>
+            </div>
+        </el-card>
+        
+    </div>    
+</template>
+
+<script>
+import { provinceAndCityData, regionData, provinceAndCityDataPlus, regionDataPlus, CodeToText, TextToCode } from 'element-china-area-data';
+import { STATION_TYPE} from "@/utils/util";
+import api from '@/api/index';
+export default {
+    data(){
+        return{ 
+            collectors:[],//采集人员列表
+            receptionStaff:[],//接受人员列表
+            names:[],//姓名列表
+            name,//供体姓名
+            sourceArea:'',//来源地区
+            show1:true,
+            bizDonator:{
+                id:'',
+                birthday:'',//出生日期
+                joinDate:'',//入组日期
+            },
+            formData:{
+                materialName:'粪便',//材料名称
+                donatorId:'',//供体id
+                collectPerson:'',//采集人员
+                receivePerson:'',//接收人员
+                count:'',//本供体此次样本
+                collectDate:''//采集日期    
+            }
+    }},
+    methods:{
+        handleSelect(item){
+            this.findById(item.id)
+            this.formData.donatorId = item.id
+        },
+        querySearch(querystring,cb){
+            api.donator.findByName(querystring).then(response =>{
+                this.names = [];
+                for(let i=0;i<response.length;i++){
+                    this.names.push({"value":response[i].name,"id":response[i].id})
+                }
+                cb(this.names)
+            }).catch((error)=>{
+                console.log(error)
+            })
+        },
+        click(index) {
+            if (index == 1) {
+                this.show1 = !this.show1;
+            }
+        },
+        save(){
+            api.raw.save(this.formData).then(response =>{
+                if(response.status == 'error'){
+                    this.$message.error(response.msg);
+                }else{
+                    this.$router.push('/workbench/raw/rawList');
+                }
+            }).catch((error)=>{
+                console.log(error)
+            })
+        },
+        findById(id){
+            api.donator.findById(id).then(response =>{
+                this.bizDonator.birthday = response.birthday;
+                this.bizDonator.joinDate = response.joinDate;
+                this.sourceArea = response.province + response.city + response.region;
+            })
+        },
+        loadData(){
+            api.userRelated.getUserList(STATION_TYPE.COLLECT_PERSON).then(response =>{
+                for(let i=0;i<response.length;i++){
+                    this.collectors.push({"value":response[i].id,"label":response[i].user})
+                }
+            }),
+            api.userRelated.getUserList(STATION_TYPE.RECEIVE_PERSON).then(response =>{
+                for(let i=0;i<response.length;i++){
+                    this.receptionStaff.push({"value":response[i].id,"label":response[i].user})
+                }
+            })
+        }
+    },
+    created(){
+        this.loadData();
+    }
+}
+</script>
+
+<style lang='scss'>
+.approval_upload_design_partner {
+  margin: 10px auto;
+  .div2 {
+    position: relative;
+    margin: 25px;
+    min-height: 20px;
+    line-height: 40px;
+    .content {
+      width: 80%;
+      margin: 35px;
+      margin-left: 50px;
+      p {
+        padding: 0px 5px;
+        margin: 0px 10px;
+      }
+    }
+  }
+  .div5 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+}
+  .div5 {
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+    left: -40px;
+  }
+</style>

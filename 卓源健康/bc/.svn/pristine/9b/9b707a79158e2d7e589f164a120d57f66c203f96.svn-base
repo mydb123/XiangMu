@@ -1,0 +1,139 @@
+<template>
+    <div id="preparationList">
+        <el-breadcrumb>
+            <el-breadcrumb-item :to="{ path: '/workbench/management/preparationList'}">数据编码</el-breadcrumb-item>
+            <el-breadcrumb-item>数据列表</el-breadcrumb-item>
+        </el-breadcrumb>
+        <el-card>
+            <el-row :gutter="10" class="mb20">
+                <el-col :span="3" class="lh40" >请输入供体编码</el-col>
+                <el-col :span="4"><el-input   v-model="query.code"  placeholder="请输入供体编号"></el-input></el-col>
+                 <el-col :span="3"><el-button   @click="addPreparation"  type="primary">添加打印</el-button></el-col>
+            </el-row>
+            <el-table :data="pageResult.rows" border>
+                <el-table-column prop="code" label="制备编号">
+                    <template slot-scope="scope">
+                        <el-link type="primary" @click="lookDetails(scope.row.id)">{{scope.row.code}}</el-link>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="donator_name" label="供体姓名"></el-table-column>
+                <el-table-column prop="product_date" label="制备日期"></el-table-column>
+                <el-table-column prop="expiry_date" label="过期日期"></el-table-column>
+                <el-table-column prop="main_person" label="主制备人"></el-table-column>
+                <el-table-column prop="support_person" label="辅制备人"></el-table-column>
+                <el-table-column prop="raw_code" label="关联原料编码"></el-table-column>
+                <el-table-column prop="status" label="当前状态"></el-table-column>
+                <el-table-column label="操作">
+                    <template slot-scope="scope">
+                        <el-button type="info" @click="print(scope.row.id)">补印</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <!-- 分页 -->
+            <el-pagination
+                @current-change="handleCurrentChange"
+                :current-page="pageRequest.pageNumber"
+                :page-size="pageRequest.pageSize"
+                layout="total, prev, pager, next, jumper"
+                :total="pageResult.total">
+            </el-pagination>
+        </el-card>
+    </div>
+</template>
+
+<script>
+import api from "@/api/index";
+import {pageRequest,pageResult,pageSearch,query,conditionSearch,createdSearch,produceProduct} from "@/utils/pageResult";
+import { RAW_STATUS,STATION_TYPE,productStatus } from "@/utils/util";
+export default {
+    data() {
+        return {
+            query:query,
+            pageResult:pageResult,
+            pageRequest:pageRequest,
+            productStatus:productStatus,
+			birthday:'',//采集日期
+            mainPersons:[],//主制备人员列表
+            supportPersons:[],//辅制备人员列表
+        };
+    },
+    methods: {
+        handleCurrentChange: function(val) {
+            this.paramterCollection()
+            pageRequest.pageNumber = val;
+            pageSearch(produceProduct,query,pageRequest,pageResult);
+        },
+        //条件查询
+        onSubmit() {
+            this.paramterCollection()
+            conditionSearch(produceProduct,query,pageRequest,pageResult);
+        },
+        //查看详情
+        lookDetails(id) {
+            this.$router.push({
+                path: "/workbench/management/preparationDetailList",
+                query: { id: id }
+            });
+        },
+        //补印
+        print(id){
+            this.$router.push({
+                path:"/workbench/management/PreparationOfReprints",
+                query:{id:id}
+            })
+        },
+        addPreparation() {
+            this.$router.push("/workbench/management/addPreparation");
+        },
+        //所有制备人员
+        async loadData(){
+            //主制备人员列表
+            const res = await api.userRelated.getUserList(STATION_TYPE.MAIN_PERSON)
+            this.mainPersons = res;
+            //辅制备人员列表
+            const resw = await api.userRelated.getUserList(STATION_TYPE.SUPPORT_PERSON)
+            this.supportPersons = resw;
+        },
+        //导出
+        // async donorListexport(){
+        //     this.paramterCollection()
+        //     let response = await api.product.exportPreparationExcel(query)
+        //     var blob = new Blob([response.data])
+        //     var downloadElement = document.createElement('a');
+        //     var href = window.URL.createObjectURL(blob); //创建下载的链接
+        //     downloadElement.href = href;
+        //     // downloadElement.download = response.headers['content-disposition'].split(';')[1].split('=')[1]; //下载后文件名
+        //     downloadElement.download = decodeURI(response.headers['filename']) //下载后文件名
+        //     document.body.appendChild(downloadElement);
+        //     downloadElement.click(); //点击下载
+        //     document.body.removeChild(downloadElement); //下载完成移除元素
+        //     window.URL.revokeObjectURL(href); //释放掉blob对象 
+        // },
+         //时间区间
+        paramterCollection(){
+            if(this.birthday&&this.birthday.length>0){
+                this.query.productDateBegin = this.birthday[0]
+                this.query.productDateEnd = this.birthday[1]
+            }else{
+                this.query.productDateBegin = ''
+                this.query.productDateEnd = ''
+            }
+        }
+    },
+    created() {
+        this.loadData()
+        createdSearch(produceProduct,query,pageRequest,pageResult);
+    }
+};
+</script>
+
+<style lang="scss" >
+#preparationList{
+	.mb20{
+		margin-bottom: 20px;
+		.lh40{
+			line-height: 40px;
+		}
+	}
+}
+</style>

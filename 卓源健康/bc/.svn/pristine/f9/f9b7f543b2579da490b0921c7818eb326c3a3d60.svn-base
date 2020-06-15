@@ -1,0 +1,30 @@
+import Container from '@/container/Container'
+/**
+ * 工作台相关路由
+ */
+const workbenchRouter = {
+  path: '/workbench',
+  component: Container,
+  name: '工作台',
+  meta: {title: '工作台',roles: ['/workbench']},
+  redirect: '/workbench/raw/rawList',
+  children: [
+    {
+      path: 'raw',
+      name: '原料操作',
+      hidden: false,
+      redirect: '/workbench/raw/rawList',
+      component: () => import('@/views/workbench/raw'),
+      meta: {title: '原料操作',icon: 'fa fa-cog fa-lg',roles: ['/workbench']},
+      children: [
+        {
+          path: 'rawList',
+          name: '原料列表',
+          component: () => import('@/views/workbench/raw/rawList'),
+          meta: { title: '原料列表', icon: 'form', roles: ['/workbench'] }         
+        },
+      ]
+    }
+  ]
+}
+export default workbenchRouter

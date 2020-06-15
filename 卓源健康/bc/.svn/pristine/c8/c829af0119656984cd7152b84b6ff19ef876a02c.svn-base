@@ -1,0 +1,18 @@
+import base from './base' // 导入接口域名列表
+import {get,post} from '@/utils/http' // 导入http中创建的axios1实例
+import qs from 'qs' // 根据需求是否导入qs模块
+const product = {
+    save(formData){//保存
+      return post(`${base.sq}/bizProduct/save`, qs.stringify(formData));    
+    },
+    findProductByRawId(rawId){
+      return get(`${base.sq}/bizProduct/findProductByRawId?rawId=`+rawId);
+    },
+    getPageByExample(productCode,type,pageNumber,pageSize){
+      return get(`${base.sq}/bizProduct/getPageByExample?productCode=` + productCode + "&type="+type+"&pageNumber=" + pageNumber + "&pageSize=" + pageSize);
+    },
+    findById(id){//根据id查询成品
+      return get(`${base.sq}/bizProduct/findById?id=`+id);
+    }    
+}
+export default product

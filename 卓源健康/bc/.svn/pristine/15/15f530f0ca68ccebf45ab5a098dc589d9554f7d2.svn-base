@@ -1,0 +1,7 @@
+.el-card{
+  margin-top: 20px;  
+}
+
+.el-table {
+  margin: 15px 0;
+}

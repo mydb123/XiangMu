@@ -1,0 +1,226 @@
+<template>
+  <div>
+     <!-- 面包屑 -->
+    <el-breadcrumb>
+      <el-breadcrumb-item :to="{ path:'/workbench/warehouseMmanagement/aftersaleList'}">出库管理</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path:'/workbench/warehouseMmanagement/aftersaleList'}">售后列表</el-breadcrumb-item>
+      <el-breadcrumb-item>售后维护</el-breadcrumb-item>
+    </el-breadcrumb>
+    <el-card>
+        <el-row class="lh40">
+            <el-col :span="2">
+                箱号编码
+            </el-col>
+            <el-col :span="8">
+                <el-input v-model="information.code" disabled></el-input>
+            </el-col>
+        </el-row>
+        <!-- 成品出货信息 -->
+        <div class="wordborder" >
+          <p class='clickbox' @click="dotSwitch(1)">成品出货信息</p>
+          <div class='content' v-show="show1">
+            <el-row>
+                <el-col :span="3">
+                    <p>出货日期</p>
+                </el-col>
+                <el-col :span="8">
+                    <el-date-picker disabled v-model="information.date  " type="date"></el-date-picker>
+                </el-col>
+                <el-col :span="3">
+                    <p>出货数量</p>
+                </el-col>
+                <el-col :span="6">
+                    <el-input v-model="information.count" disabled></el-input>
+                </el-col>
+            </el-row> 
+            <el-row>
+                <el-col :span="3">
+                    <p>客户名称</p>
+                </el-col>
+                <el-col :span="6">
+                    <el-input v-model="information.name" disabled></el-input>
+                </el-col>
+                <el-col :span="3">
+                    <p>出货地区</p>
+                </el-col>
+                <el-col :span="6">
+                    <el-input v-model="sourceArea" disabled></el-input>
+                </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="3">
+                <p>出货备注</p>
+              </el-col>
+              <el-col :span="10">
+                <el-input
+                    disabled
+                    type="textarea"
+                    :autosize="{ minRows: 4, maxRows: 10}"
+                    v-model="information.memo">
+                </el-input>
+              </el-col>
+            </el-row>
+          </div>
+        </div>
+        <!-- 出货信息 -->
+        <el-form :model="formData" :rules="saleRules" ref="saleRef">
+        <div class="wordborder" >
+          <p class='clickbox' @click="dotSwitch(2)">出货信息</p>
+          <div class='content' v-show="show2">
+              <el-row>
+                <el-col :span="4">
+                    <p>售后状态</p>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item prop="status">
+                        <el-select v-model="formData.status" placeholder="请选择" >
+                            <el-option
+                                v-for="item in boxStatusSelect"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="4">
+                    <p>接受日期</p>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item prop="receiveDate">
+                        <el-date-picker v-model="formData.receiveDate" type="date" placeholder="选择日期" ></el-date-picker>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="4">
+                    <p>接收是否化冻</p>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item prop="defrosted">
+                        <el-select  v-model="formData.defrosted" placeholder="请选择">
+                            <el-option
+                                v-for="item in whether"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+              </el-row> 
+              <el-row>
+                
+                    <el-col :span="3">
+                        <p>FOLLOW-UP</p>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-form-item  prop="followUp">
+                            <el-input v-model="formData.followUp"  placeholder="请输入FOLLOW-UP"></el-input>
+                        </el-form-item>
+                    </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="3">
+                    <p>售后备注</p>
+                </el-col>
+                <el-col :span="8">
+                    <el-input 
+                    type="textarea"
+                    v-model="formData.serviceMemo" 
+                    placeholder="请输入"
+                    :autosize="{ minRows: 2, maxRows: 4}">
+                    </el-input>
+                </el-col>
+              </el-row>
+          </div>
+        </div>
+        <el-row class="tac">
+        <el-button @click="submit" type="primary" round>提交</el-button>
+        </el-row> 
+        </el-form>
+    </el-card>
+  </div>
+</template>
+
+<script>
+import api from '@/api/index' // 导入api接口
+import {boxStatusSelect,whether} from '@/utils/util'
+export default {
+
+  data () {
+    return {
+        show1:true,
+        show2:true,
+        code:"",//箱号编码
+        boxStatusSelect:boxStatusSelect,//状态
+        whether:whether,//是否化冻
+        formData:{
+            id:"",
+            status:"",//售后状态
+            receiveDate:"",//接受日期
+            defrosted:"",////接受是否化冻
+            followUp:"",//FOLLOW-UP
+            serviceMemo:""//售后备注
+        },
+        sourceArea:"",//出货地区
+        information:{},
+        saleRules:{
+            status:[
+                { required: true, message: '请选择状态', trigger: 'change' }
+            ],
+            receiveDate:[
+                { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+            ],
+            defrosted:[
+                { required: true, message: '请选择是否化冻', trigger: 'change' }
+            ],
+            followUp:[
+                { required: true, message: '请输入FOLLOW-UP', trigger: 'blur' }
+            ],
+        }
+    }
+  },
+  methods: {
+    dotSwitch(index){
+        if(index==1){
+            this.show1=!this.show1 
+        }else if(index==2){
+            this.show2=!this.show2
+        }else if(index==3){
+            this.show3=!this.show3
+        }
+    }, 
+    async findBys(){
+        const res = await api.box.findById(this.formData.id)
+        this.information=res
+        this.sourceArea=this.information.province+'-'+this.information.city+'-'+this.information.region
+    },
+    //提交
+    submit(){
+        this.$refs.saleRef.validate((valid)=>{
+            if(!valid) return;
+            api.box.afterService(this.formData)
+            this.$router.push({
+                path:"/workbench/warehouseMmanagement/aftersaleList"
+            })
+        })
+    }
+  },
+
+  created () {
+    this.formData.id=this.$route.query.id
+    this.findBys()
+  }
+}
+</script>
+
+<style lang='scss'>
+.tac{
+  text-align: center;
+  .el-button{
+    width: 114px;
+    height: 50px;
+  } 
+}
+</style>

@@ -1,0 +1,67 @@
+import Container from '@/container/Container'
+/**
+ * 工作台相关路由
+ */
+const backstageRouter = {
+    path: '/backstageManagement',
+    component: Container,
+    name: '后台管理',
+    meta: {title: '后台管理',roles: ['/backstageManagement']},
+    redirect: '/backstageManagement/Information/informationChanges',
+    children:[
+        {
+        path: 'Information',
+        name: '信息微调',
+        hidden: false,
+        redirect: '/backstageManagement/Information/informationChanges',
+        component: () => import('@/views/backstageManagement/Information'),
+        meta: {title: '信息微调',icon: 'fa fa-cog fa-lg',roles: ['/backstageManagement']},
+        children:[
+            {
+                path: 'informationChanges',
+                name:'供体信息修改',
+                component: () => import('@/views/backstageManagement/Information/informationChanges'),
+                meta: {title: '信息微调',icon: 'fa fa-cog fa-lg',roles: ['/backstageManagement']},
+            },
+            {
+                path: 'finishedproductModification',
+                name:'成品信息修改',
+                component: () => import('@/views/backstageManagement/Information/finishedproductModification'),
+                meta: {title: '成品信息修改',icon: 'fa fa-cog fa-lg',roles: ['/backstageManagement']},
+            },
+            {
+                path: 'shipmentModification',
+                name:'出货信息修改',
+                component: () => import('@/views/backstageManagement/Information/shipmentModification'),
+                meta: {title: '出货信息修改',icon: 'fa fa-cog fa-lg',roles: ['/backstageManagement']},
+            },
+             //供体信息微调
+            {
+                path: 'informationChangesDetail',
+                name:'供体信息微调',
+                hidden:true,
+                component: () => import('@/views/backstageManagement/Information/informationChangesDetail'),
+                meta: {title: '供体信息微调',icon: 'fa fa-cog fa-lg',roles: ['/backstageManagement']},
+            },
+             //成品信息微调
+             {
+                path: 'productDetail',
+                name:'成品信息微调',
+                hidden:true,
+                component: () => import('@/views/backstageManagement/Information/productDetail'),
+                meta: {title: '成品信息微调',icon: 'fa fa-cog fa-lg',roles: ['/backstageManagement']},
+            },
+            // 出货信息微调
+             {
+                path: 'shipmentDetail',
+                name:'出货信息微调',
+                hidden:true,
+                component: () => import('@/views/backstageManagement/Information/shipmentDetail'),
+                meta: {title: '出货信息微调',icon: 'fa fa-cog fa-lg',roles: ['/backstageManagement']},
+            },
+            
+        ]
+        }
+    ]
+}
+export default backstageRouter

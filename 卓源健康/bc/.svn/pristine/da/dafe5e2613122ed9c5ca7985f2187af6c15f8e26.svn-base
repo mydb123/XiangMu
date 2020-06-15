@@ -1,0 +1,96 @@
+<template>
+  <div>
+    <el-breadcrumb>
+      <el-breadcrumb-item :to="{ path:'/workbench/stockControl/finishedproductList'}">库存管理</el-breadcrumb-item>
+      <el-breadcrumb-item>成品列表</el-breadcrumb-item>
+    </el-breadcrumb>
+    <el-card>
+      <!-- 搜索与添加 --> 
+      <el-row :gutter="20">
+        <el-col :span="5">
+          <el-input clearable v-model="query.code" placeholder="请输入制备批号"  class="input-with-select"></el-input>
+        </el-col>
+        <el-col :span="12">
+          <el-button type="primary" @click="onSubmit">搜索</el-button>
+        </el-col>
+      </el-row>
+        <!-- 列表数据 -->
+         <el-table :data="pageResult.rows" style="width: 80%" border stripe>
+          <el-table-column  label="制备批号">
+            <template slot-scope="scope">
+              <el-link :underline="false" @click="particularList(scope.row.id)">{{scope.row.code}}</el-link>
+            </template>
+          </el-table-column>
+          <el-table-column prop="product_date"  label="制备日期"></el-table-column>
+          <el-table-column prop="expiry_date"  label="过期日期"></el-table-column>
+          <el-table-column label="箱号编码">
+            <template slot-scope="scope">
+              <el-link :underline="false" @click="ctnParticular(scope.row.id)">{{scope.row.box_code}}</el-link>
+            </template>
+          </el-table-column>
+          <el-table-column prop="sell_date"  label="出货日期"></el-table-column>
+          <el-table-column prop="receive_date"  label="收货日期"></el-table-column>
+          <el-table-column prop="status"  label="当前状态"></el-table-column>
+          <el-table-column  label="操作">
+            <el-button type="info">打印</el-button>
+          </el-table-column>
+        </el-table>
+        <!-- 页码 -->
+         <el-pagination
+            @current-change="handleCurrentChange"
+            :current-page="pageRequest.pageNumber"
+            :page-size="pageRequest.pageSize"
+            layout="total, prev, pager, next, jumper"
+            :total="pageResult.total">
+        </el-pagination>
+    </el-card>
+  </div>
+</template>
+
+<script>
+import api from '@/api/index' // 导入api接口
+import {query,pageRequest,pageResult,pageSearch,conditionSearch,createdSearch,getFinishedList} from '@/utils/pageResult';
+export default {
+
+  data () {
+    return {
+      pageRequest:pageRequest,
+      query:query,
+      pageResult:pageResult
+    }
+  },
+  methods: {
+    // 按钮事件
+    onSubmit(){
+      conditionSearch(getFinishedList,query,pageRequest,pageResult)
+    },
+    // 当前页码
+    handleCurrentChange(val){
+      this.pageRequest.pageNumber = val
+      pageSearch(getFinishedList,query,pageRequest,pageResult)
+    },
+    // 列表详情页面
+    particularList(id){
+      this.$router.push({
+        path:"/workbench/stockControl/particulars",
+        query:{id:id}
+        })
+    },
+    // 箱号详情页面
+    ctnParticular(id){
+      this.$router.push({
+        path:"/workbench/warehouseMmanagement/showDetails",
+        query:{id:id}
+      })
+    },
+  },
+
+  created () {
+    createdSearch(getFinishedList,query,pageRequest,pageResult)
+  }
+}
+</script>
+
+<style>
+
+</style>

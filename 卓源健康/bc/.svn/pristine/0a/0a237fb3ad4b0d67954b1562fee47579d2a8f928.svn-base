@@ -1,0 +1,31 @@
+import base from './base' // 导入接口域名列表
+import {get,post} from '@/utils/http' // 导入http中创建的axios1实例
+import qs from 'qs' // 根据需求是否导入qs模块
+
+const userRelated = {
+    // getUserList (stationId) {
+    //     return get(`${base.sq}/userRelated/findUserByStation?stationId=`+stationId);
+    // },
+    //后台管理-供体信息
+    pageByExample () {
+        return get(`${base.sq}/manage/bizDonator/pageByExample`);
+    },
+    //后台管理-成品信息
+    productPage () {
+        return get(`${base.sq}/manage/bizProduct/productPage`);
+    },
+    //后台管理-出货信息
+    manufacture () {
+        return get(`${base.sq}/manage/bizBox/pageByExample`);
+    },
+    //后台管理-修改接口
+    update(SubmitList) {
+        return post(`${base.sq}/manage/bizDonator/update`, qs.stringify(SubmitList));
+    },
+    //后台管理-成品详情 
+    getProductDetails(id) {
+        return get(`${base.sq}/manage/bizProduct/getProductDetails?id=`+id);
+    },
+    
+}
+export default userRelated

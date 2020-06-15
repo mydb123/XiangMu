@@ -1,0 +1,114 @@
+<template>
+<div class='product_code_list'>
+    <p class='mybreadcrumb'>
+        <el-breadcrumb separator-class="el-icon-arrow-right">
+            <el-breadcrumb-item :to="{ path: '/productCodeList' }">成品条码</el-breadcrumb-item>
+            <el-breadcrumb-item >条码列表</el-breadcrumb-item>
+        </el-breadcrumb>
+    </p>
+    <div class='title'>
+        <el-button size="" type="primary" @click="$router.push('/createProductCode')">
+            生成成品条码
+        </el-button>
+    </div>
+    <div class="wordborder_no_click ">
+        <p class='clickbox' v-on:click="click(1)" >条码列表</p>
+        <div class='content' v-show="show1">
+            <el-form :inline="true" :model="formInline" class="demo-form-inline">
+                <el-form-item label="成品条码">
+                    <el-input v-model="formInline.name" placeholder="成品条码"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="onSubmit">查询</el-button>
+                </el-form-item>
+            </el-form>
+            <el-table :data="pageResult.rows" style="margin-bottom:20px;" stripe border size='small'>
+                <el-table-column type="index" label="序号" width="50">    
+                </el-table-column>
+                <el-table-column prop="name" label="原料条码" width="180">    
+                    <template slot-scope="scope">{{ scope.row.raw_code }}</template>
+                </el-table-column>
+                <el-table-column  label="成品条码" width="180">
+                    <template slot-scope="scope">{{ scope.row.product_code }}</template>
+                </el-table-column>
+                <el-table-column label="操作">
+                    <template slot-scope="scope">
+                        <el-button
+                        size="small"
+                        @click="lookBarCode(scope.$index, scope.row.id)">打印</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <el-pagination
+                @current-change="handleCurrentChange"
+                :current-page="pageResult.currentPage"
+                :page-size="pageResult.pageSize"
+                layout="total, prev, pager, next, jumper"
+                :total="pageResult.total">
+            </el-pagination>
+        </div>        
+    </div>
+</div>
+
+</template>
+<script>
+// import api from '@/api/index';
+// import pageResult from '@/utils/pageResult';
+export default {
+    data() {
+        return {
+            show1:true,
+            pageResult:pageResult,
+            formInline: {
+                name: '',
+            },
+        }
+    },
+    methods: {
+        click(index){
+            // this.show1 = !this.show1
+        },
+        // handleCurrentChange: function(currentPage){
+        //     this.pageResult.currentPage = currentPage;
+        //     this.handleList();
+        // },
+        // onSubmit(){
+        //     this.handleList();
+        // },
+        // lookBarCode(index,id){
+        //     console.log(id);
+        //     this.$router.push({path:"/singleProductCodePreview",query:{id:id,showFlag:'listTo'}});
+        // },
+        // handleList() {
+        //     api.product.getPageByExample(this.formInline.name,"1",this.pageResult.currentPage,this.pageResult.pageSize).then((response)=>{
+        //         this.pageResult.rows = response.rows;
+        //         this.pageResult.total = response.total;
+        //     }).catch((error)=>{
+        //         console.log(error);
+        //     });
+        // },
+    },
+    created() {
+        // this.handleList();
+    },
+}
+</script>
+ 
+
+<style lang='scss'>
+.product_code_list{
+    margin: 0 auto;
+    padding: 15px 25px;
+    position: relative;
+    .title{
+        position: absolute;
+        right: 85px;
+        top: 108px;
+        z-index: 1000;
+    }
+    .mybreadcrumb{
+        margin: 15px 20px 35px 13px;
+    }
+}
+
+</style>

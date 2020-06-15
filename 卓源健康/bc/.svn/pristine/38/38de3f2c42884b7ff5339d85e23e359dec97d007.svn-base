@@ -1,0 +1,92 @@
+<template>
+  <div>
+      <el-breadcrumb>
+        <el-breadcrumb-item :to="{ path: '/backstageManagement/Information/shipmentModification' }">信息微调</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/backstageManagement/Information/shipmentModification'}">出货信息修改</el-breadcrumb-item>
+      </el-breadcrumb>
+    <el-card>
+      <el-row :gutter="20">
+        <el-col :span="5">
+          <el-input v-model="query.code" placeholder="请输入内容"  class="input-with-select"></el-input>
+        </el-col>
+        <el-col :span="12">
+          <el-button type="primary" @click="onSubmit">搜索</el-button>
+        </el-col>
+      </el-row>
+        <!-- 列表数据 -->
+         <el-table :data="pageResult.rows"  border stripe>
+          <el-table-column prop="code" label="箱号编码"></el-table-column>
+          <el-table-column prop="date"  label="出货日期"></el-table-column>
+          <el-table-column prop="name"  label="客户名称"></el-table-column>
+          <el-table-column  label="出货地区">
+            <template slot-scope="scope">
+               {{scope.row.province}}-{{scope.row.city}}-{{scope.row.region}}
+              </template>  
+          </el-table-column>
+          <el-table-column prop="count" label="本箱数量"> </el-table-column>
+          <el-table-column
+            fixed="right"
+            label="操作"
+            width="100">
+            <template slot-scope="scope">
+              <el-button @click="lookDetails(scope.row.id)" type="primary" >修改</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <!-- 页码 -->
+         <el-pagination
+            @current-change="handleCurrentChange"
+            :current-page="pageRequest.pageNumber"
+            :page-size="pageRequest.pageSize"
+            layout="total, prev, pager, next, jumper"
+            :total="pageResult.total">
+        </el-pagination>
+    </el-card>
+  </div>
+</template>
+
+<script>
+import api from '@/api/index' // 导入api接口
+import {query,pageRequest,pageResult,pageSearch,conditionSearch,createdSearch,getShipmentInformationList} from '@/utils/pageResult';
+export default {
+
+  data () {
+    return {
+      // 查询条件
+      query,
+      pageResult:pageResult,
+      pageRequest:pageRequest
+    }
+  },
+
+  methods: {
+    // 点击查询
+    onSubmit(){
+      conditionSearch(getShipmentInformationList,query,pageRequest,pageResult)
+    },
+    // 当前页码
+    handleCurrentChange(val){
+      this.pageRequest.pageNumber = val
+      pageSearch(getShipmentInformationList,query,pageRequest,pageResult)
+    },
+    // 添加按钮方法
+    addDialogVisible(){
+
+    },
+    //查看详情
+    lookDetails(id) {
+      this.$router.push({
+        path: "/backstageManagement/Information/shipmentDetail",
+        query: { id: id }
+      });
+    },
+  },
+  created () {
+     createdSearch(getShipmentInformationList,query,pageRequest,pageResult)
+  }
+}
+</script>
+
+<style>
+
+</style>

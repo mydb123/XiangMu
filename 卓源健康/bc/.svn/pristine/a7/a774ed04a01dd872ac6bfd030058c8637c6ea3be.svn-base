@@ -1,0 +1,115 @@
+<template>
+    <div class="product_code_preview">
+        <p class='mybreadcrumb' >
+            <el-breadcrumb separator-class="el-icon-arrow-right">
+                <el-breadcrumb-item :to="{ path: '/workbench/stockControl/finishedproductList' }">原料管理</el-breadcrumb-item>
+                <el-breadcrumb-item :to="{ path: '/workbench/stockControl/finishedproductList' }">原料列表</el-breadcrumb-item>
+                <el-breadcrumb-item >原料补印</el-breadcrumb-item>
+            </el-breadcrumb>
+        </p>
+        <el-card class="box-card" v-for="item in list" :key="item.id">
+            <div class="text item" style="line-height:22px">
+                 {{item.materialName}}
+            </div>
+            <div class="text item" style="line-height:22px">
+                供体姓名：{{item.name}}
+            </div>        
+            <div class="text item" style="line-height:22px">
+                原料编码：{{item.code}}
+            </div>       
+            <div class="text item">
+                <el-image class="product_code_img" :src="barCodeUrl+item.id">
+                    <div slot="error" class="image-slot">
+                        <i class="el-icon-loading"></i>
+                    </div>
+                </el-image>
+            </div>                  
+        </el-card>
+        <div class='div5'>
+            <el-button type="primary" @click="print()">打印条码</el-button>
+        </div>
+    </div>
+</template>
+<script>
+import api from '@/api/index';
+import base from '@/api/base';
+
+import {getLodop} from '@/utils/LodopFuncs'
+export default {
+  data() {
+    return {
+        showFlag:'',
+        barCodeUrl:base.sq+"/workbench/bizRaw/getBarCode?id=",//下载路径        
+        raw:{
+            materialName:"",//原料名称
+            code:"",//原料编码
+            name:""//供体姓名
+        },
+        LODOP:'',
+        list:[],
+        ids:"",
+    }
+  },
+  methods: {
+       loadData(){
+        api.raw.findByIds(this.ids).then((response)=>{
+            this.list=response
+        }).catch((error)=>{
+            console.log(error);
+        });
+    },
+    CreateOneFormPage40_40() {
+        LODOP = getLodop();
+        for(let i in this.list){
+             LODOP.SET_PRINT_PAGESIZE (1,'40mm','40mm','');
+            LODOP.SET_PRINT_MODE("POS_BASEON_PAPER",true);
+            LODOP.NewPage();     
+            LODOP.ADD_PRINT_TEXT('6mm','4mm','35mm','5mm','原料名称：'+this.list[i].materialName) 
+            LODOP.SET_PRINT_STYLEA(0, "FontSize", 6);
+            LODOP.SET_PRINT_STYLEA(0,"FontName","微软雅黑");
+            LODOP.ADD_PRINT_TEXT('11mm','4mm','35mm','5mm','供体姓名：'+this.list[i].name)
+            LODOP.SET_PRINT_STYLEA(0, "FontSize", 6);
+            LODOP.SET_PRINT_STYLEA(0,"FontName","微软雅黑");
+            LODOP.ADD_PRINT_TEXT('16mm','4mm','35mm','5mm','原料编码：'+this.list[i].code)
+            LODOP.SET_PRINT_STYLEA(0, "FontSize", 6);
+            LODOP.SET_PRINT_STYLEA(0,"FontName","微软雅黑");
+            LODOP.ADD_PRINT_BARCODE('22mm','4mm','35mm','10mm',"128A",this.list[i].code);   
+            LODOP.SET_PRINT_STYLEA(0, "FontSize", 6);
+        }
+    },
+    print(id_str){//id-str 打印区域的id
+        this.CreateOneFormPage40_40();
+    //        LODOP.PRINT();
+        LODOP.PREVIEW();
+    }
+  },
+  mounted: function () {
+    this.ids = this.$route.query.data; //获取路由传值
+    // console.log(this.formData.data);
+    this.loadData(this.ids); //加载数据
+  },
+}
+
+</script>
+<style lang='scss'>
+    .product_code_preview{
+        .div5{
+            text-align: center;
+            margin-top:20px;
+            margin-bottom: 20px;
+        }
+        .mybreadcrumb{
+            margin: 15px 20px 35px 13px;
+        }
+        .box-card {
+            margin: 0 auto;
+            width: 400px;
+            font-family:"微软雅黑";
+            font-size:12px;
+            .product_code_img {
+                right:75px;
+            }
+        }
+    }
+    
+</style>

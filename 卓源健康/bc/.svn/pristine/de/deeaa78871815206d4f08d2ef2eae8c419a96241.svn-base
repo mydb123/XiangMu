@@ -1,0 +1,60 @@
+<template>
+    <!-- <div>
+        状态7
+        项目已完成
+    </div> -->
+    <div class='finished_design_dept'>
+        <DesignStepComponent :index='index'></DesignStepComponent>
+        <div>
+            <p class='p1'>您的项目已顺利完成...</p>
+            <p class='p2'>您可以在项目列表中查看</p>
+            <el-button @click="goList" type="primary" round>返回项目列表</el-button>
+        </div>
+    </div>    
+</template>
+
+<script>
+import DesignStepComponent from '@/components/DesignStepComponent'
+export default {
+    components: {
+        DesignStepComponent
+    },
+    data() {
+        return {
+            index:6,
+        }
+    },
+    methods: {
+        goList() {
+                this.$router.replace('/design/dept/finish').then(() => {
+                location.reload();
+            }); 
+        }
+    },
+}
+</script>
+
+<style lang='scss'>
+.finished_design_dept{
+    margin: 0px auto;
+    border: solid 1px #bbb;
+    padding-bottom: 20px;
+    text-align: center;
+    .p1{
+        width:70%;
+        left: 27px;
+        position: relative;
+        text-align: left;
+        height: 100px;
+        margin-top:70px;
+    }
+    .p2{
+        border: solid 1px #bbb;
+        width: 50%;
+        margin: 20px auto;
+        padding: 20px 0;
+        margin-bottom: 50px;
+    }
+}
+
+</style>

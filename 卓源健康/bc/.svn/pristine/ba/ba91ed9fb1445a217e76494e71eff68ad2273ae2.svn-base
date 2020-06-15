@@ -1,0 +1,232 @@
+Date.prototype.format = function(fmt) { 
+  var o = { 
+     "M+" : this.getMonth()+1,                 //月份 
+     "d+" : this.getDate(),                    //日 
+     "h+" : this.getHours(),                   //小时 
+     "m+" : this.getMinutes(),                 //分 
+     "s+" : this.getSeconds(),                 //秒 
+     "q+" : Math.floor((this.getMonth()+3)/3), //季度 
+     "S"  : this.getMilliseconds()             //毫秒 
+ }; 
+ if(/(y+)/.test(fmt)) {
+         fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length)); 
+ }
+  for(var k in o) {
+     if(new RegExp("("+ k +")").test(fmt)){
+          fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+      }
+  }
+ return fmt; 
+}
+
+//是否取样
+const whether = [{
+    value: 'Y',
+    label: '是'
+},{
+    value: 'N',
+    label: '否'
+}]
+
+const ctool ={
+    setObj : function (key, obj) {
+        obj = JSON.stringify(obj);
+        sessionStorage.setItem(key, obj);
+    },
+    getObj : function (key) {
+        var obj = JSON.parse(sessionStorage.getItem(key));
+        return obj;
+    }
+}
+
+const gender =[{
+    value: '男',
+    label: '男'
+},{
+    value: '女',
+    label: '女'
+}]
+
+//箱子状态
+const boxStatusSelect =[{
+    value: '1',
+    label: '正常'
+},{
+    value: '2',
+    label: '退货'
+}]
+
+//库存
+const stock = [
+    {
+        value: '2',
+        label: '库存' 
+    }
+]
+//出货
+const sell = [
+    {
+        value: '4',
+        label: '出货' 
+    }
+]
+// 签收
+const sign = [
+    {
+        value: '5',
+        label: '签收'
+    },
+    {
+        value: '2',
+        label: '库存' 
+    },
+    {
+        value: '6',
+        label: '退货'
+    }
+]
+//退货
+const returns = [
+    {
+        value: '6',
+        label: '退货' 
+    },
+    {
+        value: '2',
+        label: '库存' 
+    },
+    {
+        value: '5',
+        label: '签收'
+    }
+]
+//过期
+const expire = [
+    {
+        value: '3',
+        label: '过期'
+    }
+
+]
+const unite ={
+    stock:stock,
+    sell:sell,
+    sign:sign,
+    returns:returns,
+    expire:expire
+}
+    
+
+
+
+//上传文件类型
+const FILE_TYPE = {
+    EXAM_RESULT:"1",//体检结果
+    SIXTEEN_RESULT:"2",//16s结果
+    RECHECK_RESULT:"3"//复检附件
+}
+   
+// 成品状态
+const PRODUCT_STATUS = { 
+    DISCARD:'0',//废弃
+    PRODUCE:'1',//制配中
+    STOCK:"2",//库存
+    EXPIRE:"3",//过期
+    SELL:"4",//已出货
+    SIGN:"5",//已签收
+    RETURN:"6"//退货
+}
+
+// 箱子的状态
+const BOX_STATUS={
+    NORMAL:"1",//正常
+    RETURN:"2"//退货
+}
+// 岗位类型
+const STATION_TYPE = { 
+    COLLECT_PERSON:'1',//采集人员
+    RECEIVE_PERSON:'2',//接收人员
+    QC_PERSON:'3',//原料质检员
+    MAIN_PERSON:'4',//主制备人员列表
+    SUPPORT_PERSON:'5'//辅制备人员列表
+}
+
+// 原料状态
+const RAW_STATUS = {
+    PENDING_FIRST_CHECK:'1',//待初检
+    PENDING_RECHECK:'2',//待复检
+    PENDING_PRODUCT:'3',//待制备
+    PRODUCT:'4',//已制备
+    DISCARD:'0'//废弃
+}
+
+// 初检评分
+const FIRSTCHECK_SCORE =[{
+    value: 'A',
+    label: 'A'
+},{
+    value: 'B',
+    label: 'B'
+},{
+    value: 'C',
+    label: 'C'
+},{
+    value: 'D',
+    label: 'D'
+}]
+
+// 初检结果
+const FIRSTCHECK_RESULT = [{
+    value: '0',
+    label: '初检不通过'
+},{
+    value: '1',
+    label: '待初检'
+},{
+    value: '2',
+    label: '初检通过'
+}]
+
+// 复检结果
+const RECHECK_RESULT = [{
+    value: '0',
+    label: '复检不通过'
+},{
+    value: '1',
+    label: '待复检'
+},{
+    value: '2',
+    label: '复检通过'
+}]
+
+// 复检信息
+const RECHECK = [
+    {value:'Y',label:'有'},
+    {value:'N',label:'无'}
+]
+
+//成品质检结果
+const PRODUCT_QC= [
+    {value:'0',label:'废弃'},
+    {value:'1',label:'入库'}
+]
+
+
+export {
+    ctool,
+    Reserved,
+    gender,
+    FILE_TYPE,
+    PRODUCT_STATUS,
+    BOX_STATUS,
+    boxStatusSelect,
+    STATION_TYPE,
+    RAW_STATUS,
+    whether,
+    FIRSTCHECK_SCORE,
+    FIRSTCHECK_RESULT,
+    RECHECK,
+    RECHECK_RESULT,
+    unite,
+    PRODUCT_QC
+}

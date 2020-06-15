@@ -1,0 +1,156 @@
+<template>
+    <!-- <div>
+        状态60.
+        评价待确认页面
+    </div> -->
+    <div class='appraise_review_design_dept'>
+        <DesignStepComponent :index='index'></DesignStepComponent>
+        <el-form disabled>
+        <div>
+            <div class='div2'>
+                <div class='content'>
+                    <el-row>
+                        <el-col :span="5"><p>项目名称</p></el-col>
+                        <el-col :span="8" >
+                            <el-input v-model="formData.name" placeholder="请输入内容"></el-input>
+                        </el-col>
+                        <el-col :span="5"><p>状态</p></el-col>
+                        <el-col :span="6">
+                            <el-input v-model="statusText" placeholder="请输入内容"></el-input>
+                        </el-col>
+                    </el-row>
+                </div>
+            </div>
+            <div class="wordborder" >
+                <p class='clickbox' v-on:click="click(1)" >服务评价</p>
+                <div class='content' v-show="show1">
+                    <el-row>
+                        <el-col :span="5"><p>总体评价</p></el-col>
+                        <el-col :span="8" >
+                            <el-input  v-model="formData.overallEvaluation" placeholder="请输入内容"></el-input>
+                        </el-col>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="5"><p>设计评价</p></el-col>
+                        <el-col :span="8">
+                            <el-input  v-model="formData.designEvaluation" placeholder="请输入内容"></el-input>
+                        </el-col>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="5"><p>响应速度</p></el-col>
+                        <el-col :span="19">
+                            <el-input  v-model="formData.respondSpeed" placeholder="请输入内容"></el-input>
+                        </el-col>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="5"><p>其他意见</p></el-col>
+                        <el-col :span="19">
+                            <el-input  v-model="formData.otherSuggest" placeholder="请输入内容"></el-input>
+                        </el-col>
+                    </el-row>
+                </div>
+            </div>
+        </div>
+        </el-form>
+        <div class='div5'>
+            <el-button @click="submit" type="primary" round>确认</el-button>
+        </div>
+    </div>
+</template>
+
+<script>
+import DesignStepComponent from '@/components/DesignStepComponent';
+import api from '@/api/index';
+export default {
+    components: {
+        DesignStepComponent
+    },
+    data() {
+        return {
+            show1:true,
+            show2:true,
+            show3:true,
+            index:6,
+            statusText:'成果已确认,请评价',
+            formData:{
+                id:"",//项目主键
+                name:"",//项目名称
+                overallEvaluation:"",//总体评价
+                designEvaluation:"",//设计评价
+                respondSpeed:"",//响应速度
+                otherSuggest:"",//其他意见
+                status:7,//状态
+                operator:sessionStorage.getItem("user"),//操作人
+                userName:sessionStorage.getItem("user")//日志记录
+            }
+        }
+    },
+    methods: {
+        onSelected(data) {
+            console.log(data)
+        },
+        click(index){
+            if(index==1){
+                this.show1 = !this.show1
+            }else if(index==2){
+                this.show2 = !this.show2
+            }else if(index==3){
+                this.show3 = !this.show3
+            }
+        },
+        submit() {
+            api.designDept.updateStatus(this.formData.id,7).then(response => {
+                this.$message.success("提交成功");                
+                this.$router.push('/design/dept/finished');
+            }).catch(error => {
+                console.log(error);
+            });
+        },
+        loadData(id) {
+            api.designDept.findById(id).then(response => {
+                this.formData.id = response.id;
+                this.formData.name = response.name; //项目名称
+                this.formData.overallEvaluation = response.overallEvaluation;//总体评价
+                this.formData.designEvaluation = response.designEvaluation;//设计评价
+                this.formData.respondSpeed = response.respondSpeed;//响应速度
+                this.formData.otherSuggest = response.otherSuggest;//其他意见
+            }).catch(error => {
+                console.log(error);
+            });
+        }
+    },
+    mounted: function () {
+        // console.info(Industry)
+        this.formData.id = this.$route.query.id; //获取路由传值
+        //加载数据
+        this.loadData(this.formData.id); //项目基本信息
+    },
+}
+</script>
+
+<style lang='scss'>
+.appraise_review_design_dept{
+    margin: 10px auto;
+    border:1px solid #E7E8ED; 
+    .div2{
+        position:relative;
+        margin: 25px;
+        min-height:20px;
+        line-height: 40px;
+        .content{
+            width: 80%;
+            margin: 35px;
+            margin-left:50px;
+            p{
+                padding:0px 5px;   
+                margin:0px 10px; 
+            }
+        }
+    }
+    .div5{
+        text-align: center;
+        margin-bottom: 20px;
+    }
+}
+
+</style>

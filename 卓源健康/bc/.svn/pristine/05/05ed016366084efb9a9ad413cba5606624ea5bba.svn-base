@@ -1,0 +1,172 @@
+<template>
+    <!-- <div>
+        无状态
+        立项提交表单页面
+    </div> -->
+        <div >
+                <div>
+                <el-breadcrumb>
+                    <el-breadcrumb-item :to="{ path: '/workbench' }">操作台</el-breadcrumb-item>
+                    <el-breadcrumb-item :to="{ path: '/workbench/raw'}">原料管理</el-breadcrumb-item>
+                    <el-breadcrumb-item :to="{ path: '/workbench/raw/donorList'}">供体列表</el-breadcrumb-item>
+                    <el-breadcrumb-item :to="{ path: '/workbench/raw/donorDetail'}">供体详情</el-breadcrumb-item>
+                </el-breadcrumb>
+                </div>
+    
+            <el-card>
+            <div class="wordborder" >
+                <p class='clickbox' v-on:click="click(1)" >供体信息</p>
+                <div class='content' v-show="show1">
+                    <el-form disabled>
+                    <el-row>
+                        <el-col :span="5"><p>供体编码</p></el-col>
+                        <el-col :span="8">
+                            <el-input v-model="formData.code"></el-input>
+                        </el-col>
+                        <el-col :span="5"><p>供体姓名</p></el-col>
+                        <el-col :span="4">
+                            <el-input v-model="formData.name"></el-input>
+                        </el-col>
+                    </el-row>
+
+                    <el-row >
+                        <el-col :span="5"><p>供体性别</p></el-col>
+                        <el-col :span="8">
+                            <el-input v-model="formData.sex"></el-input>
+                        </el-col>
+                        <el-col :span="5"><p>出生日期</p></el-col>
+                        <el-col :span="6">
+                            <el-date-picker
+                                v-model="formData.birthday"
+                                type="date"
+                                value-format="yyyy-MM-dd">
+                            </el-date-picker>
+                        </el-col>                       
+                    </el-row>
+                    <el-row >
+                        <el-col :span="5"><p>来源地区</p></el-col>
+                        <el-col :span="8">
+                            <template slot-scope="scope">{{scope.row.province}}{{scope.row.city}}{{scope.row.region}}</template>
+                        </el-col>
+                        <el-col :span="5"><p>入组日期</p></el-col>
+                        <el-col :span="6">
+                            <el-date-picker
+                                v-model="formData.joinDate"
+                                type="date"
+                                value-format="yyyy-MM-dd">
+                            </el-date-picker>
+                        </el-col>
+                    </el-row>
+
+                    <el-row >
+                        <el-col :span="5"><p>体检结果</p></el-col>
+                        <el-col :span="8">
+                            <el-card class="box-card">
+                                <div v-for="fileItem in formData.fileList.examResultList" :key="fileItem.id" class="text item">
+                                    <el-link type="primary" :href="downloadUrl+fileItem.id">{{fileItem.showName }}</el-link>
+                                </div>
+                            </el-card>
+                        </el-col>
+                        <el-col :span="5"><p>最近体检日期</p></el-col>
+                        <el-col :span="6">
+                            <el-date-picker
+                                v-model="formData.lastExamDate"
+                                type="date"
+                                value-format="yyyy-MM-dd">
+                            </el-date-picker>
+                        </el-col>
+                    </el-row>
+
+                    <el-row >
+                        <el-col :span="5"><p>16s结果</p></el-col>
+                        <el-col :span="8">
+                            <el-card class="box-card">
+                                <div v-for="fileItem in formData.fileList.sixteenResult" :key="fileItem.id" class="text item">
+                                    <el-link type="primary" :href="downloadUrl+fileItem.id">{{fileItem.showName }}</el-link>
+                                </div>
+                            </el-card>
+                        </el-col>
+                        <el-col :span="5"><p>最近16s日期</p></el-col>
+                        <el-col :span="6">
+                            <el-date-picker
+                                v-model="formData.sixteenDate"
+                                type="date"
+                                value-format="yyyy-MM-dd">
+                            </el-date-picker>
+                        </el-col>
+                    </el-row>
+                    </el-form>
+                </div>
+            </div>
+            </el-card>
+        </div>   
+             
+</template>
+
+<script>
+import { gender } from "@/utils/util";
+import api from '@/api/index';
+import base from "@/api/base";
+export default {
+    data(){
+        return{   
+            downloadUrl: base.sq + "/workbench/bizDonator/download?access_token=" + store.getters.token + "&fileId=", //下载路径
+            show1:true,
+            showFileFlag1:true,
+            showFileFlag2:true,
+            formData:{
+                code:'',//供体编码
+                name:'',//供体姓名
+                sex:'',//供体性别
+                birthday:'',//出生日期
+                sourceArea:'',//来源地区
+                joinDate:'',//入组日期
+                examResult:'',//体检结果
+                lastExamDate:'',//最近体检日期
+                sixteenResult:'',//16s结果
+                sixteenDate:'',//最近16s日期
+                fileList:{
+                    
+                }
+            }
+    }},
+    methods:{
+        click(index) {
+            if (index == 1) {
+                this.show1 = !this.show1;
+            }
+        }
+    }
+}
+</script>
+
+<style lang='scss'>
+.approval_upload_design_partner {
+  margin: 10px auto;
+  .div2 {
+    position: relative;
+    margin: 25px;
+    min-height: 20px;
+    line-height: 40px;
+    .content {
+      width: 80%;
+      margin: 35px;
+      margin-left: 50px;
+      p {
+        padding: 0px 5px;
+        margin: 0px 10px;
+      }
+    }
+  }
+  .div5 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+}
+  .div5 {
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+    left: -40px;
+  }
+</style>

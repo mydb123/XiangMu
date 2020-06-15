@@ -1,0 +1,193 @@
+<template>
+    <div id="rawList">
+        <el-breadcrumb>
+            <el-breadcrumb-item :to="{ path: '/workbench/raw/rawList'}">原料管理</el-breadcrumb-item>
+            <el-breadcrumb-item>原料列表</el-breadcrumb-item>
+        </el-breadcrumb>
+        <el-card>
+            <el-row class="mb20">
+                <el-col :span="2" class="lh40">请输入姓名</el-col>
+                <el-col :span="5">
+                    <el-input class="w260"  v-model="query.name" placeholder="请输入姓名" ></el-input>
+                </el-col>
+                <el-col :span="2" class="lh40">采集日期</el-col>
+                <el-col :span="6">
+                    <el-date-picker
+                        v-model="birthday"
+                        type="daterange"
+                        align="right"
+                        unlink-panels
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                        value-format="yyyy-MM-dd">
+                    </el-date-picker>
+                </el-col>
+                <el-col :span="2" class="lh40">初检结果</el-col>
+                <el-col :span="5">
+                    <el-select clearable class="w260" v-model="query.firstCheckResult" placeholder="请选择">
+                        <el-option
+                            v-for="item in optionsResult"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                            :disabled="item.disabled">
+                        </el-option>
+                    </el-select>
+                </el-col>
+            </el-row>
+            <el-row class="mb20">
+              <el-col :span="2" class="lh40">复检结果</el-col>
+                <el-col :span="5">
+                    <el-select clearable class="w260" v-model="query.recheckResult" placeholder="请选择">
+                        <el-option
+                            v-for="item in resultOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                            :disabled="item.disabled">
+                        </el-option>
+                    </el-select>
+                </el-col>
+                <el-col :span="2" class="lh40">状态</el-col>
+                <el-col :span="8">
+                    <el-select clearable class="w260" v-model="query.status" placeholder="请选择" >
+                        <el-option
+                            v-for="item in rawStatus"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="2">
+                <el-button type="warning" @click="onSubmit">搜索</el-button>
+                </el-col>
+                <el-col :span="18">
+					<el-button type="warning" @click="donorListexport">导出</el-button>
+				</el-col>
+                <el-col :span="4" >
+                <el-button   @click="addRaw"  type="primary">新增原料</el-button>
+                </el-col>
+            </el-row>
+            <el-table :data="pageResult.rows" border>
+                <el-table-column prop="code" label="原料编码"></el-table-column>
+                <el-table-column prop="name" label="供体姓名">
+                <template slot-scope="scope">
+                    <el-link type="primary" @click="lookDetails(scope.row.id)">{{scope.row.name}}</el-link>
+                </template>
+                </el-table-column>
+                <el-table-column prop="collect_date" label="采集日期"></el-table-column>
+                <el-table-column prop="first_check_result" label="初检结果"></el-table-column>
+                <el-table-column prop="recheck_result" label="复检结果"></el-table-column>
+                <el-table-column prop="weight" label="称重"></el-table-column>
+                <el-table-column prop="status" label="当前状态"></el-table-column>
+                <el-table-column label="操作">
+                <template slot-scope="scope">
+                    <el-button type="info" @click="print(scope.row.id)">补印</el-button>
+                </template>
+                </el-table-column>
+            </el-table>
+            <!-- 分页 -->
+            <el-pagination
+                @current-change="handleCurrentChange"
+                :current-page="pageRequest.pageNumber"
+                :page-size="pageRequest.pageSize"
+                layout="total, prev, pager, next, jumper"
+                :total="pageResult.total">
+            </el-pagination>
+        </el-card>
+    </div>
+</template>
+
+<script>
+import api from "@/api/index";
+import {FIRSTCHECK_RESULT_COPY,RECHECK_RESULT_COPY,rawStatus} from "@/utils/util";
+import {pageRequest,pageResult,pageSearch,query,conditionSearch,createdSearch,getRawList} from "@/utils/pageResult";
+export default {
+    data() {
+        return {
+            query:query,
+            pageResult:pageResult,
+            pageRequest:pageRequest,
+            optionsResult:FIRSTCHECK_RESULT_COPY,//初检结果
+            resultOptions:RECHECK_RESULT_COPY,//复检结果
+            birthday:'',//采集日期
+            rawStatus:rawStatus,//状态
+        };
+    },
+    methods: {
+        handleCurrentChange: function(val) {
+            this.paramterCollection()
+            pageRequest.pageNumber = val;
+            pageSearch(getRawList,query,pageRequest,pageResult);
+        },
+        //条件查询
+        onSubmit() {
+             this.paramterCollection()
+            conditionSearch(getRawList,query,pageRequest,pageResult);
+        },
+        //查看详情
+        lookDetails(id) {
+            this.$router.push({
+                path: "/workbench/raw/rawDetailList",
+                query: { id: id }
+            });
+        },
+        //补印
+        print(id){
+            this.$router.push({
+                path:"/workbench/raw/rawMaterialReprints",
+                query:{id:id}
+            })
+        },
+        addRaw() {
+            this.$router.push("/workbench/raw/addRaw");
+        },
+        //导出
+        async donorListexport(){
+            this.paramterCollection()
+            let response = await api.raw.exportExcel(query)
+            var blob = new Blob([response.data])
+            var downloadElement = document.createElement('a');
+            var href = window.URL.createObjectURL(blob); //创建下载的链接
+            downloadElement.href = href;
+            // downloadElement.download = response.headers['content-disposition'].split(';')[1].split('=')[1]; //下载后文件名
+            downloadElement.download = decodeURI(response.headers['filename']) //下载后文件名
+            document.body.appendChild(downloadElement);
+            downloadElement.click(); //点击下载
+            document.body.removeChild(downloadElement); //下载完成移除元素
+            window.URL.revokeObjectURL(href); //释放掉blob对象 
+        },
+        //时间区间
+        paramterCollection(){
+            if(this.birthday&&this.birthday.length>0){
+                this.query.collectDateBegin = this.birthday[0]
+                this.query.collectDateEnd = this.birthday[1]
+            }else{
+                this.query.collectDateBegin = ''
+                this.query.collectDateEnd = ''
+            }
+        }
+    },
+    created() {
+        createdSearch(getRawList,query,pageRequest,pageResult);
+    }
+};
+</script>
+
+<style lang="scss">
+#rawList{
+	.mb20{
+		margin-bottom: 20px;
+		.lh40{
+			line-height: 40px;
+		}
+	}
+}
+</style>>
+
+
+

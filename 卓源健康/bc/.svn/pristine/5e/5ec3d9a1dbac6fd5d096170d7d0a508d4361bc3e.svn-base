@@ -1,0 +1,447 @@
+<template>
+    <div id="productDetail">
+          <!-- 面包屑 -->
+        <div>
+        <el-breadcrumb>
+            <el-breadcrumb-item :to="{ path: '/backstageManagement' }">信息微调</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/backstageManagement/Information'}">成品信息修改</el-breadcrumb-item>
+            <el-breadcrumb-item >成品数据微调</el-breadcrumb-item>
+        </el-breadcrumb>
+        </div>
+        <!-- 内容主体部分 -->
+        <el-card>
+        <el-form :model="detaliList" :rules="rules" ref="ruleForm">
+         <div class="box" style="border:0px">
+            <div class='content'>
+            <el-row class="lh40">
+                <el-col :span="4"><p>制备批号</p></el-col>
+                <el-col :span="8">
+                    <el-input disabled class="w260" v-model="formData.bizProduct.code"></el-input>
+                </el-col>
+                <el-col :span="4"><p>成品状态</p></el-col>
+                <el-col :span="8">
+                    <el-select class="w260" v-model="detaliList.status" placeholder="请选择" >
+                        <el-option
+                            v-for="item in selects"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-col>
+            </el-row>
+        </div>
+        </div>
+        <!-- 成品制备信息 -->
+        <div class="box" >
+          <p class='clickbox' @click="dotSwitch(1)">成品制备信息</p>
+          <div class='content' v-show="show1">
+              <el-row>
+                <el-col :span="4">
+                    <p>原料编码</p>
+                </el-col>
+                <el-col :span="8">
+                    <el-input class="w260" v-model="formData.bizRawDetails.bizRaw.code" disabled></el-input>
+                </el-col>
+              </el-row> 
+            <el-row>
+                <el-col :span="4"><p>制备日期</p></el-col>
+                <el-col :span="8">
+                  <el-date-picker class="w260" disabled v-model="formData.bizProduct.productDate" type="date">
+                </el-date-picker>
+                </el-col>
+                <el-col :span="4"><p>过期日期</p></el-col>
+                <el-col :span="8">
+                <el-date-picker class="w260" disabled v-model="formData.bizProduct.expiryDate" type="date">
+                </el-date-picker>
+                </el-col>
+              </el-row> 
+               <el-row>
+                <el-col :span="4">
+                    <p>主制备人员</p>
+                </el-col>
+                <el-col :span="8">    
+                    <el-form-item prop="mainPerson">                                              
+                        <el-select class="w260" v-model="detaliList.mainPerson" clearable   placeholder="请选择">
+                            <el-option
+                                v-for="item in mainPersons"
+                                :key="item.id"
+                                :label="item.user"
+                                :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="4">
+                    <p>辅制备人员</p>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item prop="supportPerson"> 
+                        <el-select class="w260" v-model="detaliList.supportPerson"  clearable placeholder="请选择">
+                            <el-option
+                                v-for="item in supportPersons"
+                                :key="item.id"
+                                :label="item.user"
+                                :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+              </el-row>
+          </div>
+        </div> 
+
+        <!-- 成品质检信息 -->
+        <div class="box" >
+          <p class='clickbox' @click="dotSwitch(2)">成品质检信息</p>
+          <div class='content' v-show="show2">
+            <el-row>
+                <el-col :span="4">
+                    <p>OD</p>
+                </el-col>
+                <el-col :span="8">
+                    <el-input class="w260" v-model="formData.bizProduct.od" disabled></el-input>
+                </el-col>
+                <el-col :span="4">
+                    <p>质检结果</p>
+                </el-col>
+                <el-col :span="8">
+                    <el-select class="w260" v-model="formData.bizProduct.qcResult" placeholder="请选择" disabled>
+                        <el-option
+                            v-for="item in qcResults"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-col>
+              </el-row> 
+          </div>
+        </div>
+
+        <!-- 成品出货信息 -->
+        <div class="box" >
+          <p class='clickbox' @click="dotSwitch(3)">成品出货信息</p>
+          <div class='content' v-show="show3">
+            <el-row>
+                <el-col :span="4">
+                    <p>出货日期</p>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item prop="date">
+                        <el-date-picker class="w260" v-model="detaliList.date" type="date"></el-date-picker>
+                    </el-form-item>
+                </el-col>
+            </el-row> 
+            <el-row>
+                <el-col :span="4">
+                    <p>客户名称</p>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item prop="name">
+                        <el-input class="w260" v-model="detaliList.name" ></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="4"><p>出货地区</p></el-col>
+                <el-col :span="8">
+                    <el-form-item prop="sourceArea">
+                        <el-cascader
+                            class="w260"
+                            size="large"
+                            :options="options"
+                            v-model="sourceArea"
+                            @change="handleChange"
+                            clearable>
+                        </el-cascader>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="4">
+                <p>出货备注</p>
+              </el-col>
+              <el-col :span="8">
+                        <el-input
+                            class="mb20"
+                            type="textarea"
+                            :autosize="{ minRows: 5, maxRows: 10}"
+                            v-model="detaliList.memo">
+                        </el-input>
+              </el-col>
+            </el-row>
+          </div>
+        </div>
+
+        <!-- 成品售后信息 -->
+        <div class="box" >
+          <p class='clickbox' @click="dotSwitch(4)">成品售后信息</p>
+          <div class='content' v-show="show4">
+            <el-row>
+                <el-col :span="4">
+                    <p>接受日期</p>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item prop="receiveDate">
+                        <el-date-picker class="w260" v-model="detaliList.receiveDate" type="date"></el-date-picker>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="4">
+                    <p>接受是否化冻</p>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item prop="defrosted">
+                        <el-select class="w260" v-model="detaliList.defrosted" placeholder="请选择" clearable>
+                            <el-option
+                                v-for="item in whether"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="4">
+                    <p>FOLLOW-UP</p>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item prop="followUp">
+                        <el-input class="w260" v-model="detaliList.followUp" ></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="4">
+                <p>售后备注</p>
+              </el-col>
+              <el-col :span="8">
+                <el-input
+                    class="mb20"
+                    type="textarea"
+                    :autosize="{ minRows: 5, maxRows: 10}"
+                    v-model="detaliList.serviceMemo">
+                </el-input>
+              </el-col>
+            </el-row>
+          </div>
+        </div>
+        </el-form>
+        <el-row class="tac">
+        <el-button @click="submit('ruleForm')" type="primary" round>提交</el-button>
+        </el-row> 
+    </el-card>
+    </div>
+</template>
+<script>
+import api from '@/api/index' // 导入api接口
+import {PRODUCT_STATUS,boxStatusSelect,unite,whether,STATION_TYPE,PRODUCT_QC} from '@/utils/util'
+import { provinceAndCityData, regionData, provinceAndCityDataPlus, regionDataPlus, CodeToText, TextToCode } from 'element-china-area-data'
+export default {
+  data () {
+    var checkSourceArea = (rule, value, callback) =>{
+        value = this.sourceArea;
+        if(value == null || value == ''){
+            callback(new Error('请选择出货地区'))
+        }
+        callback()
+    };
+    return {
+        options: regionData,
+        show1:true,
+        show2:true,
+        show3:true,
+        show4:true,
+        boxStatusSelect:boxStatusSelect,//状态
+        whether:whether,//是否化冻
+        unite:unite,//成品状态
+        mainPersons:[],//主制备人员列表
+        supportPersons:[],//辅制备人员列表
+        qcResults:PRODUCT_QC,//质检结果列表
+        selects:[],
+        formData: {
+            bizBox:{},
+            bizProduct:{
+                productDate:"",//制备日期
+                expiryDate:"",//过期日期
+                qcResult:'',//质检结果
+            },
+            bizRawDetails:{
+                receiveDate:"",//收货日期
+                bizRaw:{}//原料编码容器
+            }
+        },
+        sourceArea:[],//出货地区
+        statusText:"",//当前状态
+        bizRawDetails:{
+            bizRaw:{}
+        },
+        detaliList:{
+            status:"",//状态
+            id:"",//id
+            mainPerson:"",//主制备人员
+            supportPerson:"",//辅制备人员
+            date:"",//出货日期
+            name:"",//客户名称
+            province:"",//省
+            city:"",//市
+            region:"",//区
+            memo:"",//出货备注
+            receiveDate:"",//接受日期
+            defrosted:"",//接受是否化冻
+            followUp:"",//FOLLOW-UP
+            serviceMemo:"",//售后备注
+        },
+        rules: {
+            // mainPerson: [
+            //     { required: true, message: '请选择主制备人员', trigger: 'change' },
+            // ],
+            // supportPerson: [
+            //     { required: true, message: '请选择辅制备人员', trigger: 'change' },
+            // ],
+            // date: [
+            //     { required: true, message: '请选择出货日期', trigger: 'change' },
+            // ],
+            // name: [
+            //     { required: true, message: '请填写客户名称', trigger: 'blur' },
+            // ],
+            // sourceArea: [
+            //     { validator:checkSourceArea, trigger: 'change' },
+            // ],
+            // receiveDate: [
+            //     { required: true, message: '请选择接受日期', trigger: 'change' },
+            // ],
+            // defrosted: [
+            //     { required: true, message: '请选择接受是否化冻', trigger: 'change' },
+            // ],
+            // followUp: [
+            //     { required: true, message: '请填写FOLLOW_UP', trigger: 'blur' },
+            // ]
+        }
+    }
+    },
+
+
+  methods: {
+    //下拉的隐藏与显示
+    dotSwitch(index){
+        if(index==1){
+            this.show1=!this.show1
+        }else if(index==2){
+            this.show2=!this.show2
+        }else if(index==3){
+            this.show3=!this.show3
+        }else if(index==4){
+            this.show4=!this.show4
+        }
+    },
+    //进页面渲染的函数
+    async finishedproductList(){
+        const res = await api.admin.getProductDetails(this.formData.id)
+        this.formData.bizProduct = res.bizProduct
+        this.formData.bizRawDetails = res.bizRawDetails
+        let mainPerson = res.bizProduct.mainPerson
+        this.detaliList.mainPerson = mainPerson && mainPerson+'';
+        let supportPerson = res.bizProduct.supportPerson
+        this.detaliList.supportPerson = supportPerson&&supportPerson+'';
+        this.detaliList.status = res.bizProduct.status
+       
+        if(res.bizBox){
+
+            this.detaliList.date = res.bizBox.date//出货日期
+            this.detaliList.name = res.bizBox.name//客户名称
+            this.detaliList.memo = res.bizBox.memo//出货备注
+            this.detaliList.province = res.bizBox.province//省
+            this.detaliList.city = res.bizBox.city//市
+            this.detaliList.region = res.bizBox.region//区
+            this.detaliList.receiveDate = res.bizBox.receiveDate//接受日期
+            this.detaliList.defrosted = res.bizBox.defrosted//接受是否化冻
+            this.detaliList.followUp = res.bizBox.followUp//FOLLOW-UP
+            this.detaliList.serviceMemo = res.bizBox.serviceMemo//售后备注
+
+            let province = TextToCode[this.detaliList.province].code;
+            let city = TextToCode[this.detaliList.province][this.detaliList.city].code;
+            let region = TextToCode[this.detaliList.province][this.detaliList.city][this.detaliList.region].code
+            let a = []
+            a.push(province)
+            a.push(city)
+            a.push(region)
+            this.sourceArea = a
+        }
+        if(res.bizProduct.status==PRODUCT_STATUS.STOCK){
+            this.selects = this.unite.stock
+        }else if(res.bizProduct.status==PRODUCT_STATUS.SELL){
+            this.selects = this.unite.sell
+        }else if(res.bizProduct.status==PRODUCT_STATUS.SIGN){
+            this.selects = this.unite.sign
+        }else if(res.bizProduct.status==PRODUCT_STATUS.RETURN){
+            this.selects = this.unite.returns
+        }else if(res.bizProduct.status==PRODUCT_STATUS.EXPIRE){
+            this.selects = this.unite.expire
+        }
+    },
+    //地区的变化
+    handleChange(){
+        this.detaliList.province = CodeToText[this.sourceArea[0]]
+        this.detaliList.city = CodeToText[this.sourceArea[1]]
+        this.detaliList.region = CodeToText[this.sourceArea[2]]
+    },
+    async loadData(){
+        //主制备人员列表
+        const res = await api.userRelated.getUserList(STATION_TYPE.MAIN_PERSON)
+            this.mainPersons = res;
+        //辅制备人员列表
+        const resw = await api.userRelated.getUserList(STATION_TYPE.SUPPORT_PERSON)
+            this.supportPersons = resw;
+       
+    },
+    //提交
+    submit(ruleForm){
+        this.$refs[ruleForm].validate((valid) => {
+        if (valid) {
+            //save接口
+            api.admin.updateproduct(this.detaliList)
+            this.$message.success("修改成功")
+            this.$router.push({
+            path:"/backstageManagement/Information/finishedproductModification"
+        })
+        } else {
+            console.log('error submit!!');
+            return false;
+        }
+        });
+      }
+    },
+    created () {
+        this.loadData()
+        this.formData.id=this.$route.query.id
+        this.detaliList.id = this.$route.query.id
+        this.finishedproductList()
+    }
+}
+</script>
+
+<style lang='scss'>
+#productDetail{
+    .mb20{
+        margin-bottom: 20px;
+    }
+    .yuanliao{
+        margin: 0;
+        padding: 0;
+        margin-left: 4px;
+    }
+    .ml16{
+        text-align: center;
+        margin-left: 54px;
+    }
+    .tac{
+        text-align: center;
+        .el-button{
+            width: 114px;
+            height: 50px;
+        } 
+}
+    
+}
+</style>

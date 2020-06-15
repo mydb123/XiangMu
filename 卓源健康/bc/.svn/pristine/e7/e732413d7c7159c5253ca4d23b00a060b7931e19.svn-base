@@ -1,0 +1,15 @@
+import base from './base' // 导入接口域名列表
+import {get,post} from '@/utils/http' // 导入http中创建的axios1实例
+import qs from 'qs' // 根据需求是否导入qs模块
+const product = {
+    productPage(query,pageRequest) {
+      return get(`${base.sq}/workbench/bizProduct/productPage?` + qs.stringify(query) +'&'+ qs.stringify(pageRequest));
+    },
+    stockPage(query,pageRequest) {
+      return get(`${base.sq}/workbench/bizProduct/stockPage?` + qs.stringify(query) +'&'+ qs.stringify(pageRequest) );
+    },
+    sellPage(query,pageRequest) {
+      return get(`${base.sq}/workbench/bizProduct/sellPage?` + qs.stringify(query) +'&'+ qs.stringify(pageRequest) );
+    },
+}
+export default product
