@@ -1,0 +1,44 @@
+<template>
+	<view>
+		个人信息
+		<tabBar :pagePath="'/pages/myinfo'"></tabBar>
+		<button @click="lll">跳转</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				info:{}
+			};
+		},
+		onLoad(){
+			this.getinfo()
+		},
+        methods: {
+			getinfo(){
+				uni.request({
+					url:this.URL.ICMS_URL+"/icms/login/userInfo.do",
+					success:function(res){
+						console.log(res.data.username)
+					}
+					
+				});
+			},
+			onShow: function() {
+				uni.hideTabBar()
+			},
+            lll(){
+				uni.navigateTo({
+					 url: '/pages/editinfo'
+				})
+			}
+			
+        }
+	}
+</script>
+
+<style lang="scss">
+
+</style>

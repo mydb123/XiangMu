@@ -1,0 +1,24 @@
+<template>
+  <div>
+    公司简介
+  </div>
+</template>
+
+
+<script>
+export default {
+  name: 'CompanyIntroduction',
+  components: {
+  },
+  data() {
+    return {
+      
+    }
+  },
+  methods: {
+
+  },
+  mounted: function () {
+  },
+}
+</script>

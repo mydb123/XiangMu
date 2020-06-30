@@ -1,0 +1,40 @@
+<template>
+	<view>
+		地下室一摄像头列表
+		//
+		//
+		//
+		<button type="primary" @click="play(1447)">摄像头</button>
+		<button type="primary" @click="play(1447)">摄像头</button>
+		<button type="primary" @click="play(1447)">摄像头</button>
+		<button type="primary" @click="play(1447)">摄像头</button>
+		<button type="primary" @click="play(1447)">摄像头</button>
+		<button type="primary" @click="play(1447)">摄像头</button>
+		<button type="primary" @click="play(1447)">摄像头</button>
+		<button type="primary" @click="play(1447)">摄像头</button>
+		<button type="primary" @click="play(1447)">摄像头</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			};
+		},
+		methods:{
+			play(id){
+				uni.redirectTo({
+				    url: '/pages/video/basement_1_play?id='+id
+				});
+			}	
+		},
+		mounted() {
+			
+		}
+	}
+</script>
+
+<style>
+</style>

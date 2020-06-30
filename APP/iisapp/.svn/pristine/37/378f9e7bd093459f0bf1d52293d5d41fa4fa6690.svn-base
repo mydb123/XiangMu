@@ -1,0 +1,60 @@
+<template>
+	<view>
+		子系统详细
+		<view class="flex_item">
+			<view class="flex_item_head">
+				<view>555</view>
+				<view>7777</view>
+			</view>
+			<view class="flex_item_head">
+				<view>555</view>
+				<textarea value="778888888888888888888888888866666666666666666666666666sdfjsdfsdfhguydfugu88888888888888888888877"/>
+			</view>
+			<view class="flex_item_head">
+				<view>555</view>
+				<view>7777</view>
+			</view>
+			<view class="flex_item_head">
+				<view>555</view>
+				<view>7777</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			};
+		}
+	}
+</script>
+
+<style lang="scss">
+.flex_item{
+	// display: flex;
+	// flex-direction:column;
+	margin: 50rpx auto;
+	.flex_item_head{
+		display: flex;
+		
+		
+	}
+	.flex_item_head view:nth-of-type(1){
+		width: 20%;
+		text-align: center;
+		background-color: red;
+	}
+	.flex_item_head view:nth-of-type(2){
+		width: 200rpx;
+		flex-wrap:wrap;
+		height: 200rpx;
+		text-align: center;
+		word-wrap: break-all;
+		// overflow: hidden;
+		background-color: red;
+	}
+}
+</style>

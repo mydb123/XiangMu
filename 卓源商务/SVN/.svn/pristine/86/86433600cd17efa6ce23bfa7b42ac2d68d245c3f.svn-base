@@ -1,0 +1,153 @@
+import Vue from 'vue'
+import Router from 'vue-router'
+import Login from '@/views/login/login'
+import Container from '@/container/Container'
+import Page404 from '@/views/404'
+import Introduction  from '@/views/company/introduction'
+import Declaration  from '@/views/company/declaration'
+
+import Supplier   from '@/views/Supplier/supplier'
+
+
+/** router modules */
+import designRouter from './modules/design';
+import constructionRouter from './modules/construction'
+import purchaseRouter from './modules/purchase'
+
+//前台
+import ContainerFront from '@/components/front/ContainerFront.vue'
+import IntroductionF  from '@/pages/front/views/introduction'
+import DeclarationF  from '@/pages/front/views/declaration'
+import Support from '@/pages/front/views/support.vue'
+import Connect from '@/pages/front/views/connect.vue'
+import Particulars1 from '@/pages/front/views/Particulars1.vue'
+import Newsdetails from '@/pages/front/views/newsdetails.vue'
+
+
+
+const originalPush = Router.prototype.push
+Router.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+}
+Vue.use(Router)
+
+export const constantRouterMap = [
+  {
+    path: '/login',
+    hidden: true,
+    component: Login
+  },
+  {
+    path: '/404',
+    hidden: true,
+    component: Page404
+  },
+  {
+    path: '/',
+    redirect: '/introduction',
+    component: Container,
+    name: '首页',
+    hidden: false,
+    meta: { title: '首页', icon: '', noCache: true },
+    children: [
+      {
+        path: 'introduction',
+        name: '系统流程g',
+        component: Introduction,
+        meta: { title: '系统流程g', icon: 'fa fa-dashboard fa-lg', noCache: true },
+      },
+      {
+        path: 'declaration',
+        name: '声明g',
+        hidden: true,
+        component: Declaration,
+        meta: { title: '声明g', icon: '', noCache: true }
+      },
+      // { path: '*', redirect: '/404', hidden: true }
+    ]
+  },
+  {
+    path: '/Supplier',
+    component: Container,
+    name: 'Supplier',
+    redirect: '/Supplier/supplierLibrary',
+    hidden: false,
+    meta: { title: 'Supplier', icon: '', noCache: true },
+    children: [
+      {
+        hidden: false,
+        path: 'supplierLibrary',
+        name: '供应商库单',
+        component: Supplier,
+        meta: { title: 'supplierLibrary', icon: 'fa fa-dashboard fa-lg', noCache: true },
+      },
+      
+    ]
+  },
+  {//前端
+    path: '/front',
+    redirect: '/front/IntroductionF',
+    component: ContainerFront,
+    name: 'demo',
+    hidden: true,
+    meta: { title: 'demo', icon: '', noCache: true },
+    children: [
+      {
+        path: 'IntroductionF',
+        name: 'IntroductionF',
+        hidden: true,
+        component: IntroductionF,
+        meta: { title: 'IntroductionF', icon: 'fa fa-dashboard fa-lg', noCache: true },
+        children:[
+          
+        ]
+      },
+      {
+        path: 'demo2',
+        name: 'demo2',
+        hidden: true,
+        component: DeclarationF,
+        meta: { title: 'demo2', icon: '', noCache: true }
+      },
+      {
+        path:'support',
+        component:Support,
+        name:'服务与支持',
+      },
+      {
+        path:'connect',
+        component:Connect,
+        name:'联系我们',
+      },
+      {
+        path:'particulars1',
+        component:Particulars1,
+        name:'图片详情页',
+      },
+      {
+        path:'newsdetails',
+        component:Newsdetails,
+        name:'新闻详情',
+      },
+      // { path: '*', redirect: '/404', hidden: true }
+    ]
+  },
+  
+  
+]
+
+export default new Router({
+  mode: 'history',
+  base: '/bp/',
+  scrollBehavior: () => ({ y: 0 }),
+  routes: constantRouterMap
+})
+
+export const asyncRouterMap = [
+  /** 其他的异步路由表 */
+  designRouter,
+  purchaseRouter,
+  constructionRouter,
+  { path: '*', redirect: '/404', hidden: true }
+]
+

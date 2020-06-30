@@ -1,0 +1,19 @@
+<template>
+	<view>
+		信息发布系统控制服务器
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			};
+		}
+	}
+</script>
+
+<style lang="scss">
+
+</style>

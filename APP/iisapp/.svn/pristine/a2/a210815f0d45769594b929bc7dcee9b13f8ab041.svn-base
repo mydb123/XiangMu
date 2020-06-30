@@ -1,0 +1,27 @@
+<template>
+	<view>
+		<!-- 出入记录查询 -->
+		 <button type="primary"@click="clickDetail">进入停车场详情</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+			};
+		},
+		methods:{
+			clickDetail(){
+				uni.navigateTo({
+					url: '/pages/carpark/cardetail',
+					
+				});
+			}
+		}
+	}
+</script>
+
+<style lang="scss">
+
+</style>

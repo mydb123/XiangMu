@@ -1,0 +1,109 @@
+<template>
+	<view>
+		<view class="uni-list">
+			<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(value, key) in showData" :key="key">
+				<view class="uni-media-list">
+					<view class="uni-media-list-body">
+						<view class="uni-media-list-text-top">
+							<text>部门名称：{{ value.door_name }}</text>
+							<text>门状态：{{ value.DoorStatus}}</text>
+						</view>
+						<view class="uni-media-list-text-bottom">
+							<text>{{ value.Status_date }}</text>
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
+		<uni-load-more :status="status"  :icon-size="16" :show-icon="showIcon"  :content-text="contentText" />
+	</view>
+</template>
+ 
+<script>
+import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
+import {get,post,urls,address} from '@/utils/http.js';
+import {happenTimeFun} from '@/utils/util.js';
+
+export default {
+	components: {
+		uniLoadMore
+	},
+	data() {
+		return {
+			listData: [],//总数据
+			total:0,
+			showData: [],//要展示的数据
+			pageIndex: 0,//页码
+			pageSize: 20,//每页显示记录数
+			queryData: {ids:"key2"},
+			status: 'more',
+			showIcon:false,
+			contentText :{
+				contentdown: '上拉加载更多',
+				// contentrefresh: '加载中',
+				contentnomore: '没有更多',
+			}
+		};
+	},
+	//监听页面加载
+	onLoad() {
+		this.getList();
+	},
+	//下拉刷新
+	onPullDownRefresh() {
+		this.showData = [];
+		this.pageIndex = 0;
+		this.status = "loading";
+		setTimeout(()=>{
+			this.getList(()=>{
+				uni.stopPullDownRefresh();
+			});
+		},1000)
+	},
+	//触底加载数据
+	onReachBottom() {
+		if((this.total - this.showData.length) > 0){
+			this.status = 'more';
+		}else {
+			this.status = 'noMore';
+		}
+		this.pageIndex++;
+		this.showData = [...this.showData,...this.listData.slice(this.pageIndex*this.pageSize,this.pageSize*(this.pageIndex+1))]//加载下一页
+	},
+	methods: {
+		//获取分页数据
+		getList(callback) {
+			let url = urls.onecard_url + address.table;
+			get(url,this.queryData).then(res =>{
+				this.listData = res[1].data.data;
+				for(let i = 0;i<this.listData.length;i++){
+					this.listData[i].Status_date = happenTimeFun(this.listData[i].Status_date);
+				}
+				this.showData = this.listData.slice(this.pageIndex,this.pageSize*(this.pageIndex+1));//第一页的数据
+			})
+			callback && callback();
+		},
+	}
+};
+</script>
+
+<style>
+.uni-media-list-body {
+	height: auto;
+	justify-content: space-around;
+}
+
+.uni-media-list-text-top {
+	display: flex;
+	height: 74rpx;
+	font-size: 28rpx;
+	overflow: hidden;
+	justify-content: space-between;
+}
+
+.uni-media-list-text-bottom {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+}
+</style>

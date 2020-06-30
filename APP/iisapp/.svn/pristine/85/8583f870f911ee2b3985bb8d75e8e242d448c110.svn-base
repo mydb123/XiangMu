@@ -1,0 +1,84 @@
+<template>
+	<view>
+			<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(item,index) in listData" :key="item.ssid" >
+				<view class="uni-media-list">
+					<view class="uni-media-list-body">
+						<view class="uni-media-list-text-top">
+							<text>{{item.name}}</text>
+							<text :class="item.isBad?'red':'green'">{{item.isBad?"故障":"正常"}}</text>
+						</view>
+					</view>
+				</view>
+			</view>
+	</view>
+</template>
+ 
+<script>
+import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
+import {get,post,urls,address} from '@/utils/http.js';
+
+export default {
+	components: {
+		uniLoadMore
+	},
+	data() {
+		return {
+			banner: {},
+			listData: [],//表的信息
+			last_id: '',
+			reload: false,   
+			status: 'more',
+			queryData:{
+				"action":"SubSystemAction",
+				"event_submit_doFindSubSystem":"method",
+				"pageIndex":0,
+				"pageSize":20,
+				"sortField":"",
+				"sortOrder":""
+			}
+			
+		};
+	},
+	onLoad() {
+		this.getList();
+	},
+	methods: { 
+		getList(callback) {
+			let url = urls.icms_url + address.adminScreen;
+			post(url,this.queryData).then(res =>{
+				this.listData = res[1].data.data;
+			})
+			callback && callback();
+		},
+	}
+};
+</script>
+
+<style lang="scss">
+
+.uni-media-list-body {
+	height: auto;
+	justify-content: space-around;
+}
+
+.uni-media-list-text-top {
+	display: flex;
+	height: 74rpx;
+	line-height: 74rpx;
+	font-size: 28rpx;
+	overflow: hidden;
+	justify-content: space-between;
+	.red{
+		color: red;
+	}
+	.green{
+		color: green;
+	}
+}
+
+.uni-media-list-text-bottom {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+</style>

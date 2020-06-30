@@ -1,0 +1,121 @@
+<template>
+	<view>
+		<view class="uni-list">
+			<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(value, key) in listData" :key="key" @click="goDetail(value)">
+				<view class="uni-media-list">
+					<view class="uni-media-list-body">
+						<view class="uni-media-list-text-top">
+							<text>编号：{{ value.id }}</text>
+							<text>操作模块：{{ value. module}}</text>
+						</view>
+						<view class="uni-media-list-text-bottom">
+							<text>操作人：{{ value.operateUser }}</text>
+							<text>{{ value.operateTime }}</text>
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
+		<uni-load-more :status="status" :icon-type = "iconType" :icon-size="16"  :content-text="contentText" />
+	</view>
+</template>
+ 
+<script>
+import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
+import {get,post,urls,address} from '@/utils/http.js';
+
+export default {
+	components: {
+		uniLoadMore
+	},
+	data() {
+		return {
+			listData: [],
+			total:0,
+			queryData: {
+				"action":"SysLogAction",
+				"event_submit_do_find":"method",
+				"pageIndex":0,
+				"pageSize":20,
+				"sortField":"",
+				"sortOrder":""
+			},
+			status: 'more',
+			iconType:'circle',
+			contentText :{
+				contentdown: '上拉加载更多',
+				contentrefresh: '加载中',
+				contentnomore: '没有更多',
+			}
+		};
+	},
+	onLoad() {
+		this.getList();
+	},
+	//下拉刷新
+	onPullDownRefresh() {
+		this.listData = [];
+		this.queryData.pageIndex = 0;
+		this.status = "loading";
+		setTimeout(()=>{
+			this.getList(()=>{
+				uni.stopPullDownRefresh();
+			});
+		},1000)
+	},
+	//触底加载数据
+	onReachBottom() {
+		if((this.total - this.listData.length) > 0){
+			this.status = 'more';
+		}else {
+			this.status = 'noMore';
+		}
+		this.queryData.pageIndex++;
+		this.getList();
+	},
+	methods: {
+		getList(callback) {
+			let url = urls.icms_url + address.adminScreen;
+			post(url,this.queryData).then(res =>{
+				this.listData = [...this.listData,...res[1].data.data];
+				this.total = res[1].data.total;
+			})
+			callback && callback();
+		},
+		goDetail: function(e) {
+			let detail = {
+				id: e.id,
+				module: e.module,
+				remark: e.remark,
+				operateUser: e.operateUser,
+				operateTime: e.operateTime,
+			};
+			uni.navigateTo({
+				url: 'loginfoDetail?loginfoDetail=' + encodeURIComponent(JSON.stringify(detail))
+			});
+		},
+	}
+};
+</script>
+
+<style>
+
+.uni-media-list-body {
+	height: auto;
+	justify-content: space-around;
+}
+
+.uni-media-list-text-top {
+	display: flex;
+	height: 74rpx;
+	font-size: 28rpx;
+	overflow: hidden;
+	justify-content: space-between;
+}
+
+.uni-media-list-text-bottom {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+</style>

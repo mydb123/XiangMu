@@ -1,0 +1,231 @@
+<template>
+    <!-- <div>
+        状态3.
+        清单已确认，方案编制中.
+    </div> -->
+    <div class='plan_upload_design_dept'>
+        <DesignStepComponent :index='index'></DesignStepComponent>
+        <el-form :model="formData" :rules="rules" ref="formData">
+        <div>
+          <el-form disabled>
+            <div class='div2'>
+                <div class='content'>
+                    <el-row>
+                        <el-col :span="5"><p>项目名称</p></el-col>
+                        <el-col :span="8" >
+                            <el-input v-model="formData.name" placeholder="请输入内容" :readonly="readonly"></el-input>
+                        </el-col>
+                        <el-col :span="5"><p>状态</p></el-col>
+                        <el-col :span="6">
+                            <el-input v-model="statusText" placeholder="请输入内容" :readonly="readonly"></el-input>
+                        </el-col>
+                    </el-row>
+                </div>
+            </div>
+          </el-form>  
+            <div class="wordborder" >
+                <p class='clickbox' v-on:click="click(1)" >设计方案</p>
+                <div class='content' v-show="show1">
+                    <el-row>
+                        <el-col :span="5"><p>设计周期</p></el-col>
+                        <el-col :span="8" >
+                            <el-form-item prop="designCycle">
+                            <el-input  v-model="formData.designCycle" placeholder="请输入内容"></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="5"><p>拟交付时间</p></el-col>
+                        <el-col :span="6">
+                            <el-form-item prop="estimateDeliverTime">
+                            <el-date-picker
+                                v-model="formData.estimateDeliverTime"
+                                type="date"
+                                placeholder="选择日期"
+                                value-format="yyyy-MM-dd" :picker-options="pickerOptions">
+                            </el-date-picker>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="5"><p>主设计师</p></el-col>
+                        <el-col :span="8">
+                            <el-form-item prop="designerName">
+                            <el-input  v-model="formData.designerName" placeholder="请输入内容"></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="5"><p>联系方式</p></el-col>
+                        <el-col :span="6">
+                            <el-form-item prop="phone">
+                            <el-input  v-model="formData.phone" placeholder="请输入内容"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="5"><p>设计范围</p></el-col>
+                        <el-col :span="19">
+                            <el-form-item prop="designScope">
+                            <el-input  v-model="formData.designScope" placeholder="请输入内容"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="5"><p>交付成果</p></el-col>
+                        <el-col :span="19">
+                            <el-form-item prop="designResult">
+                            <el-input  v-model="formData.designResult" placeholder="请输入内容"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="5"><p>设计费用</p></el-col>
+                        <el-col :span="8">
+                            <el-form-item prop="designCost">
+                            <el-input  v-model="formData.designCost" placeholder="请输入内容">
+                                <template slot="append">万元</template>
+                            </el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                </div>
+            </div>
+        </div>
+        <div class='div5'>
+            <el-button @click="submit('formData')" type="primary" round>提交</el-button>
+        </div>
+        </el-form>
+    </div>
+</template>
+
+<script>
+import DesignStepComponent from "@/components/DesignStepComponent";
+import { Industry, ProjectMode } from "@/utils/util";
+import api from "@/api/index";
+import {getStatusDesignDeptRouter} from '@/utils/statusDesignRouter';
+export default {
+  components: {
+    DesignStepComponent
+  },
+  data() {
+    return {
+      show1: true,
+      index: 3,
+      options: ProjectMode,
+      options2: Industry,
+      readonly: true,
+      statusText: "方案编制中",
+      pickerOptions: {
+        disabledDate(time) {
+            return time.getTime() < Date.now() - 8.64e7;
+        }
+      },  
+      formData: {
+        id: "", //项目主键
+        name: "", //项目名称
+        designCycle: "", //设计周期
+        estimateDeliverTime: "", //拟交付时间
+        designerName: "", //主设计师
+        phone: "", //联系方式
+        designScope: "", //设计范围
+        designResult: "", //交付成果
+        designCost: "", //设计费用
+        status: 30, //提交方案后的状态
+        operator: sessionStorage.getItem("user"), //操作人
+        userName: sessionStorage.getItem("user") //日志记录
+      },
+      rules: {
+        designCycle: [
+          { required: true, message: "请输入设计周期", trigger: "blur" }
+        ],
+        estimateDeliverTime: [
+          { required: true, message: '请选择拟完成时间', trigger: 'change' }
+        ],
+        designerName: [
+          { required: true, message: "请输入主设计师姓名", trigger: "blur" }
+        ],
+        phone: [{ required: true, message: '请输入联系电话' },
+                {pattern: /^1[345789]\d{9}$/, message: '请输入正确的手机号', trigger: "blur"}],
+        designScope: [
+          { required: true, message: "请输入设计范围", trigger: "blur" }
+        ],
+        designResult: [
+          { required: true, message: "请输入交付成果", trigger: "blur" }
+        ],
+        designCost: [
+          { required: true, message: '请输入设计费用' },
+          {pattern: /^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/, message: '请输入合法数字', trigger: "blur"}
+        ]
+      }
+    };
+  },
+  methods: {
+    click(index) {
+      if (index == 1) {
+        this.show1 = !this.show1;
+      }
+    },
+    onSelected(data) {
+      console.log(data);
+    },
+    submit(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          api.designDept.saveDesignPlan(this.formData).then(response => {
+            if (!response) {
+              this.$message.success("提交成功");
+              this.$router.push(
+                getStatusDesignDeptRouter(30)
+              );
+            } else {
+              this.$message.error("提交失败");
+            }
+          });
+        } else {
+          this.$message("请检查输入是否正确");
+          return false;
+        }
+      });
+    },
+    loadData(id) {
+      api.designDept
+        .findById(id)
+        .then(response => {
+          this.formData.id = response.id;
+          this.formData.name = response.name; //项目名称
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+  },
+  mounted: function() {
+    this.formData.id = this.$route.query.id; //获取路由传值
+    //加载数据
+    this.loadData(this.formData.id); //项目基本信息
+  }
+};
+</script>
+
+<style lang='scss'>
+.plan_upload_design_dept {
+  margin: 10px auto;
+  border: 1px solid #e7e8ed;
+  .div2 {
+    position: relative;
+    margin: 25px;
+    min-height: 20px;
+    line-height: 40px;
+    .content {
+      width: 80%;
+      margin: 35px;
+      margin-left: 50px;
+      p {
+        padding: 0px 5px;
+        margin: 0px 10px;
+      }
+    }
+  }
+  .div5 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+}
+</style>

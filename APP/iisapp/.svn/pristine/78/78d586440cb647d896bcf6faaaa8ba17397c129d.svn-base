@@ -1,0 +1,134 @@
+<template>
+	<view class="myinfo">
+		<view class="">
+			<view class="avatar">
+				<image class="avatar_img" src="/static/font/login_name@2x.png" mode=""></image>
+				<view>用户呢称</view>
+			</view>
+			<view class="loginfos">
+				<image class="loginfos_img" src="/static/font/login_name@2x.png" mode=""></image>
+				<view class="loginfos_text">登录名:</view>
+				<input class="loginfos_input" disabled="true" type="text" value="" placeholder="登录名" />
+			</view>
+			<view class="loginfos">
+				<image class="loginfos_img" src="/static/font/email@2x.png" mode=""></image>
+				<view class="loginfos_text">邮箱:</view>
+				<input class="loginfos_input" disabled="true" type="text" value="" placeholder="请输入邮箱账号" />
+			</view>
+			<view class="loginfos">
+				<image class="loginfos_img" src="/static/font/phone@2x.png" mode=""></image>
+				<view class="loginfos_text">电话:</view>
+				<input class="loginfos_input" disabled="true" type="text" value="" placeholder="请输入电话号码" />
+			</view>
+			<view class="loginfos">
+				<image class="loginfos_img" src="/static/font/beizhu@2x.png" mode=""></image>
+				<view class="loginfos_text">备注:</view>
+				<input class="loginfos_input" disabled="true" type="text" value="" placeholder="请输入请输入备注信息" />
+			</view>
+		</view>
+		<view class="keys">
+			<button class="mwhl"  type="default" @click="modify">修改</button>
+			<button class="mwhl" type="default" @click="dropOut">退出</button>
+		</view>
+		<tabBar :pagePath="'/pages/myinfo'"></tabBar>
+	</view>
+</template>
+
+<script>
+	import {urls,post} from '@/utils/http.js'
+	export default {
+		data() {
+			return {
+				info:{}
+			};
+		},
+		onLoad(){
+			this.getinfo()
+		},
+        methods: {
+			getinfo(){
+				let url = urls.icms_url+"icms/login/userInfo.do"
+				post(url).then(res => {
+					res = res[1]
+					console.info(res)
+				})
+				.catch(err => {
+				})
+			},
+			dropOut(){
+				uni.navigateTo({
+					 url: '/pages/login'
+				})
+			},
+            modify(){
+				uni.navigateTo({
+					 url: '/pages/editinfo'
+				})
+			}
+			
+        }
+	}
+</script>
+
+<style lang="scss">
+	.myinfo{
+		.avatar{
+			margin-top:60rpx ;
+			text-align:center; 	
+			height: 270rpx;
+			margin-bottom: 60rpx;
+			box-shadow: 0 60rpx 0 #f3f4f8;
+			.avatar_img{
+				border-radius: 50%;
+				width: 150rpx;
+				height: 150rpx;
+				background-color: red;
+				
+			}
+		}
+		.loginfos{
+			display: flex;
+			margin: 0 40rpx;
+			height: 100rpx;
+			line-height: 100rpx;
+			border-bottom: 1px solid #ccc;
+			.loginfos_text{
+				width: 200rpx;
+			}
+			.loginfos_img{
+				width: 80rpx;
+				height: 60rpx;
+				margin: auto 0;
+				margin-right: 20rpx;
+			}
+			.loginfos_input{
+				line-height: 100rpx;
+				vertical-align: middle;
+				display: inline-block;
+				margin: auto 0;
+				
+			}
+		}
+		.keys{
+			.mwhl{
+				border-radius: 30rpx;
+				width: 400rpx;
+				height: 80rpx;
+				line-height: 80rpx;
+				
+			}
+			button:nth-child(1){
+				margin: 40rpx auto 20rpx;
+				background-color: #122f5b;
+				color: #FFF;
+				border:1rpx solid #fff;
+			}
+			button:nth-child(2){
+				color: #122f5b;
+				border:1rpx solid #122f5b;
+			}
+			
+		}
+	}
+	
+</style>

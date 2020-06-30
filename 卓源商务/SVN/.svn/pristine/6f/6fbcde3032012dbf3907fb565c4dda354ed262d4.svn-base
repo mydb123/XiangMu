@@ -1,0 +1,111 @@
+<template>
+<!-- 新闻详情 -->
+  <div class="how">
+      <div class="particulars" v-for="item in list" :key="item.id">
+          <div v-if="id==item.id">
+           <div class="particulars-title">{{item.title}}</div>  
+           <div class="particulars-time">{{item.time}}</div>
+           <div class="particulars-picture">
+               <img :src="item.imgUrl" alt="">
+           </div>
+           <div class="particulars-article">
+               {{item.txt}}
+           </div>
+      </div>
+      </div>
+  </div>
+</template>
+
+<script>
+export default {
+
+  data () {
+         id:""
+    return {
+        list:[
+            {
+                imgUrl:require("@/assets/latest/xiangmu (1).jpg"),
+                title:"马鞍山第十二届运动会正式开幕，马鞍山体育会展中心又迎盛事",
+                id:"1",
+                time:"2019-10-18",
+                txt:"10月18日，马鞍山市第十二届运动会在马鞍山体育会展中心盛大开幕，本届运动会设有成年组、中小学组、高校组、中老年组和残疾人组5个组别，涵盖了田径、游泳、篮球、拔河、乒乓球等多项运动。未来一段时间，马鞍山市的运动员们将在这里展开激烈的对战，马鞍山体育会展中心又将迎来一场精彩纷呈的体育盛事。"
+            },
+            {
+                imgUrl:require("@/assets/latest/xiangmu (2).jpg"),
+                title:"“我和我的祖国”评选活动即将开启，快来赢取精美好礼",
+                time:"2019-9-30",
+                id:"2",
+                txt:"70年披荆斩棘，70年风雨兼程，在这70年里，每个中国人都见证着祖国的繁荣复兴，我们热爱这个生我养我的国度，每个人都创造着与祖国特有的故事。虽然国庆假期还未到来，但是我知道你已经无心工作了，只想为祖国庆生，其实早在半年前，你是不是已经开始盘算这7天要如何度过。这个国庆，不管你是游览祖国的大好河山，还是选择回家陪伴家人，都请你晒一晒，晒出你的热爱，晒出你的赤诚，晒出你与祖国的故事。"
+            },
+            {
+                imgUrl:require("@/assets/latest/xiangmu (3).jpg"),
+                title:"东至市民文化中心",
+                time:"2019-11-11",
+                id:"3",
+                txt:"该项目省属“861”重点项目。位于安徽省滁州市，是皖东乃至长三角地区，依托高等院校及科研机构，以战略性新兴产业、文化创意产业和现代服务业为主导产业的科教创业、创新园区。该项目主要建设内容分为科创产业园、文化体育中心工程。其中，科创产业园包括：科创服务楼、专家公寓、研究院实验楼、创客公寓、低层商业房、专家生活科研楼等主体工程、安装工程、设备购置以及室外道路、给排水、供电、消防、绿化、地下管线等室外工程。本项目建设期3年，运营期10年、项目合作期限13年、运作模式BOT、回报机制为政府付费；项目发起人为滁州市人民政府，实施机构为南谯区人民政府，社会资本方包括十七冶集团有限公司与珠海一创明昇投资管理有限公司。"
+            },
+            {
+                imgUrl:require("@/assets/latest/xiangmu (4).jpg"),
+                title:"东至市民文化中心",
+                time:"2019-9-23",
+                id:"4",
+                txt:"9月23日，东京2020年奥运会亚洲区女子手球资格赛在安徽滁州国际手球馆盛大开幕。整个赛事为期7天，来自中国、中国香港、韩国、朝鲜、泰国及哈萨克斯坦的六支国家级女子手球队，将在这里争夺奥运“门票”。高标准国际赛事，汇集亚洲五个国家顶尖手球运动员，CCTV5实时转播，滁州国际手球馆将迎来全世界的关注，展现其无法掩盖的风采。。"
+            },
+        ]
+    }
+  },
+
+  methods: {},
+
+  created () {
+    //   console.log(this.$route.query.id);
+      this.id = this.$route.query.id
+
+  }
+}
+</script>
+
+<style lang='scss'>
+    .how{
+        .particulars{
+            width: 1200px;
+            margin: 0 auto;
+            .particulars-title{
+                font-size: 18px;
+                font-weight: bold;
+                color: #000000;
+                text-align: center;
+                margin-top:70px;
+            }
+            .particulars-time{
+                width: 1200px;
+                height: 55px;
+                line-height: 55px;
+                text-align: center;
+                color: #ccc;
+                font-size: 14px;
+                border-bottom: 1px solid #ccc;
+
+            }
+            .particulars-picture{
+                width: 756px;
+                margin: 0 auto;
+                margin-top: 80px;
+            }
+            img{
+                width: 100%;
+            }
+            .particulars-article{
+                line-height: 40px;
+                text-indent:2em;
+                margin-top: 80px;
+            }
+        }
+    }
+</style>
+
+
+
+
+
+

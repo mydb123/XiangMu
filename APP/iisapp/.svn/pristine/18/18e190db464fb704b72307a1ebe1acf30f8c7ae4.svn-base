@@ -1,0 +1,7 @@
+const adddress = {
+	"userInfo":"/icms/login/userInfo.do",
+	"validUserOldPwd":"/icms/sys/user/validUserOldPwd.do",
+	"editpassword":"/icms/sys/user/editpassword.do",
+	"adminScreen":"/icms/admin/adminScreen.do",
+}
+export default adddress

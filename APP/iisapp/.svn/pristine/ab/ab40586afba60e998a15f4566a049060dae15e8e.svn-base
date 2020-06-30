@@ -1,0 +1,317 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/login",
+			"style": {
+				"navigationBarTitleText": "登录"
+			}
+		}
+		,{
+		    "path" : "pages/editinfo",
+		    "style" : {
+		    	 "navigationBarTitleText": "修改",//设置页面标题文字
+		    	 "app-plus": {
+		    		"autoBackButton": "true" ,//启用返回按钮
+		    		"buttons":[
+		    			{
+		    				"type":"back",
+		    				"float":"left"
+		    			}
+		    		]
+		    	 }
+		    }
+		},
+		// 首页
+		{
+            "path" : "pages/home",
+            "style" : {}
+        },
+		// 我的
+		{
+		    "path" : "pages/myinfo",
+		    "style" : {}
+		},
+		// 视频监控系统---------------------------------------------------------------------------------
+		// 地下室一
+		{
+			"path" : "pages/video/basement_1",
+			"style" : {
+				 "navigationBarTitleText": "地下室一",//设置页面标题文字
+				 "app-plus": {
+					"autoBackButton": "true" ,//启用返回按钮
+					"buttons":[
+						{
+							"type":"back",
+							"float":"left"
+						}
+					]
+				 }
+			}
+		},
+		// 播放承载页面1
+		{
+			"path" : "pages/video/basement_1_play",
+			"style" : {
+				 "navigationBarTitleText": "播放",//设置页面标题文字
+				 "app-plus": {
+					"autoBackButton": "true" ,//启用返回按钮
+					"buttons":[
+						{
+							"type":"back",
+							"float":"left"
+						}
+					]
+				 }
+			}
+		},
+		// 地下室二
+		{
+			"path" : "pages/video/basement_2",
+			"style" : {
+				 "navigationBarTitleText": "地下室二",//设置页面标题文字
+				 "app-plus": {
+					"autoBackButton": "true" ,//启用返回按钮
+					"buttons":[
+						{
+							"type":"back",
+							"float":"left"
+						}
+					]
+				 }
+			}
+		},
+		// 播放承载页面2
+		{
+			"path" : "pages/video/basement_2_play",
+			"style" : {
+				 "navigationBarTitleText": "播放",//设置页面标题文字
+				 "app-plus": {
+					"autoBackButton": "true" ,//启用返回按钮
+					"buttons":[
+						{
+							"type":"back",
+							"float":"left"
+						}
+					]
+				 }
+			}
+		},
+		// 室外
+		{
+			"path" : "pages/video/outdoor",
+			"style" : {
+				 "navigationBarTitleText": "室外",//设置页面标题文字
+				 "app-plus": {
+					"autoBackButton": "true" ,//启用返回按钮
+					"buttons":[
+						{
+							"type":"back",
+							"float":"left"
+						}
+					]
+				 }
+			}
+		},
+		// 信息发布系统
+        {
+            "path" : "pages/information/index",
+            "style" : {
+            	 "navigationBarTitleText": "信息发布系统控制服务器",//设置页面标题文字
+            	 "app-plus": {
+            		"autoBackButton": "true" ,//启用返回按钮
+            		"buttons":[
+            			{
+            				"type":"back",
+            				"float":"left"
+            			}
+            		]
+            	 }
+            }
+        },
+		// 门禁系统
+		// 门卫信息查询
+		{
+            "path" : "pages/onecard/doormanrecord",
+            "style" : {
+            	 "navigationBarTitleText": "门卫信息查询",//设置页面标题文字
+            	 "app-plus": {
+            		"autoBackButton": "true" ,//启用返回按钮
+            		"buttons":[
+            			{
+            				"type":"back",
+            				"float":"left"
+            			}
+            		]
+            	 },
+				 "enablePullDownRefresh": true
+            }
+        },
+		// 人员出入记录表
+		{
+		    "path" : "pages/onecard/inoutrecord",
+		    "style" : {
+		    	 "navigationBarTitleText": "人员出入记录表",//设置页面标题文字
+		    	 "app-plus": {
+		    		"autoBackButton": "true" ,//启用返回按钮
+		    		"buttons":[
+		    			{
+		    				"type":"back",
+		    				"float":"left"
+		    			}
+		    		]
+		    	 },
+				 "enablePullDownRefresh":true
+		    }
+		}
+		//人员出入记录详情
+		,{
+		    "path" : "pages/onecard/inoutrecordDetail",
+		    "style" : {
+				"navigationBarTitleText": "人员出入记录详情",//设置页面标题文字
+				"app-plus": {
+					"autoBackButton": "true" ,//启用返回按钮
+					"buttons":[
+						{
+							"type":"back",
+							"float":"left"
+						}
+					]
+				}
+			}
+		}
+		//停车厂系统
+		//出入记录
+		,{
+            "path" : "pages/carpark/inoutrecord",
+            "style" : {
+            	 "navigationBarTitleText": "出入记录",//设置页面标题文字
+            	 "app-plus": {
+            		"autoBackButton": "true" ,//启用返回按钮
+            		"buttons":[
+            			{
+            				"type":"back",
+            				"float":"left"
+            			}
+            		]
+            	 },
+				 "enablePullDownRefresh": true
+            }
+        }
+		// 出入记录详情
+		,{
+		    "path" : "pages/carpark/cardetail",
+		    "style" : {
+				"navigationBarTitleText": "出入详情",//设置页面标题文字
+				"app-plus": {
+					"autoBackButton": "true" ,//启用返回按钮
+					"buttons":[
+						{
+							"type":"back",
+							"float":"left"
+						}
+					]
+				}
+			}
+		}
+		//进出口监控视频列表
+		,{
+            "path" : "pages/carpark/inoutmonitor",
+            "style" : {
+            	"navigationBarTitleText": "进出口监控视频列表",//设置页面标题文字
+            	"app-plus": {
+					"autoBackButton": "true" ,//启用返回按钮
+					"buttons":[
+						{
+							"type":"back",
+							"float":"left"
+						}
+					]
+				},
+				"enablePullDownRefresh": true
+			} 
+		}
+		// 实时报警
+		// 设备报警信息
+		,{
+		    "path" : "pages/realtime/device",
+		    "style" : {
+		    	 "navigationBarTitleText": "设备报警信息",//设置页面标题文字
+		    	 "app-plus": {
+		    		"autoBackButton": "true" ,//启用返回按钮
+		    		"buttons":[
+		    			{
+		    				"type":"back",
+		    				"float":"left"
+		    			}
+		    		]
+		    	 },
+				"enablePullDownRefresh": true
+		    }
+		}
+		// 设备报警信息详情
+		,{
+		    "path" : "pages/realtime/devicefull",
+		    "style" : {
+		    	 "navigationBarTitleText": "设备报警信息详情",//设置页面标题文字
+		    	 "app-plus": {
+		    		"autoBackButton": "true" ,//启用返回按钮
+		    		"buttons":[
+		    			{
+		    				"type":"back",
+		    				"float":"left"
+		    			}
+		    		]
+		    	 }
+		    }
+		}
+		// 子系统状态
+		,{
+		    "path" : "pages/realtime/sonsystem",
+		    "style" : {
+		    	 "navigationBarTitleText": "子系统状态",//设置页面标题文字
+		    	 "app-plus": {
+		    		"autoBackButton": "true" ,//启用返回按钮
+		    		"buttons":[
+		    			{
+		    				"type":"back",
+		    				"float":"left"
+		    			}
+		    		]
+		    	 } 
+		    }
+		}
+		// 日志信息
+		,{
+		    "path" : "pages/realtime/loginfo",
+		    "style" : {
+		    	 "navigationBarTitleText": "日志信息",//设置页面标题文字
+		    	 "app-plus": {
+		    		"autoBackButton": "true" ,//启用返回按钮
+		    		"buttons":[
+		    			{
+		    				"type":"back",
+		    				"float":"left"
+		    			}
+		    		]
+		    	},
+				"enablePullDownRefresh": true
+		    }
+		}
+		// 入侵报警系统
+		,{
+            "path" : "pages/Intrusion/alarm",
+            "style" : {}
+        }
+		// 登录界面2
+		,{
+            "path" : "pages/login2",
+            "style" : {}
+        }
+    ],
+	"globalStyle": {
+		"navigationBarTextStyle": "white",
+		"navigationBarTitleText": "卓源智能",
+		"navigationBarBackgroundColor": "#0faeff",
+		"backgroundColor": "#F8F8F8"
+	}
+}

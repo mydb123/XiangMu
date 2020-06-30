@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html height:100%;>
+<head>
+	<title>卓源智能</title>
+	<script type="text/javascript" src="./js/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="./js/const.js"></script>
+	<script type="text/javascript" src="https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js"></script>
+	
+	<script type="text/javascript">
+		document.addEventListener('UniAppJSBridgeReady', function() {
+			let u = getQuery('u');
+			let p = getQuery('p');
+			// video
+			$.ajax({
+				type: "post",
+				url: stream_server_url+'doLogin',
+				data:{
+					username:u,
+					password:p,
+				},
+				success: function(msg){
+					// console.info(msg)
+				}
+			});
+			//idps:todo
+			uni.redirectTo({
+			    url: '/pages/home'
+			});
+		});
+		//取url中的参数值
+		function getQuery(name) {
+			// 正则：[找寻'&' + 'url参数名字' = '值' + '&']（'&'可以不存在）
+			let reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+			let r = window.location.search.substr(1).match(reg);
+			if(r != null) {
+				// 对参数值进行解码
+				return decodeURIComponent(r[2]);
+			}
+			return null;
+		}
+	</script>
+</head>
+<body>
+
+</body>
+</html>

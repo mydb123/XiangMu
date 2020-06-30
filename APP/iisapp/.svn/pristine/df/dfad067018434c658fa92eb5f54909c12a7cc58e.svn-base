@@ -1,0 +1,5 @@
+const urls = {
+	"icms_url":"http://192.168.3.60:8080/",
+	"userInfo":"icms/login/userInfo.do"
+}
+export default urls

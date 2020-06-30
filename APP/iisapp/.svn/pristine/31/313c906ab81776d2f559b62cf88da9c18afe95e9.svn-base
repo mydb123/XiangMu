@@ -1,0 +1,32 @@
+<template>
+	<view>
+		地下室二摄像头列表
+		//
+		//
+		//
+		<button type="primary" @click="play(1447)">摄像头</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			};
+		},
+		methods:{
+			play(id){
+				uni.redirectTo({
+				    url: '/pages/video/basement_2_play?id='+id
+				});
+			}	
+		},
+		mounted() {
+			
+		}
+	}
+</script>
+
+<style>
+</style>

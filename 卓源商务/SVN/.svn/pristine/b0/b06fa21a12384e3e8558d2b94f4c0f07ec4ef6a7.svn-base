@@ -1,0 +1,219 @@
+<template>
+    <div class='front'>
+      <el-container>
+<!-- -----------------------------------------------------导航栏------------------------------------------------------------ -->
+        <el-header>
+          <div style="width:100%;height:59px;background:#191970">
+            <div style="width:1200px;height:59px;margin:0px auto">
+              <el-menu
+              router
+              :default-active="$route.path"
+              class="el-menu-demo"
+              mode="horizontal"
+              background-color="#191970"
+              text-color="#fff"
+              active-text-color="#ffd04b">
+                <el-menu-item ><img src="@/assets/logo2.png" style='vertical-align: middle;' width="225" height="25"></el-menu-item>
+                <el-menu-item index="/front/IntroductionF">首页</el-menu-item>
+                <el-menu-item index="/front/support">用户与支持</el-menu-item>   
+                <el-menu-item index="/front/connect">客服中心</el-menu-item>
+                <el-menu-item style='padding:0'><a href='/bp' style='width: 120px; font-size: 14px; text-decoration: none;'><span style="magin-left:20px"> 后台管理中心</span></a></el-menu-item>
+              </el-menu>
+            </div> 
+          </div>
+        </el-header>
+        <el-main>
+              <div class="block">
+              <!-- 放轮播图 -->
+              <el-carousel height="600px" class="lunbo">
+                <el-carousel-item >
+                  <img src="http://img.bj.wezhan.cn/content/sitefiles/2008448/images/8928214_首页banner1.jpeg">
+                </el-carousel-item>
+                <el-carousel-item>
+                  <img src="http://img.bj.wezhan.cn/content/sitefiles/2008448/images/8928215_首页banner2.jpeg">
+                </el-carousel-item>
+                <el-carousel-item>
+                  <img src="http://img.bj.wezhan.cn/content/sitefiles/2008448/images/8928221_首页banner7.jpeg">
+                </el-carousel-item>
+                <el-carousel-item>
+                  <img src="http://img.bj.wezhan.cn/content/sitefiles/2008448/images/8928217_首页banner4.jpeg">
+                </el-carousel-item>
+                <el-carousel-item>
+                  <img src="http://img.bj.wezhan.cn/content/sitefiles/2008448/images/8928220_首页banner6.jpeg">
+                </el-carousel-item>
+                <el-carousel-item>
+                  <img src="http://img.bj.wezhan.cn/content/sitefiles/2008448/images/8928216_首页banner3.jpeg">
+                </el-carousel-item>
+              </el-carousel>   
+          </div>
+          <!-- 路由占位符 -->
+          <router-view></router-view>
+        </el-main>
+        <el-footer>
+          <!-- 底部 -->
+          <div class="floter">
+            <div class="floter_top">
+              <div class="floter_top_div">
+                  <p style="text-align: center;">
+                  <span style="color: rgb(255, 255, 255); font-family: 微软雅黑, &#39;Microsoft YaHei&#39;; font-size: 12px;">
+                  地址：合肥市<span style="color: rgb(255, 255, 255); font-family: 微软雅黑, &#39;Microsoft YaHei&#39;; font-size: 12px;">
+                  高新技术产业开发区望江西路800号 合肥创新产业园B3-5F&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
+                  </span>电话：<span style="color: rgb(255, 255, 255); font-family: 微软雅黑, &#39;Microsoft YaHei&#39;; font-size: 12px;">
+                  0551-66183666 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                  </span>邮箱：<span style="color: rgb(255, 255, 255); font-family: 微软雅黑, &#39;Microsoft YaHei&#39;; font-size: 12px;">
+                  </span>business@chorain.com
+                  <span style="color: rgb(255, 255, 255); font-family: 微软雅黑, &#39;Microsoft YaHei&#39;; font-size: 12px;">
+                  </span></span>
+                  </p>
+              </div>
+            </div>
+            <div class="erwei">
+              <div class="faloterl">
+                <a href='https://weibo.com/u/6594596593?refer_flag=1001030101' target="_blank" >
+                  <img src="http://img1.bj.wezhan.cn/content/sitefiles/2008448/images/12382029_卓源微博二维码_959442e3-58c9-4aa0-943f-b256222c4852_resize_picture.png">
+                </a>
+              </div>
+              <div class="faloter2"><img src="http://img1.bj.wezhan.cn/content/sitefiles/2008448/images/9200363_卓源世创服务号15cm_ebc52515-7be7-4a7e-97da-6efef42143bc_resize_picture.jpeg"></div>
+            </div>
+            <div class="erweijieshao">
+              <div class="faloter3"><img src="http://img1.bj.wezhan.cn/content/sitefiles/2008448/images/12385342_微博-1_2fe53c7d-13ca-48f0-9daf-c233ba56efb5_resize_picture.png" style="vertical-align: middle"><span style="vertical-align: middle">卓源股份微博</span></div>
+              <div class="faloter4"><img src="http://img1.bj.wezhan.cn/content/sitefiles/2008448/images/12385365_微信_e4fa9c6d-f743-49e2-a8a1-03d2fc9d3c21_resize_picture.png" style="vertical-align: middle"><span style="vertical-align: middle">卓源股份公众号</span></div>
+            </div>
+            <div class="dibu">
+              <!-- <p style="text-align: center; color: #999; font-family: 微软雅黑;"><br/></p>
+              <p style="color: rgb(153, 153, 153); font-family: 微软雅黑; text-align: center;"><span style="color: rgb(255, 255, 255);">
+                版权所有：2011-2017 卓源信息科技股份有限公司 All rights reserved <span style="font-family: 微软雅黑, &quot;Microsoft YaHei&quot;; color: rgb(255, 255, 255);">&nbsp;
+              </span><span style="color: rgb(255, 255, 255); font-family: 微软雅黑, &quot;Microsoft YaHei&quot;;">皖ICP备16002302号-2</span>
+              </span></p> -->
+              <p style="text-align: center; color: rgb(255, 255, 255); font-family: 微软雅黑; font-size: 12px; ">版权所有：2011-2017 卓源信息科技股份有限公司 All rights reserved<span style="font-family: 微软雅黑, &quot;Microsoft YaHei&quot;; color: rgb(255, 255, 255); font-size: 12px;">&nbsp;
+              </span><span style="color: rgb(255, 255, 255); font-family: 微软雅黑, &quot;Microsoft YaHei&quot; font-size: 12px;">皖ICP备16002302号-2</span></p>
+            </div>  
+          </div>
+        </el-footer>
+    </el-container>
+    </div>
+</template>
+<script>
+export default {
+    data(){
+      return{
+      }
+    },
+    
+}
+</script>
+<style lang=''>
+*{
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+  html {
+    height: 100%;
+  }
+  body {
+    position: relative;
+    top: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    overflow: scroll;
+  }
+  .el-menu--horizontal>.el-menu-item{
+    height: 59px;
+    left: 100px;
+  }
+  .el-carousel__item h3 {
+    color: #475669;
+    font-size: 14px;
+    opacity: 0.75;
+    line-height: 150px;
+    margin: 0;
+  }
+  .el-carousel__item:nth-child(2n) {
+     background-color: #99a9bf;
+  }
+  .el-carousel__item:nth-child(2n+1) {
+     background-color: #d3dce6;
+  }
+  /*底部样式*/
+.floter{
+  height: 300px;
+  width: 100%;
+  background-color:#2e2f34;
+}
+/*底部上层样式*/
+.floter_top{
+  height: 45px;
+  width: 100%;
+  background-color: black;
+}
+/*上层div*/
+.floter_top_div{
+  height: 45px;
+  width: 1000px;
+  margin: 0px auto;
+  line-height:3;
+}
+/*底部下层样式*/
+.floter_boottom{
+  height: 320px;
+  width: 1000px;
+  margin: 0px auto;
+}
+.erwei{
+  width: 320px;
+  height: 120px;
+  margin: 0 auto;
+  margin-top: 50px;
+}
+.faloterl{
+  width: 50%;
+  float: left;
+}
+.faloter2{
+  width: 50%;
+  float: left;
+  position: relative;
+  left: 40px;
+}
+.erweijieshao{
+  width: 320px;
+  height: 35px;
+  margin: 0 auto;
+  margin-top: 10px;
+}
+.faloter3{
+  width: 50%;
+  float: left;
+  color: #d3dce6;
+}
+.faloter4{
+  width: 50%;
+  float: left;
+  color: #d3dce6;
+  position: relative;
+  left: 40px;
+}
+.dibu{
+  width: 1000px;
+  height: 22px;
+  margin: 0px auto;
+  position: relative;
+  bottom: -10px;
+}
+.el-main{
+  padding-top:0; 
+}
+.el-footer{
+    text-align: center;
+    line-height: 0;
+}
+</style>

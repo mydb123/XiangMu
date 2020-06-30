@@ -1,0 +1,7 @@
+const urls = {
+	"icms_url":"http://192.168.3.60:8080/",
+	"carpark_url": "http://192.168.3.60:9007/",//停车场
+	"carpark_img_url" :"http://192.168.3.60:8080/icms/",//停车场图片地址
+	"onecard_url": "http://192.168.3.57:9007/",//门禁系统
+}
+export default urls

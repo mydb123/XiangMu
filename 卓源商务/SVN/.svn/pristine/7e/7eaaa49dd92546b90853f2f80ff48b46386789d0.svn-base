@@ -1,0 +1,92 @@
+<template>
+   <div class="contact">
+       <!-- 联系我们 -->
+        <div class="contact_title">
+            <span>联系我们</span>
+        </div>
+        <div class="contact_neirong">
+            <div class="contact_information">
+                <p>地址:<span>合肥市高新技术产业开发区望江西路800号
+                  合肥创新产业园B3-5F</span></p>
+                <p>电话:<span>0551-66183666</span></p>
+                <p>网址:<span>www.chorain.com</span></p>
+                <p>邮箱:<span>business@chorain.com</span></p>    
+            </div>
+            <!-- <div class="contact_map"></div> -->
+            <div id="container"></div> 
+            <div class="clearfix"></div>
+        </div>
+
+   </div>
+</template>
+
+<script>
+export default {
+
+  data () {
+    return {
+    }
+  },
+
+  methods: {},
+
+  created () {
+  }
+}
+</script>
+
+<style lang='scss'>
+.contact{
+       .contact_title{
+         height: 30px;
+         margin-top:50px;
+         border-bottom: 1px solid #cccccc;
+            span{
+              width:135px;
+              height: 76px; 
+              border-bottom:3px solid #015289;         
+              font-size: 16px;
+              color: #41a1f2;
+              margin-left: 360px;
+             } 
+       }
+      .contact_neirong{
+         margin-left: 360px;
+         margin-top:94px;
+         margin-bottom: 384px;
+         .contact_information{ 
+           float: left;
+           margin-right:100px;
+              p{
+                font-size: 16px;
+                color: #333;
+                font-weight: bold;
+                font-family: "微软雅黑";
+                margin-bottom:45px;
+                letter-spacing: 1px;
+                span{
+                  font-weight: normal;
+                }
+            }
+          }
+        #container{
+          width: 540px;
+          height: 300px;
+        } 
+        .clearfix{
+          clear: both;
+        }
+      }
+    }
+    
+</style>
+<script>
+  window.onLoad  = function(){
+        var map = new AMap.Map('container');
+  }
+  var url = 'https://webapi.amap.com/maps?v=1.4.15&key=cbc4b6ed84bcded359e066604708f316&callback=onLoad';
+  var jsapi = document.createElement('script');
+  jsapi.charset = 'utf-8';
+  jsapi.src = url;
+  document.head.appendChild(jsapi);
+</script>

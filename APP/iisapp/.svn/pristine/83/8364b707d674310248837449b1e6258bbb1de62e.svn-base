@@ -1,0 +1,19 @@
+<template>
+	<view>
+		进出口监控视频列表
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			};
+		}
+	}
+</script>
+
+<style lang="scss">
+
+</style>

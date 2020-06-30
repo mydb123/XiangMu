@@ -1,0 +1,4 @@
+const urls = {
+	"icms_url":"http://192.168.3.60:8080/",
+}
+export default urls

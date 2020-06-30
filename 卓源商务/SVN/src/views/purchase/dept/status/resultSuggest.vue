@@ -1,0 +1,311 @@
+<template>
+    <!-- <div>
+         状态50.
+        成果修改意见已提交，待修改
+    </div> -->
+    <div class='result_suggest_purchase_dept'>
+        <StepComponent :index='index'></StepComponent>
+        <div>
+            <el-form disabled>
+            <div class='div2'>
+                <div class='content'>
+                    <el-row>
+                        <el-col :span="5"><p>项目名称</p></el-col>
+                        <el-col :span="8" >
+                            <el-input v-model="formData.name" placeholder="请输入内容"></el-input>
+                        </el-col>
+                        <el-col :span="5"><p>状态</p></el-col>
+                        <el-col :span="6">
+                            <el-input v-model="statusText" placeholder="请输入内容"></el-input>
+                        </el-col>
+                    </el-row>
+                </div>
+            </div>
+            <div class="wordborder" >
+                <p class='clickbox' v-on:click="click(1)" >施工方案</p>
+                <div class='content' v-show="show1">
+                    <el-row>
+                        <el-col :span="5"><p>采购月次</p></el-col>
+                        <el-col :span="8" >
+                            <el-input  v-model="formData.count" placeholder="请输入内容"></el-input>
+                        </el-col>
+                        <el-col :span="5"><p>拟完成时间</p></el-col>
+                        <el-col :span="6">
+                            <el-input  v-model="formData.intendedCompleteTime" placeholder="请输入内容"></el-input>
+                        </el-col>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="5"><p>采购人员</p></el-col>
+                        <el-col :span="8">
+                            <el-input  v-model="formData.buyer" placeholder="请输入内容"></el-input>
+                        </el-col>
+                        <el-col :span="5"><p>联系方式</p></el-col>
+                        <el-col :span="6">
+                            <el-input  v-model="formData.buyerPhone" placeholder="请输入内容"></el-input>
+                        </el-col>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="5"><p>采购范围</p></el-col>
+                        <el-col :span="19">
+                            <el-input  v-model="formData.procurementScope" placeholder="请输入内容"></el-input>
+                        </el-col>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="5"><p>经营目标预算</p></el-col>
+                        <el-col :span="19">
+                            <div v-for="item in targetFile" :key="item.id" class="text item">
+                                <el-link type="primary" :href="downloadUrl+item.id">{{item.name}}</el-link>
+                            </div>  
+                        </el-col>
+                    </el-row>
+                </div>
+            </div>
+            </el-form>
+            <div class="wordborder" >
+                <p class='clickbox' v-on:click="click(2)">交付成果</p>
+                <div class='content' v-show="show2">
+                    <el-row >
+                        <el-col :span="5"><p>内容</p></el-col>
+                        <el-col :span="19">
+                            <el-upload
+                                class="upload-demo"
+                                action
+                                :http-request="uploadFileMethod"
+                                list-type="text" :file-list="resultFile"
+                                :before-upload="beforeUpload"
+                                :show-file-list="showFileFlag1"
+                                :on-remove="handleRemove"
+                            >
+                                <el-button size="medium" type="primary" style="width:200px;">成果上传</el-button>
+                            </el-upload>                            
+                        </el-col>
+                    </el-row>
+                </div>
+            </div>
+        </div>
+        <el-form disabled>
+        <div class="wordborder" >
+            <p class='clickbox' v-on:click="click(3)">修改意见</p>
+            <div class='content' v-show="show3">
+                <el-row >
+                    <el-col :span="5"><p>意见内容</p></el-col>
+                    <el-col :span="19">
+                        <el-input
+                            type="textarea"
+                            :rows="3"
+                            placeholder="请输入内容"
+                            v-model="progress">
+                        </el-input>
+                    </el-col>
+                </el-row>
+            </div>
+        </div>
+        </el-form>
+        <div class='div5'>
+            <el-button @click="submit" type="primary" round>提交</el-button>
+        </div>
+    </div>
+</template>
+
+<script>
+import store from '@/store/index'
+import base from '@/api/base'
+import StepComponent from '@/components/StepComponent'
+import {Industry,ProjectMode} from '@/utils/util'
+import api from "@/api/index";
+export default {
+    components: {
+        StepComponent
+    },
+    data() {
+        return {
+            showFileFlag1:true,
+            uploadPercent1:0,
+            flag1:false,
+
+            downloadUrl:base.sq+"/bizPurchase/dept/download?access_token="+store.getters.token+"&fileId=",//下载路径      
+            show1:true,
+            show2:true,
+            show3:true,
+            index:5,
+            statusText:"修改意见已提交，成果待修改",
+            formData:{
+                id:"",
+                name:"",
+                count:"",
+                intendedCompleteTime:"",
+                buyer:"",
+                buyerPhone:"",
+                procurementScope:"",
+                operator:sessionStorage.getItem("user"),
+                userName:sessionStorage.getItem("user")
+            },
+            targetFile:[],//经营目标预算附件
+            resultFile:[],//成果附件
+            progress:""//意见
+        }
+    },
+    methods: {
+        click(index){
+            if(index==1){
+                this.show1 = !this.show1
+            }else if(index==2){
+                this.show2 = !this.show2
+            }else if(index==3){
+                this.show3 = !this.show3
+            }
+        },
+        submit() {
+            api.purchaseDept.updateStatus(this.formData.id,52).then(response => {
+                //console.log(response);      
+                this.$router.push('/purchase/dept/resultUpdate');
+            }).catch(error => {
+                console.log(error);
+            });            
+        },
+        loadData(id) {
+            api.purchaseDept.findById(id).then(response => {
+                this.formData.name = response.name; //项目名称
+                this.formData.count = response.count;//采购次数
+                this.formData.intendedCompleteTime = response.intendedCompleteTime;//拟完成时间
+                this.formData.buyer = response.buyer;//采购人
+                this.formData.buyerPhone = response.buyerPhone;//联系方式
+                this.formData.procurementScope = response.procurementScope;//采购范围
+            }).catch(error => {
+                console.log(error);
+            });
+        },       
+        loadTargetFile(){//加载上传的经营目标预算
+            api.purchaseDept.loadFile(this.formData.id,6).then(response =>{
+                response.forEach(element => {
+                    let obj = new Object();
+                    obj.id = element.id;
+                    obj.name = element.showName;
+                    obj.url = element.url;
+                    this.targetFile.push(obj);
+                });
+            }).catch(error =>{
+                console.log(error);
+            });
+        },
+        loadResultFile(){//加载上传的成果附件
+            api.purchaseDept.loadFile(this.formData.id,5).then(response =>{
+                response.forEach(element => {
+                    let obj = new Object();
+                    obj.id = element.id;
+                    obj.name = element.showName;
+                    obj.url = element.url;
+                    this.resultFile.push(obj);
+                });
+            }).catch(error =>{
+                console.log(error);
+            });
+        },
+        handleRemove(file,fileList){
+           let index = -1;
+            for(let i in this.resultFile){
+                if(file.id==this.resultFile[i].id){
+                    index = i;
+                    break;
+                }
+            }
+            if(index!=-1){
+                this.resultFile.splice(index,1);
+            }
+            api.purchaseDept.deleteFile(file.id).then(response => {
+                //console.log(response);
+            }).catch(error => {
+                console.log(error);
+            });
+        },
+        beforeUpload(file){
+        let fileSize = file.size/1024/1024 <100;
+            if(!fileSize){
+                this.$message("上传文件不得大于100M")
+                return false
+            }  
+        },
+        uploadFileMethod(param) {
+            if(this.flag1){
+                this.$message("请等待当前文件上传完毕")
+                return
+            }
+            this.showFileFlag1 = false
+            this.flag1 = true;
+            this.uploadPercent1 = 1;
+            let timer = setInterval(()=>{
+                // alert()
+                if(this.uploadPercent1<95){
+                this.uploadPercent1 += Math.ceil(Math.random()*5);
+                }
+            }, 700);
+
+            let fileObject = param.file;
+            let formData = new FormData();
+            formData.append("file", fileObject);
+            formData.append("id", this.formData.id);
+            formData.append("fileType",5);//最终成果
+            formData.append("operator", this.formData.operator);
+            formData.append("userName", this.formData.userName);
+            api.purchaseDept.uploadFile(formData).then(response => {
+                clearInterval(timer)
+                this.uploadPercent1 = 100;
+                setTimeout(()=>{
+                    this.flag1 = false;
+                    this.uploadPercent1 = 0;
+                    this.showFileFlag1 = true
+                },700)
+
+                let obj = new Object();
+                obj.id = response.id;
+                obj.name = response.showName;
+                obj.url = response.url;
+                this.resultFile.push(obj);
+            }).catch(error => {
+                console.log(error);
+            });
+        },  
+        findBizPurchaseProgressByExample(){//加载项目信息和最新的意见
+            api.purchaseDept.findBizPurchaseProgressByExample(this.formData.id,50).then(response => {
+                this.progress = response.progress;
+            }).catch(error => {
+                console.log(error);
+            });
+        }                            
+    },
+    mounted: function () {
+        this.formData.id = this.$route.query.id; //获取路由传值
+        this.loadData(this.formData.id); //加载数据
+        this.loadTargetFile();//加载经营目标预算附件
+        this.loadResultFile();//加载成果附件
+        this.findBizPurchaseProgressByExample();
+    },
+}
+</script>
+
+<style lang='scss'>
+.result_suggest_purchase_dept{
+    margin: 10px auto;
+    border:1px solid #E7E8ED; 
+    .div2{
+        position:relative;
+        margin: 25px;
+        min-height:20px;
+        line-height: 40px;
+        .content{
+            width: 80%;
+            margin: 35px;
+            margin-left:50px;
+            p{
+                padding:0px 5px;   
+                margin:0px 10px; 
+            }
+        }
+    }
+    .div5{
+        text-align: center;
+        margin-bottom: 20px;
+    }
+}
+
+</style>

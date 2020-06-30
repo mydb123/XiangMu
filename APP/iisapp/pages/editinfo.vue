@@ -1,0 +1,242 @@
+<template>
+	<view class="editinfo">
+		<view class="loginfos">
+			<image class="loginfos_img" src="/static/font/login_name@2x.png" mode=""></image>
+			<view class="loginfos_text">登录名:</view>
+			<input class="loginfos_input" v-model="userInfo.username" disabled="true" type="text" value="" placeholder="登录名" />
+		</view>
+		<view class="loginfos">
+			<image class="loginfos_img" src="/static/font/password@2x.png" mode=""></image>
+			<view class="loginfos_text">原始密码:</view>
+			<input class="loginfos_input" @blur="checkInitialPsd" name="initialPsd" v-model="initialPsd" type="text" value=""/>
+		</view>
+		<view class="loginfos">
+			<image class="loginfos_img" src="/static/font/password@2x.png" mode=""></image>
+			<view class="loginfos_text">重置密码:</view>
+			<input class="loginfos_input" v-model="psd" type="text" name="psd" value=""/>
+		</view>
+		<view class="loginfos">
+			<image class="loginfos_img" src="/static/font/password@2x.png" mode=""></image>
+			<view class="loginfos_text">确认密码:</view>
+			<input class="loginfos_input" @blur="checkPsd" name="ensurePsd" v-model="ensurePsd" type="text" value=""/>
+		</view>
+		<view class="loginfos">
+			<image class="loginfos_img" src="/static/font/email@2x.png" mode=""></image>
+			<view class="loginfos_text">邮箱:</view>
+			<input class="loginfos_input" v-model="userInfo.email" name="email" type="text" value="" placeholder="请输入邮箱账号" />
+		</view>
+		<view class="loginfos">
+			<image class="loginfos_img" src="/static/font/phone@2x.png" mode=""></image>
+			<view class="loginfos_text">电话:</view>
+			<input class="loginfos_input" type="text" v-model="userInfo.telephone" name="telephone" value="" placeholder="请输入电话号码" />
+		</view>
+		<view class="loginfos h300">
+			<image class="loginfos_img imgone" src="/static/font/beizhu@2x.png" mode=""></image>
+			<view class="loginfos_text">备注:</view>
+			<textarea v-model="userInfo.remark"/>
+		</view>
+		<view class="keys">
+			<button type="default" @click="save()">保存</button>
+			<button type="default" @click="back()">返回</button>
+		</view>
+	</view>
+</template>
+
+<script>
+	import {get,post,urls,address} from '@/utils/http.js';
+	export default {
+		data()  {
+			return {
+				initialPsd:'',//初始密码
+				psd:'',//重置密码,
+				ensurePsd:'',//确认密码
+				userInfo:{
+					userId:'',
+					password:'',//新密码
+					oldpw:'',//旧密码
+					isEnable:'',
+					createTime:new Date,
+					updateTime:new Date,
+					username:"",//登录名
+					email:'',//邮箱
+					telephone:'',//电话
+					remark:'',
+					roleIds:''
+				}
+			};
+		},
+		methods: {
+			//校验原始密码
+			checkInitialPsd(){
+				let queryData = {p:this.userInfo.username,pwd:this.userInfo.username+"-"+this.initialPsd};
+				let url = urls.icms_url + address.validUserOldPwd;
+				post(url,queryData).then(res =>{
+					   if(res[1].data == false){
+						   uni.showToast({
+						   	title:"初始密码错误，请重试",
+							icon:"none",
+						   })
+					   }
+				})
+			},
+			//校验两次密码是否正确
+			checkPsd(){
+				if(this.psd != this.ensurePsd){
+					uni.showToast({
+						title:"两次密码不一致，请重新输入",
+						icon:"none"
+					})
+				}
+			},
+			//保存修改信息
+		    save(){
+				if(!this.initialPsd || !this.psd || !this.ensurePsd){
+					uni.showToast({
+						title:"存在非空字段未填写",
+						icon:"none"
+					})
+					return
+				}
+				this.userInfo.password = this.psd;
+				this.userInfo.oldpw = this.initialPsd;
+				let url = urls.icms_url + address.editpassword;
+				let queryData = {"data":JSON.stringify(this.userInfo)};
+			    post(url,queryData).then(res => {
+					uni.showToast({
+						title:res[1].data.message,
+						icon: "none"
+					})
+				});
+			},
+			//返回个人信息页
+			back() {
+				uni.redirectTo({
+					url:"/pages/myinfo",
+				})
+			}
+		},
+		onLoad() {
+			let url = urls.icms_url+address.userInfo;
+			get(url).then(res => {
+				this.userInfo = res[1].data;
+			}).catch(err =>{
+				console.log(err);
+			})
+		}
+	}
+</script>
+
+<style lang="scss">
+	.editinfo{
+		view:nth-child(1) {
+			.loginfos_text {
+				width: 150rpx;
+			}
+		}
+		view:nth-child(5) {
+			.loginfos_text {
+				width: 150rpx;
+			}
+		}
+		view:nth-child(6) {
+			.loginfos_text {
+				width: 150rpx;
+			}
+		}
+		view:nth-child(7) {
+			.loginfos_text {
+				width: 150rpx;
+			}
+		}
+		.avatar {
+			margin-top:60rpx ;
+			text-align:center; 	
+			height: 270rpx;
+			margin-bottom: 60rpx;
+			box-shadow: 0 60rpx 0 #f3f4f8;
+			.avatar_img {
+				border-radius: 50%;
+				width: 150rpx;
+				height: 150rpx;
+				background-color: red;
+			}
+		}
+		.imgFather {
+			width: 80rpx;
+		}
+		.loginfos {
+			display: flex;
+			margin: 0 40rpx;
+			height: 100rpx;
+			line-height: 200rpx;
+			border-bottom: 1px solid #ccc;
+		}
+		.loginfos {
+			display: flex;
+			margin: 0 40rpx;
+			height: 100rpx;
+			line-height: 100rpx;
+			border-bottom: 1px solid #ccc;
+			.loginfos_text {
+				font-size: 40rpx;
+				width: 200rpx;
+				color: #bebebe;
+				line-height: 100rpx;
+			}
+			textarea {
+				flex: 1;
+				height: 200rpx;
+				font-size: 34rpx;
+			}
+			.loginfos_img {
+				width: 70rpx;
+				height: 70rpx;
+				margin: auto 0;
+				margin-right: 20rpx;
+			}
+			.loginfos_input {
+				font-size: 34rpx;
+				line-height: 100rpx;
+				flex:1;
+				vertical-align: middle;
+				display: inline-block;
+				margin: auto 0;
+			}
+		}
+		.h300{
+			height: 200rpx;
+			.imgone{
+				margin-top: 20rpx;
+				margin-right: 20rpx;
+			}
+			.w200{
+				width: 250rpx;
+			}
+			.fs40{
+				font-size: 34rpx;
+				height: 200rpx;
+				width: 330rpx;
+				line-height: 50rpx;
+				margin-top: 28rpx;
+			}
+		}
+		.keys {
+			button {
+				border-radius: 30rpx;
+				width: 400rpx;
+				height: 80rpx;
+				line-height: 80rpx;
+			}
+			button:nth-child(1) {
+				margin: 40rpx auto 20rpx;
+				background-color: #122f5b;
+				color: #FFF;
+				border:1rpx solid #fff;
+			}
+			button:nth-child(2) {
+				color: #122f5b;
+				border:1rpx solid #122f5b;
+			}
+		}
+	}
+</style>

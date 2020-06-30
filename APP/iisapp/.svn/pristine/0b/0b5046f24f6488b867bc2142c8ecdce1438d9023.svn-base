@@ -1,0 +1,79 @@
+<template>
+	<view>
+		<view class="flex_item">
+			<view class="flex_item_head">
+				<label>编号:</label>
+				<text>{{loginfoDetail.id}}</text>
+			</view>
+			<view class="flex_item_head">
+				<label>操作模块:</label>
+				<text>{{loginfoDetail.module}}</text>
+			</view>
+			<view class="flex_item_head">
+				<label>备注:</label>
+				<text>{{loginfoDetail.remark}}</text>
+			</view>
+			<view class="flex_item_head">
+				<label>操作人:</label>
+				<text>{{loginfoDetail.operateUser}}</text>
+			</view>
+			<view class="flex_item_head">
+				<label>操作时间:</label>
+				<text>{{loginfoDetail.operateTime}}</text>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				loginfoDetail:{}
+			}
+		},
+		methods: {
+			
+		},
+		onLoad(option) {
+			const loginfoDetail = JSON.parse((option.loginfoDetail));
+			this.loginfoDetail = loginfoDetail;
+		}
+	}
+</script>
+
+<style lang="scss">
+.flex_item{
+	display: flex;
+	flex-direction:column;
+	margin: 10rpx auto;
+	box-shadow: 0 -10rpx 0 #ccc; 
+	.flex_item_head{
+		display: flex;
+		border-bottom: 2rpx solid #ece9ec;
+	}
+	.flex_item_head:nth-of-type(2n){
+		background-color: #f6f3f7;
+	}
+	.flex_item_head label:nth-of-type(1){
+		width: 30%;
+		text-align: center;
+		height: 100rpx;
+		line-height: 100rpx;
+		font-size: 30rpx;
+	}
+	.flex_item_head text:nth-last-of-type(1){
+		width: 70%;
+		text-align: center;
+		line-height: 100rpx;
+	}
+	.flex_item_head textarea:nth-of-type(1){
+		width: 70%;
+		height: 172rpx;
+		text-align: center;
+		padding-top: 16rpx;
+		box-sizing: border-box;
+		overflow: hidden;
+	}
+}
+</style>

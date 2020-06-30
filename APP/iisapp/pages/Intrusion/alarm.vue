@@ -1,0 +1,101 @@
+<template>
+	<view>
+		<view class="uni-media-list uni-list-cell" @click="goList1">
+			<view class="uni-media-list-body">
+				<view class="uni-media-list-text-top">
+					<text>弱电间	T-1-1</text>
+					<view class="sanjiao" ></view>
+				</view>
+			</view>
+		</view>
+		<view class="uni-media-list uni-list-cell" @click="goList2">
+			<view class="uni-media-list-body">
+				<view class="uni-media-list-text-top">
+					<text>弱电间	T-1-2</text>
+					<view class="sanjiao" ></view>
+				</view>
+			</view>
+		</view>
+		<view class="uni-media-list uni-list-cell" @click="goList3">
+			<view class="uni-media-list-body">
+				<view class="uni-media-list-text-top">
+					<text>弱电间	T-1-3</text>
+					<view class="sanjiao" ></view>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+ 
+<script>
+
+export default {
+
+	data() {
+		return {
+			
+		};
+	},
+	onLoad() {
+		
+	},
+	methods: { 
+		//去往详情页
+		goList1: function(e) {
+			uni.navigateTo({
+				url: 'alarmList1'
+			});
+		},
+		goList2: function(e) {
+			uni.navigateTo({
+				url: 'alarmList2'
+			});
+		},
+		goList3: function(e) {
+			uni.navigateTo({
+				url: 'alarmList3'
+			});
+		},
+		
+		
+	}
+};
+</script>
+
+<style lang="scss">
+
+.uni-media-list-body {
+	height: auto;
+	justify-content: space-around;
+}
+
+.uni-media-list-text-top {
+	display: flex;
+	height: 74rpx;
+	line-height: 74rpx;
+	font-size: 28rpx;
+	overflow: hidden;
+	justify-content: space-between;
+	.red{
+		color: red;
+	}
+	.green{
+		color: green;
+	}
+}
+.sanjiao {
+	width: 27rpx;
+	height: 27rpx;
+	margin-top: 24rpx;
+	margin-right: 10rpx;
+	transform: rotate(45deg);
+	border-top: 1px solid #000000;
+	border-right: 1px solid #000000;
+}
+
+.uni-media-list-text-bottom {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+</style>

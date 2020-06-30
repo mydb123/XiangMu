@@ -1,0 +1,10 @@
+<template>
+	<view>
+		进出口监控视频列表
+	</view>
+</template>
+
+
+<style lang="scss">
+
+</style>

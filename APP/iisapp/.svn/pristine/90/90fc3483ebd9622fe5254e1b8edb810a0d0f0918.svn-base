@@ -1,0 +1,113 @@
+<template>
+<!-- 	<view>
+		<view class="uni-list">
+			<view class="uni-list-cell" hover-class="uni-list-cell-hover" @click="clicksonsystem">
+				<view class="uni-media-list">
+					<view class="uni-media-list-body">
+						<view class="uni-media-list-text-top">
+							<text>报警类型</text>
+							<text>报警等级</text>
+						</view>
+						<view class="uni-media-list-text-bottom">
+							<text>处理人</text>
+							<text>时间</text>
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
+		<uni-load-more :status="status"  :icon-size="16" :content-text="contentText" />
+	</view> -->
+</template>
+ 
+<script>
+// import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
+// import {get,post,urls,address} from '@/utils/http.js';
+
+// export default {
+// 	components: {
+// 		uniLoadMore
+// 	},
+// 	data() {
+// 		return {
+// 			banner: {},
+// 			listData: [],
+// 			last_id: '',
+// 			reload: false,   
+// 			status: 'more',
+// 			contentText: {
+// 				contentdown: '上拉加载更多',
+// 				contentrefresh: '加载中',
+// 				contentnomore: '没有更多'
+// 			}
+// 		};
+// 	},
+// 	onLoad() {
+// 		this.getList();
+// 	},
+// 	// onPullDownRefresh() {
+// 	// 	this.reload = true;
+// 	// 	this.last_id = '';
+// 	// 	this.getList();
+// 	// },
+// 	// onReachBottom() {
+// 	// 	this.status = 'more';
+// 	// 	this.getList();
+// 	// },
+// 	methods: {
+// 		getList() {
+// 			let url = urls.icms_url + address.adminScreen;
+// 			let queryData = {
+// 				"action":"SysLogAction",
+// 				"event_submit_do_find":"method",
+// 				"pageIndex":0,
+// 				"pageSize":20,
+// 				"sortField":"",
+// 				"sortOrder":""
+// 			}
+// 			post(url,queryData).then(res =>{
+// 				this.listData = res[1].data.data
+// 			})
+// 		},
+// 		// goDetail: function(e) {
+// 		// 	let detail = {
+// 		// 		id: e.id,
+// 		// 		module: e.module,
+// 		// 		remark: e.remark.replace(/%/g, '%25'),
+// 		// 		operateUser: e.operateUser,
+// 		// 		operateTime: e.operateTime,
+// 		// 	};
+// 		// 	uni.navigateTo({
+// 		// 		url: './detail/loginfoDetail?loginfoDetail=' + encodeURIComponent(JSON.stringify(detail))
+// 		// 	});
+// 		// },
+// 		clicksonsystem(){
+// 			uni.navigateTo({
+// 				url:"./sonsystemfull"
+// 			})
+// 		}
+// 	}
+// };
+</script>
+
+<style>
+
+.uni-media-list-body {
+	height: auto;
+	justify-content: space-around;
+}
+
+.uni-media-list-text-top {
+	display: flex;
+	height: 74rpx;
+	font-size: 28rpx;
+	overflow: hidden;
+	justify-content: space-between;
+}
+
+.uni-media-list-text-bottom {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+</style>

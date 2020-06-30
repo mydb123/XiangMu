@@ -1,0 +1,83 @@
+<template>
+	<view>
+		<view class="banner">
+			<!-- <image class="banner-img" src=""></image> -->
+			<image class="banner-img" src=""></image>
+		</view>
+		<view class="flex_item">
+			<view class="flex_item_head">
+				<label>名称:</label>
+				<text>{{queryData.name}}</text>
+			</view>
+			<view class="flex_item_head">
+				<label>状态:</label>
+				<text>{{queryData.status}}</text>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	import {get,urls,address} from '@/utils/http.js';
+	export default {
+		data() {
+			return {
+			queryData:{}
+			};
+		},
+		onLoad(option) { //option为object类型，会序列化上个页面传递的参数
+		this.queryData= JSON.parse(option.record) 
+		},
+		methods:{
+			
+			
+		}
+	}
+</script>
+
+<style lang="scss">
+.flex_item{
+		display: flex;
+		flex-direction:column;
+		margin: 10rpx auto;
+		box-shadow: 0 -10rpx 0 #ccc; 
+		.flex_item_head{
+			display: flex;
+			border-bottom: 2rpx solid #ece9ec;
+		}
+		.flex_item_head:nth-of-type(2n){
+			background-color: #f6f3f7;
+		}
+		.flex_item_head label:nth-of-type(1){
+			width: 30%;
+			text-align: center;
+			height: 100rpx;
+			line-height: 100rpx;
+			font-size: 30rpx;
+		}
+		.flex_item_head text:nth-last-of-type(1){
+			width: 70%;
+			text-align: center;
+			line-height: 100rpx;
+		}
+		.flex_item_head textarea:nth-of-type(1){
+			width: 70%;
+			height: 172rpx;
+			text-align: center;
+			padding-top: 16rpx;
+			box-sizing: border-box;
+			overflow: hidden;
+		}
+}
+.banner {
+	height: 360upx;
+	overflow: hidden;
+	position: relative;
+	background-color: #ccc;
+}
+
+.banner-img {
+	width: 100%;
+}
+
+</style>

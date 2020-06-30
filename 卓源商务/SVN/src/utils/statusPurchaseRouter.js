@@ -1,0 +1,193 @@
+const statusPurchasePartnerRouter = [
+    {
+        status:0,
+        router:"/purchase/partner/failDetail",
+    },
+    {
+        status:1,
+        router:"/purchase/partner/approvalPending",
+    },
+    {
+        status:2,
+        router:"/purchase/partner/menuUpload",
+    },
+    {
+        status:21,
+        router:"/purchase/partner/menuReview",
+    },
+    {
+        status:3,
+        router:"/purchase/partner/planUpload",
+    },
+    {
+        status:30,
+        router:"/purchase/partner/planSuggest",
+    },
+    {
+        status:31,
+        router:"/purchase/partner/planReview",
+    },
+    {
+        status:32,
+        router:"/purchase/partner/planUpdate",
+    },
+    {
+        status:33,
+        router:"/purchase/partner/planFee",
+    },
+    {
+        status:4,
+        router:"/purchase/partner/monthUpload",
+    },
+    {
+        status:40,
+        router:"/purchase/partner/monthSuggest",
+    },
+    {
+        status:41,
+        router:"/purchase/partner/monthReview",
+    },
+    {
+        status:42,
+        router:"/purchase/partner/monthUpdate",
+    },
+    {
+        status:43,
+        router:"/purchase/partner/monthFee",
+    },
+    {
+        status:5,
+        router:"/purchase/partner/resultUpload",
+    },
+    {
+        status:50,
+        router:"/purchase/partner/resultSuggest",
+    },
+    {
+        status:51,
+        router:"/purchase/partner/resultReview",
+    },
+    {
+        status:52,
+        router:"/purchase/partner/resultUpdate",
+    },
+    {
+        status:6,
+        router:"/purchase/partner/appraiseUpload",
+    },
+    {
+        status:61,
+        router:"/purchase/partner/appraiseReview",
+    },
+    {
+        status:7,
+        router:"/purchase/partner/finishReview",
+    }
+]
+const statusPurchaseDeptRouter = [
+    {
+        status:0,
+        router:"/purchase/dept/failDetail",
+    },
+    {
+        status:1,
+        router:"/purchase/dept/approvalPending",
+    },
+    {
+        status:2,
+        router:"/purchase/dept/menuUpload",
+    },
+    {
+        status:21,
+        router:"/purchase/dept/menuReview",
+    },
+    {
+        status:3,
+        router:"/purchase/dept/planUpload",
+    },
+    {
+        status:30,
+        router:"/purchase/dept/planSuggest",
+    },
+    {
+        status:31,
+        router:"/purchase/dept/planReview",
+    },
+    {
+        status:32,
+        router:"/purchase/dept/planUpdate",
+    },
+    {
+        status:33,
+        router:"/purchase/dept/planFee",
+    },
+    {
+        status:4,
+        router:"/purchase/dept/monthUpload",
+    },
+    {
+        status:40,
+        router:"/purchase/dept/monthSuggest",
+    },
+    {
+        status:41,
+        router:"/purchase/dept/monthReview",
+    },
+    {
+        status:42,
+        router:"/purchase/dept/monthUpdate",
+    },
+    {
+        status:43,
+        router:"/purchase/dept/monthFee",
+    },
+    {
+        status:5,
+        router:"/purchase/dept/resultUpload",
+    },
+    {
+        status:50,
+        router:"/purchase/dept/resultSuggest",
+    },
+    {
+        status:51,
+        router:"/purchase/dept/resultReview",
+    },
+    {
+        status:52,
+        router:"/purchase/dept/resultUpdate",
+    },
+    {
+        status:6,
+        router:"/purchase/dept/appraiseUpload",
+    },
+    {
+        status:61,
+        router:"/purchase/dept/appraiseReview",
+    },
+    {
+        status:7,
+        router:"/purchase/dept/finishReview",
+    }
+]
+
+export function getStatusPurchasePartnerRouter(status){
+    let array =statusPurchasePartnerRouter ;
+    for (let index = 0; index < array.length; index++) {
+        const element = array[index];
+        if(status == element.status){
+            return element.router
+        }
+        
+    }
+}
+export function getStatusPurchaseDeptRouter(status){
+    let array =statusPurchaseDeptRouter ;
+    for (let index = 0; index < array.length; index++) {
+        const element = array[index];
+        if(status == element.status){
+            return element.router
+        }
+        
+    }
+}

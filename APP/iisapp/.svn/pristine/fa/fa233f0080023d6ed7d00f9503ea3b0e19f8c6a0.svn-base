@@ -1,0 +1,8 @@
+const adddress = {
+	"userInfo":"/icms/login/userInfo.do",
+	"validUserOldPwd":"/icms/sys/user/validUserOldPwd.do",
+	"editpassword":"/icms/sys/user/editpassword.do",
+	"adminScreen":"/icms/admin/adminScreen.do",//报警及日志
+	
+}
+export default adddress

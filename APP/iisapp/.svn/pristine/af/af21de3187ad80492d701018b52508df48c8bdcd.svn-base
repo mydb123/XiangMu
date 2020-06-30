@@ -1,0 +1,27 @@
+<template>
+	<view>
+		个人信息
+		<tabBar :pagePath="'/pages/myinfo'"></tabBar>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			};
+		},
+        methods: {
+			onShow: function() {
+						uni.hideTabBar()
+					},
+            
+			
+        }
+	}
+</script>
+
+<style lang="scss">
+
+</style>

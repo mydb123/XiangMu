@@ -1,0 +1,32 @@
+<template>
+	<view>
+		个人信息
+		<tabBar :pagePath="'/pages/myinfo'"></tabBar>
+		<button @click="lll">跳转</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			};
+		},
+        methods: {
+			onShow: function() {
+				uni.hideTabBar()
+			},
+            lll(){
+				uni.navigateTo({
+					 url: '/pages/editinfo'
+				})
+			}
+			
+        }
+	}
+</script>
+
+<style lang="scss">
+
+</style>

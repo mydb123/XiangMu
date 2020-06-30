@@ -1,0 +1,564 @@
+<template>
+  <!-- <div>
+        状态2.
+        合伙人上传清单页面
+  </div>-->
+  <div class="menu_upload_purchase_partner">
+    <StepComponent :index="index"></StepComponent>
+    <div>
+      <el-form disabled>
+      <div class="div2">
+        <div class="content">
+          <el-row>
+            <el-col :span="5">
+              <p>项目名称</p>
+            </el-col>
+            <el-col :span="8">
+              <el-input v-model="formData.name" placeholder="请输入内容" :readonly="readonly"></el-input>
+            </el-col>
+            <el-col :span="5">
+              <p>状态</p>
+            </el-col>
+            <el-col :span="6">
+              <el-input v-model="statusText" placeholder="请输入内容" :readonly="readonly"></el-input>
+            </el-col>
+          </el-row>
+        </div>
+      </div>
+      </el-form>
+      <div class="wordborder">
+        <p class="clickbox" v-on:click="click(1)">清单信息</p>
+        <div class="content" v-show="show1">
+          <el-row>
+            <el-col :span="5">
+              <p>电子版图纸</p>
+            </el-col>
+            <el-col :span="17">              
+              <el-upload
+                class="upload-demo"
+                action
+                :http-request="uploadFileMethod" :show-file-list="showFileFlag1"
+                :before-upload="beforeUpload"
+                list-type="text" :file-list="uploadFile.electronic" :on-remove="handleRemoveElectronic"
+              >
+                <el-button size="medium" type="primary" style="width:200px;">电子版图纸上传</el-button>
+                <el-progress v-if="flag1 == true" type="line" :percentage="uploadPercent1" style="margin-top:30px;"></el-progress>
+              </el-upload>
+              <!-- <div class="el-upload__tip">请上传png、jpg及jpeg格式图片(大小2M以下,建议分辨率256*256)</div> -->
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="5">
+              <p>智能化图纸</p>
+            </el-col>
+            <el-col :span="17">
+              <el-upload
+                class="upload-demo"
+                action
+                :http-request="uploadFileMethod2" :show-file-list="showFileFlag2"
+                :before-upload="beforeUpload"
+                list-type="text" :file-list="uploadFile.intelligent" :on-remove="handleRemoveIntelligent"
+              >
+                <el-button size="medium" type="primary" style="width:200px;">智能化图纸上传</el-button>
+                <el-progress v-if="flag2 == true" type="line" :percentage="uploadPercent2" style="margin-top:30px;"></el-progress>
+              </el-upload>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="5">
+              <p>装饰效果图</p>
+            </el-col>
+            <el-col :span="17">
+              <el-upload
+                class="upload-demo"
+                action
+                :http-request="uploadFileMethod3" :show-file-list="showFileFlag3"
+                :before-upload="beforeUpload"
+                list-type="text" :file-list="uploadFile.decoration" :on-remove="handleRemoveDecoration"
+              >
+                <el-button size="medium" type="primary" style="width:200px;">装饰效果图上传</el-button>
+                <el-progress v-if="flag3 == true" type="line" :percentage="uploadPercent3" style="margin-top:30px;"></el-progress>
+              </el-upload>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="5">
+              <p>施工清单</p>
+            </el-col>
+            <el-col :span="17">
+              <el-upload
+                class="upload-demo"
+                action
+                :http-request="uploadFileMethod4" :show-file-list="showFileFlag4"
+                :before-upload="beforeUpload"
+                list-type="text" :file-list="uploadFile.list" :on-remove="handleRemoveList"
+              >
+                <el-button size="medium" type="primary" style="width:200px;">采购清单上传</el-button>
+                <el-progress v-if="flag4 == true" type="line" :percentage="uploadPercent4" style="margin-top:30px;"></el-progress>
+              </el-upload>
+            </el-col>
+          </el-row>
+        </div>
+      </div>
+      <el-form :model="formData" :rules="rules" ref="ruleForm">
+      <div class="wordborder">
+        <p class="clickbox" v-on:click="click(1)">采购需求</p>
+        <div class="content" v-show="show2">
+          <el-row>
+            <el-col :span="5">
+              <p>账期要求</p>
+            </el-col>
+            <el-col :span="19">
+              <el-form-item prop="accountRequire">
+                <el-input v-model="formData.accountRequire" placeholder="请输入内容"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="5">
+              <p>到货要求</p>
+            </el-col>
+            <el-col :span="19">
+              <el-form-item prop="arrivalRequire">
+                <el-input v-model="formData.arrivalRequire" placeholder="请输入内容"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="5">
+              <p>其他要求</p>
+            </el-col>
+            <el-col :span="19">
+              <el-form-item prop="otherRequire">
+                <el-input v-model="formData.otherRequire" placeholder="请输入内容"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </div>
+      </div>
+      </el-form>
+    </div>
+    <div class="div5">
+      <el-button @click="submit('ruleForm')" type="primary" round>提交</el-button>
+    </div>
+  </div>
+</template>
+
+<script>
+import StepComponent from "@/components/StepComponent";
+import api from "@/api/index";
+export default {
+  components: {
+    StepComponent
+  },
+  data() {
+    return {
+      showFileFlag1:true,
+      showFileFlag2:true,
+      showFileFlag3:true,
+      showFileFlag4:true,
+      uploadPercent1:0,
+      uploadPercent2:0,
+      uploadPercent3:0,
+      uploadPercent4:0,
+      flag1:false,
+      flag2:false,
+      flag3:false,
+      flag4:false,
+
+      readonly: true,
+      index: 2,
+      show1: true,
+      show2: true,
+      statusText: "立项通过，待上传清单",
+      formData: {
+        id: "",
+        name: "",
+        accountRequire: "", //账期要求
+        arrivalRequire: "", //到货要求
+        otherRequire: "", //其他要求
+        operator: sessionStorage.getItem("user"),
+        userName: sessionStorage.getItem("user")
+      },
+      rules: {
+        accountRequire: [
+          { required: true, message: '请输入账期要求', trigger: 'blur' }
+        ],
+        arrivalRequire: [
+          { required: true, message: '请输入到货要求', trigger: 'blur' }
+        ],
+        otherRequire: [
+          { required: true, message: '请输入其他要求', trigger: 'blur' }
+        ]
+      },      
+      uploadFile:{//文件列表
+        electronic:[],
+        intelligent:[],
+        decoration:[],
+        list:[]
+      }
+    };
+  },
+  methods: {
+    click(index) {
+      if (index == 1) {
+        this.show1 = !this.show1;
+      } else if (index == 2) {
+        this.show2 = !this.show2;
+      }
+    },
+    beforeUpload(file){
+      let fileSize = file.size/1024/1024 <100;
+      if(!fileSize){
+        this.$message("上传文件不得大于100M")
+        return false
+      }  
+    },
+    uploadFileMethod(param) {
+      if(this.flag1){
+        this.$message("请等待当前文件上传完毕")
+        return
+      }
+      this.showFileFlag1 = false
+      this.flag1 = true;
+      this.uploadPercent1 = 1;
+      let timer = setInterval(()=>{
+        // alert()
+        if(this.uploadPercent1<95){
+          this.uploadPercent1 += Math.ceil(Math.random()*5);
+        }
+      }, 700);
+
+      let fileObject = param.file;
+      let formData = new FormData();
+      formData.append("file", fileObject);
+      formData.append("id", this.formData.id);
+      formData.append("fileType",0);//电子版图纸
+      formData.append("operator", this.formData.operator);
+      formData.append("userName", this.formData.userName);
+      api.purchasePartner.uploadFile(formData).then(response => {
+          
+          clearInterval(timer)
+          this.uploadPercent1 = 100;
+          setTimeout(()=>{
+            this.flag1 = false;
+            this.uploadPercent1 = 0;
+            this.showFileFlag1 = true
+          },700)
+
+          let obj = new Object();
+          obj.id = response.id;
+          obj.name = response.showName;
+          obj.url = response.url;
+          this.uploadFile.electronic.push(obj);
+        }).catch(error => {
+          console.log(error);
+        });
+    },
+    uploadFileMethod2(param) {
+      if(this.flag2){
+        this.$message("请等待当前文件上传完毕")
+        return
+      }
+      this.showFileFlag2 = false
+      this.flag2 = true;
+      this.uploadPercent2 = 1;
+      let timer = setInterval(()=>{
+        // alert()
+        if(this.uploadPercent2<95){
+          this.uploadPercent2 += Math.ceil(Math.random()*5);
+        }
+      }, 700);
+
+      let fileObject = param.file;
+      let formData = new FormData();
+      formData.append("file", fileObject);
+      formData.append("id", this.formData.id);
+      formData.append("fileType",1);//智能化图纸
+      formData.append("operator", this.formData.operator);
+      formData.append("userName", this.formData.userName);
+      api.purchasePartner.uploadFile(formData).then(response => {
+            clearInterval(timer)
+            this.uploadPercent2 = 100;
+            setTimeout(()=>{
+              this.flag2 = false;
+              this.uploadPercent2 = 0;
+              this.showFileFlag2 = true
+            },700)
+            let obj = new Object();
+            obj.id = response.id;
+            obj.name = response.showName;
+            obj.url = response.url;
+            this.uploadFile.intelligent.push(obj);
+        }).catch(error => {
+          console.log(error);
+        });
+    },
+    uploadFileMethod3(param) {
+      if(this.flag3){
+        this.$message("请等待当前文件上传完毕")
+        return
+      }
+      this.showFileFlag3 = false
+      this.flag3 = true;
+      this.uploadPercent3 = 1;
+      let timer = setInterval(()=>{
+        // alert()
+        if(this.uploadPercent3<95){
+          this.uploadPercent3 += Math.ceil(Math.random()*5);
+        }
+      }, 700);
+
+      let fileObject = param.file;
+      let formData = new FormData();
+      formData.append("file", fileObject);
+      formData.append("id", this.formData.id);
+      formData.append("fileType",2);//装饰效果图
+      formData.append("operator", this.formData.operator);
+      formData.append("userName", this.formData.userName);
+      api.purchasePartner.uploadFile(formData).then(response => {
+
+            clearInterval(timer)
+            this.uploadPercent3 = 100;
+            setTimeout(()=>{
+              this.flag3 = false;
+              this.uploadPercent3 = 0;
+              this.showFileFlag3 = true
+            },700)
+
+            let obj = new Object();
+            obj.id = response.id;
+            obj.name = response.showName;
+            obj.url = response.url;
+            this.uploadFile.decoration.push(obj);
+        }).catch(error => {
+          console.log(error);
+        });
+    },
+    uploadFileMethod4(param) {
+      if(this.flag4){
+        this.$message("请等待当前文件上传完毕")
+        return
+      }
+      this.showFileFlag4 = false
+      this.flag4 = true;
+      this.uploadPercent4 = 1;
+      let timer = setInterval(()=>{
+        // alert()
+        if(this.uploadPercent4<95){
+          this.uploadPercent4 += Math.ceil(Math.random()*5);
+        }
+      }, 700);
+
+      let fileObject = param.file;
+      let formData = new FormData();
+      formData.append("file", fileObject);
+      formData.append("id", this.formData.id);
+      formData.append("fileType",3);//施工清单
+      formData.append("operator", this.formData.operator);
+      formData.append("userName", this.formData.userName);
+      api.purchasePartner.uploadFile(formData).then(response => {
+
+            clearInterval(timer)
+            this.uploadPercent4 = 100;
+            setTimeout(()=>{
+              this.flag4 = false;
+              this.uploadPercent4 = 0;
+              this.showFileFlag4 = true
+            },700)
+
+            let obj = new Object();
+            obj.id = response.id;
+            obj.name = response.showName;
+            obj.url = response.url;
+            this.uploadFile.list.push(obj);          
+        }).catch(error => {
+          console.log(error);
+        });
+    },
+    download() {},
+    handleRemoveElectronic(file,fileList){//电子版删除
+      let index = -1;
+        for(let i in this.uploadFile.electronic){
+            if(file.id==this.uploadFile.electronic[i].id){
+                index = i;
+                break;
+            }
+        }
+        if(index!=-1){
+            this.uploadFile.electronic.splice(index,1);
+        }
+      this.deleteFile(file.id);
+    },
+    handleRemoveIntelligent(file,fileList){//智能化删除
+      let index = -1;
+        for(let i in this.uploadFile.intelligent){
+            if(file.id==this.uploadFile.intelligent[i].id){
+                index = i;
+                break;
+            }
+        }
+        if(index!=-1){
+            this.uploadFile.intelligent.splice(index,1);
+        }
+      this.deleteFile(file.id);
+    },
+    handleRemoveDecoration(file,fileList){//装饰化删除
+      let index = -1;
+        for(let i in this.uploadFile.decoration){
+            if(file.id==this.uploadFile.decoration[i].id){
+                index = i;
+                break;
+            }
+        }
+        if(index!=-1){
+            this.uploadFile.decoration.splice(index,1);
+        }
+      this.deleteFile(file.id);
+    },
+    handleRemoveList(file,fileList){
+      let index = -1;
+        for(let i in this.uploadFile.list){
+            if(file.id==this.uploadFile.list[i].id){
+                index = i;
+                break;
+            }
+        }
+        if(index!=-1){
+            this.uploadFile.list.splice(index,1);
+        }
+      this.deleteFile(file.id);
+    },
+    deleteFile(fileId){
+      api.purchasePartner.deleteFile(fileId).then(response => {
+        console.log(response);
+      }).catch(error => {
+        console.log(error);
+      });
+    },
+    loadData(id) {
+      api.purchasePartner.findById(id).then(response => {
+          this.formData.name = response.name; //项目名称
+          // this.formData.leader = response.leader;//项目负责人
+          // this.formData.submitDate = response.submitDate;//创建日期
+          // this.formData.industry = response.industry;//行业
+          // this.formData.province = response.province//省
+          // this.formData.city = response.city;//市
+          // this.formData.region = response.region;//区
+          // this.formData.buildingAddr = response.buildingAddr;//建筑地址
+          // this.formData.scale = response.scale;//项目规模
+          // this.formData.buildingAddr = response.buildingAddr;//项目地址
+          //采购信息
+          // this.formData.projectMode = response.projectMode;//项目模式
+          // this.formData.acquisitionStage = response.acquisitionStage;//采购阶段
+          // this.formData.purchasingTarget = response.purchasingTarget;//采购目标
+          // this.formData.estimatedPurchaseTime = response.estimatedPurchaseTime;//预计采购时间
+          // this.formData.otherDescription = response.otherDescription;//其他说明
+        }).catch(error => {
+          console.log(error);
+        });
+    },
+    submit(ruleForm) {
+      this.$refs[ruleForm].validate((valid) => {
+        if (valid) {
+           api.purchasePartner.savePurchaseRequired(this.formData).then(response=>{
+             this.$router.push("/purchase/partner/menuReview");
+           }).catch(error => {
+              console.log(error);
+           });                 
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+     });           
+    },
+    loadFileElectronic(){//加载上传的电子版图纸附件
+        api.purchasePartner.loadFile(this.formData.id,0).then(response =>{
+          response.forEach(element => {
+            let obj = new Object();
+            obj.id = element.id;
+            obj.name = element.showName;
+            obj.url = element.url;
+            this.uploadFile.electronic.push(obj);
+          });
+        }).catch(error =>{
+          console.log(error);
+        });
+    },
+    loadFileIntelligent(){//智能化图纸附近
+        api.purchasePartner.loadFile(this.formData.id,1).then(response =>{
+          response.forEach(element => {
+            let obj = new Object();
+            obj.id = element.id;
+            obj.name = element.showName;
+            obj.url = element.url;
+            this.uploadFile.intelligent.push(obj);
+          });
+        }).catch(error =>{
+            console.log(error);
+        });
+    },
+    loadFileDecoration(){//装饰化图纸
+        api.purchasePartner.loadFile(this.formData.id,2).then(response =>{
+          response.forEach(element => {
+            let obj = new Object();
+            obj.id = element.id;
+            obj.name = element.showName;
+            obj.url = element.url;
+            this.uploadFile.decoration.push(obj);
+          });
+        }).catch(error =>{
+            console.log(error);
+        });
+    },
+    loadFileList(){//采购清单
+        api.purchasePartner.loadFile(this.formData.id,3).then(response =>{
+          response.forEach(element => {
+            let obj = new Object();
+            obj.id = element.id;
+            obj.name = element.showName;
+            obj.url = element.url;
+            this.uploadFile.list.push(obj);
+          });
+        }).catch(error =>{
+            console.log(error);
+        });
+    }
+  },
+  mounted: function() {
+    this.formData.id = this.$route.query.id; //获取路由传值
+    console.log(this.formData.id);
+    this.loadData(this.formData.id); //加载数据
+    this.loadFileElectronic();
+    this.loadFileIntelligent();
+    this.loadFileDecoration();
+    this.loadFileList();
+  }
+};
+</script>
+
+<style lang='scss'>
+.menu_upload_purchase_partner {
+  margin: 10px auto;
+  border:1px solid #E7E8ED; 
+  .div2 {
+    position: relative;
+    margin: 25px;
+    min-height: 20px;
+    line-height: 40px;
+    .content {
+      width: 80%;
+      margin: 35px;
+      margin-left: 50px;
+      p {
+        padding: 0px 5px;
+        margin: 0px 10px;
+      }
+    }
+  }
+  .div5 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+}
+</style>

@@ -1,0 +1,30 @@
+<template>
+	<view>
+		<text>{{loginfoDetail.id}}</text>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				loginfoDetail:{}
+			}
+		},
+		methods: {
+			
+		},
+		onLoad(option) {
+			console.log(option);
+			const loginfoDetail = JSON.parse(decodeURIComponent(option.loginfoDetail));
+			this.loginfoDetail = loginfoDetail;
+			console.log("111111111");
+			console.log(this.loginfoDetail);
+			console.log("2222222222");
+		}
+	}
+</script>
+
+<style>
+
+</style>

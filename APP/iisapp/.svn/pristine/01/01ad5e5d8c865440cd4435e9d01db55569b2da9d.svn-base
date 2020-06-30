@@ -1,0 +1,143 @@
+<template>
+	<view>
+		<uni-card>
+			<form>
+				<view class="uni-form-item uni-column iconfont icon-geren2 ">
+					<input v-model="userInfo.username" class="uni-input" name="input" disabled="true"/>
+				</view>
+				<view class="uni-form-item uni-column iconfont icon-mima">
+					<input class="uni-input" @blur="checkInitialPsd" v-model="initialPsd" name="input" placeholder="原始密码"/>
+				</view>
+				<view class="uni-form-item uni-column iconfont icon-mima ">
+					<input class="uni-input" name="input" v-model="psd" placeholder="重置密码"/>
+				</view>
+				<view class="uni-form-item uni-column iconfont icon-mima">
+					<input class="uni-input" @blur="checkPsd" v-model="ensurePsd" name="input" placeholder="确认密码"/>
+				</view>
+				<view class="uni-form-item uni-column iconfont icon-email">
+					<input v-model="userInfo.email" class="uni-input"  name="input"/>
+				</view>
+				<view class="uni-form-item uni-column iconfont icon-phone">
+					<input v-model="userInfo.telephone" class="uni-input" name="input"/>
+				</view>
+				<view>
+					<textarea v-model="userInfo.remark"></textarea>
+				</view>
+				<button type="primary" @click="save()">保存</button>
+				<button type="primary">返回</button>
+			</form>
+		</uni-card>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				initialPsd:'',//初始密码
+				psd:'',//重置密码,
+				ensurePsd:'',//确认密码
+				userInfo:{
+					userId:'',
+					password:'',//新密码
+					oldpw:'',//旧密码
+					isEnable:'',
+					createTime:new Date,
+					updateTime:new Date,
+					username:"",
+					email:'',
+					telephone:'',
+					remark:'',
+					roleIds:''
+				}
+			};
+		},
+		methods: {
+			//校验原始密码
+			checkInitialPsd(){
+				uni.request({
+					url:this.URL.ICMS_URL+"/icms/sys/user/validUserOldPwd.do?p="+this.userInfo.username+"&pwd="+this.userInfo.username+"-"+this.initialPsd,
+					method:'POST',
+					success:res => {
+						if(res.data == false){
+							uni.showToast({
+								title:"初始密码错误，请重试",
+							})
+						}
+					}
+				});
+			},
+			//校验两次密码是否正确
+			checkPsd(){
+				if(this.psd != this.ensurePsd){
+					uni.showToast({
+						title:"两次密码不一致，请重新输入",
+					})
+				}
+			},
+			//保存修改信息
+			save(){
+				this.userInfo.password = this.psd;
+				this.userInfo.oldpw = this.initialPsd
+				uni.request({
+					url:this.URL.ICMS_URL+"/icms/sys/user/editpassword.do",
+					header:{
+						"Content-Type": "application/x-www-form-urlencoded;charset=utf-8"
+					},
+					data:{
+						"data":JSON.stringify(this.userInfo)
+					},
+					method:'POST',
+					success: res => {
+						if(res.data.status == "FAIL"){
+							uni.showToast({
+								title:res.data.message,
+							})
+						}else {
+							uni.showToast({
+								title:res.data.message,
+							})
+						}
+					}
+				});
+			}
+		},
+		onLoad() {
+			uni.request({
+				url:this.URL.ICMS_URL+"/icms/login/userInfo.do",
+				success:res => {
+					this.userInfo = res.data;
+				}
+			});
+		}
+	}
+</script>
+
+<style lang="scss">
+	.uni-input {
+		position: absolute;
+		display: inline-block;
+		border-left: 1px solid #C3C3C3;
+		width: 500rpx;
+		margin: 10rpx 0;
+		margin-left: 18rpx;
+		padding-left: 20rpx;
+	}
+	.uni-form-item {
+		position: relative;
+		height: 70rpx;
+		width: 600rpx;
+		border: 1px solid #C3C3C3;
+		margin: 10rpx auto;
+		padding-left: 20rpx;
+	}
+	textarea {
+		width: 620rpx;
+		border: 1px solid #C3C3C3;
+		margin: 10rpx auto;
+	}
+	button {
+		margin: 10px auto;
+		width: 620rpx;
+	}
+</style>

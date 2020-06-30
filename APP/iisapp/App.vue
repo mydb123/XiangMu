@@ -1,0 +1,19 @@
+<script>
+	export default {
+		onLaunch: function() {
+			console.log('App Launch')
+		},
+		onShow: function() {
+			uni.hideTabBar()
+			console.log('App Show')
+		},
+		onHide: function() {
+			console.log('App Hide')
+		}
+	}
+</script>
+
+<style lang="scss">
+	/*每个页面公共css */
+	@import './pages/common/uni.css';
+</style>

@@ -1,0 +1,403 @@
+<template>
+    <div class='detail_purchase_partner'>
+        <el-form disabled>
+        <div class="box" >
+            <p class='clickbox' v-on:click="click(1)" >立项信息</p>
+            <div class='content' v-show="show1">
+                <el-row>
+                    <el-col :span="5"><p>项目名称</p></el-col>
+                    <el-col :span="8" >
+                        <el-input  v-model="formData.bizPurchase.name" placeholder="请输入内容"></el-input>
+                    </el-col>
+                    <el-col :span="5"><p>当前状态</p></el-col>
+                    <el-col :span="6">
+                        <el-input  v-model="formData.statusText" placeholder="请输入内容"></el-input>
+                    </el-col>
+                </el-row>
+                <el-row >
+                    <el-col :span="5"><p>地区</p></el-col>
+                    <el-col :span="8">
+                        <v-distpicker :province="formData.bizPurchase.province" 
+                                :city='formData.bizPurchase.city'
+                                :area='formData.bizPurchase.region' :disabled="disabled"></v-distpicker>
+                    </el-col>
+                </el-row>
+                <el-row >
+                    <el-col :span="5"><p>建筑面积</p></el-col>
+                    <el-col :span="8">
+                        <el-input  v-model="formData.bizPurchase.floorArea" placeholder="请输入内容">
+                            <template slot="append">m²</template>
+                        </el-input>
+                    </el-col>
+                    <el-col :span="5"><p>项目规模</p></el-col>
+                    <el-col :span="6">
+                        <el-input  v-model="formData.bizPurchase.scale" placeholder="请输入内容">
+                            <template slot="append">万元</template>
+                        </el-input>
+                    </el-col>
+                </el-row>
+                <el-row >
+                    <el-col :span="5"><p>项目建筑地址</p></el-col>
+                    <el-col :span="19">
+                        <el-input  v-model="formData.bizPurchase.buildingAddr" placeholder="请输入内容"></el-input>
+                    </el-col>
+                </el-row>
+                <!-- <el-row >
+                    <el-col :span="5"><p>建筑使用单位</p></el-col>
+                    <el-col :span="8"><el-input  v-model="obj" placeholder="请输入内容"></el-input></el-col>
+                    <el-col :span="5"><p>建筑管理单位</p></el-col>
+                    <el-col :span="6"><el-input  v-model="obj" placeholder="请输入内容"></el-input></el-col>
+                </el-row> -->
+                <el-row >
+                    <el-col :span="5"><p>项目模式</p></el-col>
+                    <el-col :span="8">
+                        <el-select v-model="formData.bizPurchase.projectMode" placeholder="请选择">
+                            <el-option
+                                v-for="item in options"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :span="5"><p>行业</p></el-col>
+                    <el-col :span="6">
+                        <el-select v-model="formData.bizPurchase.industry" placeholder="请选择行业">
+                                <el-option
+                                    v-for="item in options2"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                                </el-option>
+                            </el-select>
+                    </el-col>
+                    <!-- <el-col :span="5"><p>招标模式</p></el-col>
+                    <el-col :span="6"><el-input  v-model="obj" placeholder="请输入内容"></el-input></el-col> -->
+                </el-row>
+                <el-row >
+                    <el-col :span="5"><p>业主需求对接人</p></el-col>
+                    <el-col :span="8"><el-input  v-model="formData.bizPurchase.leader" placeholder="请输入内容"></el-input></el-col>
+                    <el-col :span="5"><p>联系方式</p></el-col>
+                    <el-col :span="6"><el-input  v-model="formData.bizPurchase.buyerPhone" placeholder="请输入内容"></el-input></el-col>
+                </el-row>
+                <!-- <el-row >
+                    <el-col :span="5"><p>项目规模</p></el-col>
+                    <el-col :span="8"><p class='textItem ' >XXXXXXXXXX<span class='fr'>万元</span></p></el-col>
+                </el-row> -->
+                <el-row >
+                    <el-col :span="5"><p>其他说明</p></el-col>
+                    <el-col :span="19">
+                        <el-input
+                            type="textarea"
+                            :rows="2"
+                            placeholder="请输入内容"
+                            v-model="formData.bizPurchase.otherDescription">
+                        </el-input>
+                    </el-col>
+                </el-row>
+            </div>
+        </div>
+
+        <div class="box" >
+            <p class='clickbox' v-on:click="click(2)" >清单信息</p>
+            <div class='content' v-show="show2">
+                <el-row >
+                    <el-col :span="5"><p>电子版图纸</p></el-col>
+                    <el-col :span="8">
+                        <el-card class="box-card">
+                            <div v-for="fileItem in formData.fileList.electronicList" :key="fileItem.id" class="text item">
+                                <el-link type="primary" :href="downloadUrl+fileItem.id">{{fileItem.showName }}</el-link>
+                            </div>
+                        </el-card>
+                    </el-col>
+                </el-row>
+                <el-row >
+                    <el-col :span="5"><p>智能化图纸</p></el-col>
+                    <el-col :span="8">
+                        <el-card class="box-card">
+                            <div v-for="fileItem in formData.fileList.intelligentList" :key="fileItem.id" class="text item">
+                                <el-link type="primary" :href="downloadUrl+fileItem.id">{{fileItem.showName }}</el-link>
+                            </div>
+                        </el-card>
+                    </el-col>
+                </el-row>
+                <el-row >
+                    <el-col :span="5"><p>装饰效果图</p></el-col>
+                    <el-col :span="8">
+                        <el-card class="box-card">
+                            <div v-for="fileItem in formData.fileList.decorationList" :key="fileItem.id" class="text item">
+                                <el-link type="primary" :href="downloadUrl+fileItem.id">{{fileItem.showName }}</el-link>
+                            </div>
+                        </el-card>                        
+                    </el-col>
+                </el-row>
+                <el-row >
+                    <el-col :span="5"><p>采购清单</p></el-col>
+                    <el-col :span="8">
+                        <el-card class="box-card">
+                            <div v-for="fileItem in formData.fileList.list" :key="fileItem.id" class="text item">
+                                <el-link type="primary" :href="downloadUrl+fileItem.id">{{fileItem.showName }}</el-link>
+                            </div>
+                        </el-card>   
+                    </el-col>
+                </el-row>
+            </div>
+        </div>
+
+        <div class="box" >
+            <p class='clickbox' v-on:click="click(3)" >采购需求</p>
+            <div class='content' v-show="show3">
+                <el-row >
+                    <el-col :span="5"><p>账期要求</p></el-col>
+                    <el-col :span="8"><el-input  v-model="formData.bizPurchase.accountRequire" placeholder="请输入内容"></el-input></el-col>
+                </el-row>
+                <el-row >
+                    <el-col :span="5"><p>到货要求</p></el-col>
+                    <el-col :span="8"><el-input  v-model="formData.bizPurchase.arrivalRequire" placeholder="请输入内容"></el-input></el-col>
+                </el-row>
+                <el-row >
+                    <el-col :span="5"><p>其他要求</p></el-col>
+                    <el-col :span="8"><el-input  v-model="formData.bizPurchase.otherRequire" placeholder="请输入内容"></el-input></el-col>
+                </el-row>
+            </div>
+        </div>
+
+        <div class="box" >
+            <p class='clickbox' v-on:click="click(4)" >采购方案</p>
+            <div class='content' v-show="show4">
+                <el-row>
+                    <el-col :span="5"><p>采购月次</p></el-col>
+                    <el-col :span="8">
+                        <el-input  v-model="formData.bizPurchase.count" placeholder="请输入内容"></el-input>
+                    </el-col>
+                    <el-col :span="5"><p>拟完成时间</p></el-col>
+                    <el-col :span="6">
+                        <el-date-picker
+                                v-model="formData.bizPurchase.intendedCompleteTime"
+                                type="date"
+                                placeholder="选择日期" value-format="yyyy-MM-dd">
+                        </el-date-picker>
+                    </el-col>
+                </el-row>
+                <el-row >
+                    <el-col :span="5"><p>采购员</p></el-col>
+                    <el-col :span="8">
+                        <el-input  v-model="formData.bizPurchase.buyer" placeholder="请输入内容"></el-input>
+                    </el-col>
+                    <el-col :span="5"><p>联系方式</p></el-col>
+                    <el-col :span="6">
+                        <el-input  v-model="formData.bizPurchase.buyerPhone" placeholder="请输入内容"></el-input>
+                    </el-col>
+                </el-row>
+                <el-row >
+                    <el-col :span="5"><p>采购范围</p></el-col>
+                    <el-col :span="19">
+                        <el-input  v-model="formData.bizPurchase.procurementScope" placeholder="请输入内容"></el-input>
+                    </el-col>
+                </el-row>
+                <el-row >
+                    <el-col :span="5"><p>经营目标预算</p></el-col>
+                    <el-col :span="19">
+                            <div v-for="fileItem in formData.fileList.targetList" :key="fileItem.id" class="text item">
+                                <el-link type="primary" :href="downloadUrl+fileItem.id">{{fileItem.showName }}</el-link>
+                            </div>
+                    </el-col>
+                </el-row>
+                <el-row >
+                    <el-col :span="5"><p>管理费</p></el-col>
+                    <el-col :span="8">
+                        <el-input  v-model="formData.bizPurchase.manageCost" placeholder="请输入内容">
+                            <template slot="append">万元</template>
+                        </el-input>
+                    </el-col>
+                </el-row>
+            </div>
+        </div>
+
+        <div class="box" >
+            <p class='clickbox' v-on:click="click(5)" >采购记录</p>
+            <div class='content' v-show="show5">
+                <div class="box" v-for="(item,index) in formData.monthList" v-bind:key="item.id" >
+                    <p class='clickbox' v-on:click="click2(index)" style='margin: -10px 0 0 26px;padding: 0 9px 0 18px;'>第{{index+1}}次采购</p>
+                    <div class='content' v-show="item.flag" style='width: 91%;'>
+                        <el-row>
+                            <el-col :span="5"><p>采购月</p></el-col>
+                            <el-col :span="19"><el-date-picker v-model="item.purchasingMonth" type="month" placeholder="选择日期" value-format="yyyy-MM-dd"></el-date-picker></el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="5"><p>本次采购清单</p></el-col>
+                            <el-col :span="19">
+                                <div v-for="fileItem in item.fileList" :key="fileItem.id" class="text item">
+                                    <el-link type="primary" :href="downloadUrl+fileItem.id">{{fileItem.showName }}</el-link>
+                                </div>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="5"><p>本次采购费用</p></el-col>
+                            <el-col :span="19">
+                                <el-input  v-model="item.cost" placeholder="请输入内容">
+                                    <template slot="append">万元</template>
+                                </el-input>
+                            </el-col>
+                        </el-row>
+                    </div> 
+                </div>         
+            </div>
+        </div>
+
+        <div class="box" >
+            <p class='clickbox' v-on:click="click(6)" >交付成果</p>
+            <div class='content' v-show="show6">
+                <el-row>
+                    <el-card class="box-card">
+                            <div v-for="fileItem in formData.fileList.resultList" :key="fileItem.id" class="text item">
+                                <el-link type="primary" :href="downloadUrl+fileItem.id">{{fileItem.showName }}</el-link>
+                            </div>
+                    </el-card>   
+                </el-row>
+            </div>
+        </div>
+        </el-form>
+    </div>
+</template>
+<script>
+import store from '@/store/index'
+import base from '@/api/base'
+import {getStatusPurchasePartnerRouter} from '@/utils/statusPurchaseRouter';
+import {Industry,ProjectMode} from '@/utils/util'
+import api from '@/api/index';
+export default {
+    data() {
+        return {
+            downloadUrl:base.sq+"/bizPurchase/partner/download?access_token="+store.getters.token+"&fileId=",//下载路径
+            disabled:true,
+            options: ProjectMode,
+            options2:Industry,
+            obj:'',
+            show1:true,
+            show2:false,
+            show3:false,
+            show4:false,
+            show5:false,
+            show6:false,
+            flag:false,
+            formData:{
+                statusText:"",
+                bizPurchase:{
+                    id:"",
+                    name:"",//项目名称
+                    industry:"",//行业
+                    province:"",//省
+                    city:"",//市
+                    region:"",//区
+                    floorArea:"",//建筑面积
+                    buildingAddr:"",//建筑地址
+                    scale:"",//建筑规模
+                    projectMode:"",//建筑模式
+                    leader:"",//负责人
+                    leaderPhone:"",//业主需求对接人联系方式
+                    content:"",//项目简介
+                    otherDescription:"",//其他说明
+                    accountRequire:"",//账期要求
+                    arrivalRequire:"",//到货要求
+                    otherRequire:"",//其他要求
+                    count:"",//采购次数
+                    intendedCompleteTime:"",//拟完成时间
+                    buyer:"",//采购员
+                    buyerPhone:"",//采购人联系方式
+                    procurementScope:"",//采购范围
+                    manageCost:""//管理费
+                },
+                fileList:{
+                    electronicList:[],//电子版图纸附件
+                    intelligentList:[],//智能化图纸附件
+                    decorationList:[],//装饰效果图附件
+                    list:[],//清单附件
+                    targetList:[],//经营目标预算附件
+                    resultList:[]//成果附件
+                },
+                monthList:[]//按月采购
+            }
+        }
+    },
+    methods: {
+        onSelected(data) {
+            console.log(data)
+        },
+        click(index){
+            if(index==1){
+                this.show1 = !this.show1
+            }else if(index==2){
+                this.show2 = !this.show2
+            }else if(index==3){
+                this.show3 = !this.show3
+            }else if(index==4){
+                this.show4 = !this.show4
+            }else if(index==5){
+                this.show5 = !this.show5
+            }else if(index==6){
+                this.show6 = !this.show6
+            }
+        },
+        click2(index){       
+            this.formData.monthList[index].flag = !this.formData.monthList[index].flag;
+        },
+        loadData(){
+            api.purchasePartner.findProjectDetailsById(this.formData.bizPurchase.id).then(response => {
+                console.log(response);
+                this.formData.statusText = response.statusText;
+                this.formData.bizPurchase = response.bizPurchase;
+                this.formData.fileList = response.fileList;
+                for(let i in response.monthList){
+                    let monthObject = new Object();
+                    monthObject.id = response.monthList[i].bizPurchaseMonth.id;
+                    monthObject.purchasingMonth = response.monthList[i].bizPurchaseMonth.purchasingMonth;
+                    monthObject.cost = response.monthList[i].bizPurchaseMonth.cost;
+                    monthObject.flag = false;
+                    monthObject.fileList = response.monthList[i].fileList;
+                    this.formData.monthList.push(monthObject);
+                }
+            }).catch(error => {
+                console.log(error);
+            });
+        }
+    },
+    mounted: function(){
+        this.formData.bizPurchase.id = this.$route.query.id; //获取路由传值
+        this.loadData();
+    }
+}
+</script>
+ 
+
+<style lang='scss'>
+.detail_purchase_partner {
+    margin:0 auto;
+    .distpicker-address-wrapper{
+        select{
+            color: #C0C4CC;
+            background: #F5F7FA;
+            // appearance:none;
+            // -moz-appearance:none; /* Firefox */
+            // -webkit-appearance:none; /* Safari 和 Chrome */
+        }
+    }
+    
+}
+
+.disabled-select select {
+    background-color: #E7E8ED;
+    // cursor: not-allowed;
+    
+    appearance:none;
+    -moz-appearance:none; 
+    -webkit-appearance:none; 
+    border:none;
+
+    // width:20%;
+    margin:0;
+    padding:0;
+    height: 28px;
+} 
+
+</style>
