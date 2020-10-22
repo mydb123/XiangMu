@@ -1,0 +1,120 @@
+<template>
+    <div id="productCodeList" >
+        <div class="fu">
+           <div class="home_title">平台特点</div>
+           <el-row :gutter="12">
+                <el-col :span="6">
+                     <el-card>
+                         <div>
+                            <img class="cardimg" src="../assets/img/hello.png" alt="">
+                            <span class="home_subtitle">欢迎您</span>
+                         </div>
+                        <div class="neiro">中国十七冶集团有限公司</div>
+                    </el-card>
+                </el-col>
+                <el-col :span="6">
+                   <el-card>
+                         <div>
+                            <img class="cardimg" src="../assets/img/zaijian.png" alt="">
+                            <span class="home_subtitle">在建项目</span>
+                         </div>
+                        <div class="neiro">中国十七冶集团有限公司</div>
+                    </el-card>
+                </el-col>
+                <el-col :span="6">
+                   <el-card>
+                         <div>
+                            <img class="cardimg" src="../assets/img/jungong.png" alt="">
+                            <span class="home_subtitle">竣工项目</span>
+                         </div>
+                        <div class="neiro">中国十七冶集团有限公司</div>
+                    </el-card>
+                </el-col>
+                 <el-col :span="6">
+                  <el-card>
+                         <div>
+                            <img class="cardimg" src="../assets/img/zixuntixing.png" alt="">
+                            <span class="home_subtitle">咨询提醒</span>
+                         </div>
+                         <div style="text-align: center;"> <span class="neiro1">ne5555w <i class="jiaobiao">2</i></span></div>
+                    </el-card>
+                </el-col>
+            </el-row>
+            <el-row>
+             
+                 <el-col :span="8">
+                     <el-card>
+                         <div>
+                            <img class="cardimg" src="../assets/img/hello.png" alt="">
+                            <span class="home_subtitle">欢迎您</span>
+                         </div>
+                        <div class="neiro">中国十七冶集团有限公司</div>
+                    </el-card>
+                </el-col>
+              
+              
+            </el-row>
+        </div>
+    </div>
+</template>
+<script>
+
+export default {
+    data() {
+        return {
+            
+        }
+    },
+    methods: {
+        
+    },
+    created() {
+      
+    },
+}
+</script>
+ 
+
+<style lang='scss'>
+
+#productCodeList{
+    .home_title{
+        font-weight: 900;
+        font-size: 20px;
+        color: rgb(54, 96, 146);
+        padding-left: 5px;
+        border-left: 4px solid #fb973f;
+    }
+    .cardimg{
+        width: 50px;
+        vertical-align:text-top;
+    }
+    .home_subtitle{
+        color: #c6c6c6;
+        font-size: 20px;
+        margin-left: 10px;
+    }
+    .neiro{
+        font-size: 18px;
+        text-align: center;
+    }
+    .neiro1{
+        position: relative;
+        display: inline-block;
+        font-size: 18px;
+        text-align: center;
+        margin: 0 auto;
+    }
+    .jiaobiao{
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        right: -6px;
+        top: -11px;
+        background-color: crimson;
+        border-radius: 50%;
+    }
+    
+}
+
+</style>

@@ -1,0 +1,210 @@
+<template>
+<!--新增项目 -->
+    <div id="createProject">
+		<el-breadcrumb>
+            <el-breadcrumb-item :to="{ path:'/workbench/project/allProjectList'}">所有项目列表</el-breadcrumb-item>
+            <el-breadcrumb-item>新增项目</el-breadcrumb-item>
+        </el-breadcrumb>
+		<el-card>
+			<el-form :model="formData"  ref="ruleForm">
+				<div class="wordborder" >
+					<div>建筑信息</div>
+					<div class='content'>
+						<el-row>
+							<el-col :span="5"><p>项目名称</p></el-col>
+							<el-col :span="8" >
+								<el-form-item prop="name">
+									<el-input  v-model="formData.name" placeholder="请输入项目名称"></el-input>
+								</el-form-item>
+							</el-col>
+							<el-col :span="5"><p>项目类别</p></el-col>
+							<el-col :span="6">
+								<el-form-item prop="industry">
+									<el-select v-model="formData.industry" placeholder="请选择行业">
+										<el-option
+											v-for="item in options2"
+											:key="item.value"
+											:label="item.label"
+											:value="item.value">
+										</el-option>
+									</el-select>
+								</el-form-item>    
+							</el-col>
+						</el-row>
+						<el-row >
+							<el-col :span="5"><p>地区</p></el-col>
+							<el-col :span="8">
+								<el-form-item prop = "region">
+									<v-distpicker 
+										:province="formData.province" 
+										:city='formData.city'
+										:area='formData.region'
+										@selected="onSelected">
+									</v-distpicker>
+								</el-form-item>    
+							</el-col>
+							<el-col :span="5"><p>项目建筑地址</p></el-col>
+							<el-col :span="6">
+								<el-form-item prop="buildingAddr">
+									<el-input  v-model="formData.buildingAddr" placeholder="请输入内容"></el-input>
+								</el-form-item> 
+							</el-col>
+							
+						</el-row>
+						<el-row >
+							<el-col :span="5"><p>建筑面积</p></el-col>
+							<el-col :span="8">
+								<el-form-item prop="floorArea">
+									<el-input  v-model="formData.floorArea" placeholder="请输入内容">
+										<template slot="append">m²</template>
+									</el-input>
+								</el-form-item>  
+							</el-col>
+
+							<el-col :span="5"><p>建筑使用单位</p></el-col>
+							<el-col :span="6">
+								<el-form-item prop = "exploitUnit">
+								<el-input  v-model="formData.exploitUnit" placeholder="请输入内容"></el-input>
+								</el-form-item>
+							</el-col>
+						</el-row>
+						<el-row >
+							<el-col :span="5"><p>总包单位</p></el-col>
+							<el-col :span="8">
+								<el-select v-model="formData.projectMode" placeholder="请选择">
+										<el-option
+											v-for="item in options"
+											:key="item.value"
+											:label="item.label"
+											:value="item.value">
+										</el-option>
+									</el-select>
+							</el-col>
+						</el-row>
+					</div>
+				</div>
+				<!--  -->
+				<div class="wordborder" >
+					<div>建筑信息</div>
+					<div class='content'>
+						<el-row>
+							<el-col :span="5"><p>项目模式</p></el-col>
+							<el-col :span="8" >
+								<el-form-item prop="projectMode">
+									<el-select v-model="formData.projectMode" placeholder="请选择">
+										<el-option
+											v-for="item in options"
+											:key="item.value"
+											:label="item.label"
+											:value="item.value">
+										</el-option>
+									</el-select>
+								</el-form-item> 
+							</el-col>
+							<el-col :span="5"><p>招标模式</p></el-col>
+							<el-col :span="6">
+								<el-form-item prop = "tenderMode">
+								<el-select v-model="formData.tenderMode" placeholder="请选择">
+									<el-option
+										v-for="item in options3"
+										:key="item.value"
+										:label="item.label"
+										:value="item.value">
+									</el-option>
+								</el-select>
+								</el-form-item>
+							</el-col>
+						</el-row>
+						<el-row>
+							<el-col :span="5"><p>业主需求对接人</p></el-col>
+							<el-col :span="8">
+								<el-form-item prop = "demandUser">
+								<el-input  v-model="formData.demandUser" placeholder="请输入内容"></el-input>
+								</el-form-item>
+							</el-col>
+
+							<el-col :span="5"><p>业主需求对接人联系方式</p></el-col>
+							<el-col :span="6">
+								<el-form-item prop = "demandUserPhone">
+								<el-input  v-model="formData.demandUserPhone" placeholder="请输入内容"></el-input>
+								</el-form-item>
+							</el-col>
+						</el-row>
+						<el-row >
+							<el-col :span="5"><p>项目规模</p></el-col>
+							<el-col :span="8">
+								<el-form-item prop = "scale">
+								<el-input  v-model="formData.scale" placeholder="请输入内容">
+									<template slot="append">万元</template>
+								</el-input>
+								</el-form-item>
+							</el-col>
+						</el-row>
+						<el-row >
+							<el-col :span="5"><p>项目内容简介</p></el-col>
+							<el-col :span="19">
+								<el-form-item prop = "content">
+								<el-input
+									type="textarea"
+									:rows="3"
+									placeholder="请输入内容"
+									v-model="formData.content">
+								</el-input>
+								</el-form-item>
+							</el-col>
+						</el-row>
+					</div>
+				</div>
+			</el-form>
+        </el-card>
+    </div>
+</template>
+<script>
+import {Industry,ProjectMode,TenderMode} from '@/utils/util'
+
+export default {
+  data() {
+		return {
+			options: ProjectMode,//项目模式
+			options2:Industry,//项目类别
+			options3: TenderMode,//招标模式
+			formData:{
+                leader:"1",//项目负责人
+                name:"",//项目名称
+                industry:"",//行业
+                province:"",//省
+                city:"",//市
+                region:"",//区
+                floorArea:"",//建筑面积
+                scale:"",//施工原型图中没有项目规模字段
+                buildingAddr:"",//建筑地址
+                projectMode:"",//项目规模
+                buildStage:"",//施工阶段
+                buildTarget:"",//施工目标
+                estimateBuildTime:"",//预计施工时间
+                otherExplain:"",//其他说明
+            }
+		};
+	},
+	methods: {
+		 
+	},
+	created() {
+		
+	}
+};
+</script>
+
+<style lang="scss" >
+#createProject{
+	.mb20{
+		margin-bottom: 20px;
+		.lh40{
+			line-height: 40px;
+		}
+	}
+	
+}
+</style>
+
+

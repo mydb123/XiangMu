@@ -1,0 +1,105 @@
+
+import {asyncRouterMap} from '@/router'
+import store from '@/store'
+//一级菜单、二级菜单配置
+const routeToMenu = [
+  {
+    path: '/',
+    first:'/',
+    second:'/home',
+  },
+  {
+    path: '/home',
+    first:'/',
+    second:'/home',
+  },
+  //工作台-项目-所有项目列表 
+  {
+    path: '/workbench/project/allProjectList',
+    first:'/workbench',
+    second:'/workbench/project/allProjectList',
+  },
+  //工作台-项目-新增项目 
+  {
+    path: '/workbench/project/createProject',
+    first:'/workbench',
+    second:'/workbench/project/allProjectList',
+  },
+  //工作台-项目-设计方案提交 
+  {
+    path: '/workbench/project/designScheme',
+    first:'/workbench',
+    second:'/workbench/project/designScheme',
+  },
+  //工作台-项目-设计成果提交
+  {
+    path: '/workbench/project/designResult',
+    first:'/workbench',
+    second:'/workbench/project/designResult',
+  },
+  //工作台-项目-采购方案提交
+  {
+    path: '/workbench/project/purchaseScheme',
+    first:'/workbench',
+    second:'/workbench/project/purchaseScheme',
+  },
+  //工作台-项目-施工方案提交 
+  {
+    path: '/workbench/project/constructionScheme',
+    first:'/workbench',
+    second:'/workbench/project/constructionScheme',
+  },
+  //工作台-项目-采购记录提交
+  {
+    path: '/workbench/project/purchaseRecord',
+    first:'/workbench',
+    second:'/workbench/project/purchaseRecord',
+  },
+  //工作台-项目-施工记录提交
+  {
+    path: '/workbench/project/constructionRecord',
+    first:'/workbench',
+    second:'/workbench/project/constructionRecord',
+  },
+]
+
+const methodRouteMenu = {
+  getRoutes:function(firstUrl,router){
+    if(firstUrl =='/'){
+      return router.options.routes[2].children
+    }
+    for (let index = 0; index < asyncRouterMap.length; index++) {
+      const element = asyncRouterMap[index];
+      if(element.path ==  firstUrl){
+        return element.children  
+      }
+    }
+  },
+  getRouteMenu:function(path){
+    for (let index = 0; index < routeToMenu.length; index++) {
+      const element = routeToMenu[index];
+      if(path == element.path){
+        return element
+      }
+    }
+    return ;
+  },
+  getSecond:function(element){
+    let _second 
+    if(!element.second){
+      let temp1 = store.getters.permission_routers ? store.getters.permission_routers : constantRouterMap
+      for (let index = 0; index <temp1.length; index++) {
+        const _element = temp1[index];
+        if(_element.path ==  element.first){
+          _second = _element.children[0].redirect || _element.redirect ||_element.path
+        }
+      }
+    }else{
+      _second = element.second
+    }
+    return _second
+  }
+}
+
+export  {methodRouteMenu}
+export default routeToMenu

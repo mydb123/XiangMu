@@ -1,0 +1,890 @@
+<template>
+<div id="detail">
+  <el-tabs :tab-position="tabPosition"   type="border-card">
+    <el-tab-pane label="项目信息" v-if="roleName!='lw'&& roleName!='gys'" >
+        <el-form :model="formData" ref="formData" disabled>
+          <div class="wordborder">
+            <div class="fsmb">建筑信息</div>
+            <div class="content">
+              <el-row>
+                <el-col :span="5"><p>项目名称</p></el-col>
+                <el-col :span="8">
+                  <el-form-item prop="name">
+                    <el-input
+                      v-model="formData.name"
+                      placeholder="请输入项目名称"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="5"><p>项目类别</p></el-col>
+                <el-col :span="6">
+                  <el-form-item prop="type">
+                    <el-select v-model="formData.type" placeholder="请选择行业">
+                      <el-option
+                        v-for="item in options2"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      >
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="5"><p>地区</p></el-col>
+                <el-col :span="8">
+                  <el-form-item prop="region">
+                    <v-distpicker
+                      disabled
+                      :province="formData.province"
+                      :city="formData.city"
+                      :area="formData.region"
+                    >
+                    </v-distpicker>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="5"><p>项目建筑地址</p></el-col>
+                <el-col :span="6">
+                  <el-form-item prop="address">
+                    <el-input
+                      v-model="formData.address"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="5"><p>建筑面积</p></el-col>
+                <el-col :span="8">
+                  <el-form-item prop="area">
+                    <el-input v-model="formData.area" placeholder="请输入内容">
+                      <template slot="append">m²</template>
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+
+                <el-col :span="5"><p>建筑使用单位</p></el-col>
+                <el-col :span="6">
+                  <el-form-item prop="useCompany">
+                    <el-input
+                      v-model="formData.useCompany"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="5"><p>总包单位</p></el-col>
+                <el-col :span="8">
+                  <el-form-item>
+                    <el-select
+                      v-model="formData.zbCompany"
+                      placeholder="请选择"
+                    >
+                      <el-option
+                        v-for="item in addoptions"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id"
+                      >
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </div>
+          </div>
+          <!--  -->
+          <div class="wordborder">
+            <div class="fsmb">商务信息</div>
+            <div class="content">
+              <el-row>
+                <el-col :span="5"><p>项目模式</p></el-col>
+                <el-col :span="8">
+                  <el-form-item prop="mode">
+                    <el-select v-model="formData.mode" placeholder="请选择">
+                      <el-option
+                        v-for="item in options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      >
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="5"><p>招标模式</p></el-col>
+                <el-col :span="6">
+                  <el-form-item prop="inviteMode">
+                    <el-select
+                      v-model="formData.inviteMode"
+                      placeholder="请选择"
+                    >
+                      <el-option
+                        v-for="item in options3"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      >
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="5"><p>业主需求对接人</p></el-col>
+                <el-col :span="8">
+                  <el-form-item prop="ownerPerson">
+                    <el-input
+                      v-model="formData.ownerPerson"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="5"><p>业主需求对接人联系方式</p></el-col>
+                <el-col :span="6">
+                  <el-form-item prop="ownerPersonPhone">
+                    <el-input
+                      v-model="formData.ownerPersonPhone"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="5"><p>项目规模</p></el-col>
+                <el-col :span="8">
+                  <el-form-item prop="scale">
+                    <el-input v-model="formData.scale" placeholder="请输入内容">
+                      <template slot="append">万元</template>
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="5"><p>项目年度</p></el-col>
+                <el-col :span="6">
+                  <el-date-picker
+                    v-model="formData.year"
+                    type="year"
+                    placeholder="选择日期"
+                  >
+                  </el-date-picker>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="5"><p>项目内容简介</p></el-col>
+                <el-col :span="19">
+                  <el-form-item prop="summary">
+                    <el-input
+                      type="textarea"
+                      :rows="3"
+                      placeholder="请输入内容"
+                      v-model="formData.summary"
+                    >
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </div>
+          </div>
+        </el-form>
+     
+    </el-tab-pane>
+    <el-tab-pane label="设计信息" v-if="roleName!='lw'&& roleName!='gys'">
+        <el-form :model="formData" disabled>
+          <div class="wordborder">
+            <div class="fsmb">设计方案</div>
+            <div class="content">
+              <el-row>
+                <el-col :span="5"><p>项目名称</p></el-col>
+                <el-col :span="8">
+                  <el-form-item prop="">
+                    <el-input disabled v-model="formData.name"></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="5"><p>总包单位</p></el-col>
+                <el-col :span="6">
+                  <el-form-item prop="">
+                    <el-input
+                      disabled
+                      v-model="formData.zbCompanyName"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="5"><p>主设计师</p></el-col>
+                <el-col :span="8">
+                  <el-form-item prop="designer">
+                    <el-input
+                      v-model="formData.designer"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="5"><p>联系方式</p></el-col>
+                <el-col :span="6">
+                  <el-form-item prop="designerPhone">
+                    <el-input
+                      v-model="formData.designerPhone"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="5"><p>设计周期</p></el-col>
+                <el-col :span="8">
+                  <el-form-item prop="designerCycle">
+                    <el-input
+                      v-model="formData.designerCycle"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="5"><p>拟交付时间</p></el-col>
+                <el-col :span="6">
+                  <el-date-picker
+                    v-model="formData.estimatePayDate"
+                    type="date"
+                    placeholder="选择日期"
+                    value-format="yyyy-MM-dd"
+                  >
+                  </el-date-picker>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="5"><p>设计范围</p></el-col>
+                <el-col :span="8">
+                  <el-form-item prop="designScale">
+                    <el-input
+                      v-model="formData.designScale"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="5"><p>其他要求</p></el-col>
+                <el-col :span="6">
+                  <el-form-item prop="otherDemand">
+                    <el-input
+                      v-model="formData.otherDemand"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </div>
+          </div>
+
+          <div class="wordborder">
+            <div class="fsmb">设计成果</div>
+            <div class="content">
+              <el-row>
+                <el-col :span="5"><p>成果提交介质</p></el-col>
+                <el-col :span="8">
+                  <el-form-item prop="resultPayMedium">
+                    <el-input
+                      v-model="formData.resultPayMedium"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="5"><p>成果提交方式</p></el-col>
+                <el-col :span="6">
+                  <el-form-item prop="resultPayMode">
+                    <el-input
+                      v-model="formData.resultPayMode"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="5"><p>实际交付时间</p></el-col>
+                <el-col :span="8">
+                  <el-date-picker
+                    v-model="formData.realPayDate"
+                    type="date"
+                    placeholder="选择日期"
+                    value-format="yyyy-MM-dd"
+                  >
+                  </el-date-picker>
+                </el-col>
+                <el-col :span="5"><p>实际提交方式</p></el-col>
+                <el-col :span="6">
+                  <el-form-item prop="realPayMode">
+                    <el-input
+                      v-model="formData.realPayMode"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="5"><p>成果范围</p></el-col>
+                <el-col :span="8">
+                  <el-form-item prop="resultRange">
+                    <el-input
+                      v-model="formData.resultRange"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="5"><p>设计图纸</p></el-col>
+                <el-col :span="6">
+                  <el-card class="box-card">
+                    <div v-for="fileItem in file.designPicList" :key="fileItem.id" class="text item">
+                        <el-link type="primary" :href="downloadUrl+fileItem.id">{{fileItem.showName }}</el-link>
+                    </div>
+                  </el-card>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="5"><p>设计清单</p></el-col>
+                <el-col :span="8">
+                  <el-card class="box-card">
+                    <div v-for="fileItem in file.designMenuList" :key="fileItem.id" class="text item">
+                        <el-link type="primary" :href="downloadUrl+fileItem.id">{{fileItem.showName }}</el-link>
+                    </div>
+                  </el-card>
+                </el-col>
+              </el-row>
+            </div>
+          </div>
+        </el-form>
+      
+    </el-tab-pane>
+    <el-tab-pane label="采购信息" v-if="roleName!='lw'">
+        <el-form :model="formData" disabled >
+          <div class="wordborder">
+            <div class="fsmb">采购方案</div>
+            <div class="content">
+              <el-row>
+                <el-col :span="5"><p>项目名称</p></el-col>
+                <el-col :span="8">
+                  <el-form-item prop="">
+                    <el-input disabled v-model="formData.name"></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="5"><p>总包单位</p></el-col>
+                <el-col :span="6">
+                  <el-form-item prop="">
+                    <el-input
+                      disabled
+                      v-model="formData.zbCompanyName"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="5"><p>采购员</p></el-col>
+                <el-col :span="8">
+                  <el-form-item prop="buyer">
+                    <el-input
+                      v-model="formData.buyer"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="5"><p>联系方式</p></el-col>
+                <el-col :span="6">
+                  <el-form-item prop="buyerPhone">
+                    <el-input
+                      v-model="formData.buyerPhone"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row >
+                <el-col :span="5"><p>供应商</p></el-col>
+                <el-col :span="8">
+                  <el-form-item>
+                    <el-select  v-if="roleName=='zb'"
+                      multiple
+                      v-model="resultSupplier"
+                      placeholder="请选择"
+                    >
+                      <el-option
+                        v-for="item in suppliers"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id"
+                      >
+                      </el-option>
+                    </el-select>
+                    <el-input v-if="roleName!='zb'"
+                      v-model="username"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              
+              <el-row>
+                <el-col :span="5"><p>首次采购时间</p></el-col>
+                <el-col :span="8">
+                  <el-date-picker
+                    v-model="formData.firstBuyerDate"
+                    type="date"
+                    placeholder="选择日期"
+                    value-format="yyyy-MM-dd"
+                  >
+                  </el-date-picker>
+                </el-col>
+                <el-col :span="5"><p>拟完成时间</p></el-col>
+                <el-col :span="6">
+                  <el-date-picker
+                    v-model="formData.estimateDate"
+                    type="date"
+                    placeholder="选择日期"
+                    value-format="yyyy-MM-dd"
+                  >
+                  </el-date-picker>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="5"><p>到货要求</p></el-col>
+                <el-col :span="8">
+                  <el-form-item prop="goodDemand">
+                    <el-input
+                      v-model="formData.goodDemand"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="5"><p>采购清单</p></el-col>
+                <el-col :span="6">
+                  <el-card class="box-card">
+                    <div v-for="fileItem in file.buyMenuList" :key="fileItem.id" class="text item">
+                        <el-link type="primary" :href="downloadUrl+fileItem.id">{{fileItem.showName }}</el-link>
+                    </div>
+                  </el-card>
+                </el-col>
+              </el-row>
+            </div>
+          </div>
+          <div class="wordborder">
+            <div class="fsmb">采购记录</div>
+            <div class="content" v-for="(item,index) in purchaseMonthList" :key="index">
+              <el-row>
+                <el-col :span="5"><p>本次采购月度</p></el-col>
+                <el-col :span="8">
+                  <el-date-picker
+                    v-model="item.month"
+                    type="month"
+                    placeholder="选择日期"
+                  >
+                  </el-date-picker>
+                </el-col>
+                <el-col :span="5"><p>本次采购清单</p></el-col>
+                <el-col :span="6">
+                  <div v-for="fileItem in item.list5" :key="fileItem.fileid" class="text item">
+                      <el-link type="primary" :href="downloadUrl+fileItem.fileid">{{fileItem.show_name }}</el-link>
+                  </div>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="5"><p>材料到货照片</p></el-col>
+                <el-col :span="4">
+                  <div v-for="fileItem in item.list6" :key="fileItem.fileid" class="text item">
+                      <el-link type="primary" :href="downloadUrl+fileItem.fileid">{{fileItem.show_name }}</el-link>
+                  </div>
+                </el-col>
+                <el-col :span="15" >
+                  <el-image 
+                    v-for="(fileItem,index) in item.list6"
+                    :key = index
+                    style="width: 100px; height: 100px"
+                    :src="downloadUrl+fileItem.fileid" 
+                    :preview-src-list="[downloadUrl+fileItem.fileid]">
+                  </el-image>
+							  </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="5"><p>月度采购小结</p></el-col>
+                <el-col :span="19">
+                  <el-form-item prop="content">
+                    <el-input
+                      type="textarea"
+                      :rows="3"
+                      placeholder="请输入内容"
+                      v-model="item.description"
+                    >
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <hr>
+            </div>
+          </div>
+        </el-form>
+     
+    </el-tab-pane>
+    <el-tab-pane label="施工信息" v-if="roleName!='gys'">
+        <el-form :model="formData" disabled>
+          <div class="wordborder">
+            <div class="fsmb">施工方案</div>
+            <div class="content">
+              <el-row>
+                <el-col :span="5"><p>项目名称</p></el-col>
+                <el-col :span="8">
+                  <el-form-item prop="">
+                    <el-input disabled v-model="formData.name"></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="5"><p>总包单位</p></el-col>
+                <el-col :span="6">
+                  <el-form-item prop="">
+                    <el-input
+                      disabled
+                      v-model="formData.zbCompanyName"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="5"><p>项目经理</p></el-col>
+                <el-col :span="8">
+                  <el-form-item prop="manager">
+                    <el-input
+                      v-model="formData.manager"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="5"><p>联系方式</p></el-col>
+                <el-col :span="6">
+                  <el-form-item prop="demandUserPhone">
+                    <el-input
+                      v-model="formData.managerPhone"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row > 
+                <el-col :span="5"><p>劳务单位</p></el-col>
+                <el-col :span="8" >
+                  <el-form-item>
+                    <el-select  v-if="roleName=='zb'"
+                      multiple
+                      v-model="resultConstruction"
+                      placeholder="请选择"
+                    >
+                      <el-option
+                        v-for="item in constructions"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id"
+                      >
+                      </el-option>
+                    </el-select>
+                    <el-input v-if="roleName!='zb'"
+                      v-model="username"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="5"><p>工艺要求</p></el-col>
+                <el-col :span="6">
+                  <el-form-item prop="demandUser">
+                    <el-input
+                      v-model="formData.artDemand"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="5"><p>进场时间</p></el-col>
+                <el-col :span="8">
+                  <el-date-picker
+                    v-model="formData.beginDate"
+                    type="date"
+                    placeholder="选择日期"
+                    value-format="yyyy-MM-dd"
+                  >
+                  </el-date-picker>
+                </el-col>
+                <el-col :span="5"><p>拟完成时间</p></el-col>
+                <el-col :span="6">
+                  <el-date-picker
+                    v-model="formData.estimateCompleteDate"
+                    type="date"
+                    placeholder="选择日期"
+                    value-format="yyyy-MM-dd"
+                  >
+                  </el-date-picker>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="5"><p>施工组织计划</p></el-col>
+                <el-col :span="19">
+                  <el-card class="box-card">
+                    <div v-for="fileItem in file.constructionPlanList" :key="fileItem.id" class="text item">
+                        <el-link type="primary" :href="downloadUrl+fileItem.id">{{fileItem.showName }}</el-link>
+                    </div>
+                  </el-card>
+                </el-col>
+              </el-row>
+            </div>
+          </div>
+          <div class="wordborder">
+            <div class="fsmb">施工记录</div>
+            <div class="content" v-for="(item,index) in constructionMonthList" :key="index">
+              <el-row>
+                <el-col :span="5"><p>本次施工月度</p></el-col>
+                <el-col :span="8">
+                  <el-date-picker
+                    v-model="item.month"
+                    type="month"
+                    placeholder="选择日期"
+                  >
+                  </el-date-picker>
+                </el-col>
+                <el-col :span="5"><p>本次施工清单</p></el-col>
+                <el-col :span="6">
+                  <div v-for="fileItem in item.list7" :key="fileItem.fileid" class="text item">
+                      <el-link type="primary" :href="downloadUrl+fileItem.fileid">{{fileItem.show_name }}</el-link>
+                  </div>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="5"><p>现场施工照片</p></el-col>
+                <el-col :span="4">
+                  <div v-for="fileItem in item.list8" :key="fileItem.fileid" class="text item">
+                      <el-link type="primary" :href="downloadUrl+fileItem.fileid">{{fileItem.show_name }}</el-link>
+                  </div>
+                </el-col>
+                <el-col :span="15">
+                  <el-image 
+                    v-for="(fileItem,index) in item.list8"
+                    :key = index
+                    style="width: 100px; height: 100px"
+                    :src="downloadUrl+fileItem.fileid" 
+                    :preview-src-list="[downloadUrl+fileItem.fileid]">
+                  </el-image>
+							  </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="5"><p>月度施工小结</p></el-col>
+                <el-col :span="19">
+                  <el-form-item prop="content">
+                    <el-input
+                      type="textarea"
+                      :rows="3"
+                      placeholder="请输入内容"
+                      v-model="item.description"
+                    >
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <hr>
+            </div>
+          </div>
+        </el-form>
+    </el-tab-pane>
+  </el-tabs> 
+</div>
+</template>
+<script>
+import api from "@/api/index";
+import base from "@/api/base";
+import store from "@/store/index";
+import { Industry, ProjectMode, TenderMode, FileType } from "@/utils/util";
+export default {
+  data() {
+    return {
+      roleName:sessionStorage.getItem("roleName"),
+      username:sessionStorage.getItem("user"),
+      tabPosition: "top",
+      formData: {
+        id: "",
+      },
+      resultSupplier:[],
+      suppliers:[],
+      resultConstruction:[],
+      constructions:[],
+      purchaseMonthList:[],
+      constructionMonthList:[],
+      file:{
+        designPicList:[],
+        designMenuList:[],
+        buyMenuList:[],
+        constructionPlanList:[],
+      },
+      url: "",
+			srcListObject:{},
+      uploadPercent1: 0,
+      flag1: false,
+      uploadFile: {
+        //文件列表
+        list1: [],
+      },
+      showFileFlag1: true,
+      uploadPercent1: 0,
+      flag1: false,
+
+      showFileFlag2: true,
+      uploadPercent2: 0,
+      flag2: false,
+
+      uploadFile: {
+        //文件列表
+        list1: [],
+        list2: [],
+      },
+      formDataDesign: {},
+      downloadUrl:
+        base.sq +
+        "/workbench/download?access_token=" +
+        store.getters.token +
+        "&fileId=", //下载路径
+      addoptions: [],
+      options: ProjectMode, //项目模式
+      options2: Industry, //项目类别
+      options3: TenderMode, //招标模式
+    };
+  },
+  methods: {
+    //获取项目信息
+    getProjectById() {
+      api.project.getProjectById(this.formData.id).then((response) => {
+        this.formData = response.data;
+      });
+    },
+    //获取设计信息详情
+    getDesignDetailById() {},
+    //查询总包单位下拉框
+    getUserByRoleName(){
+      api.project.getUserByRoleNamePost("zb").then((response) => {
+        this.addoptions = response.data;
+      });
+    },
+    //查询所属项目文件
+    loadFile() {
+      //设计图纸
+      api.project.loadFile(this.formData.id,FileType.DESIGN_PIC).then(response => {
+        this.file.designPicList = response.data;
+      });
+
+      //设计清单
+      api.project.loadFile(this.formData.id,FileType.DESIGN_MENU).then(response => {
+        this.file.designMenuList = response.data;
+      });
+
+      //采购清单
+      api.project.loadFile(this.formData.id,FileType.BUY_MENU).then(response => {
+        this.file.buyMenuList = response.data;
+      });
+
+      //施工组织计划
+      api.project.loadFile(this.formData.id,FileType.CONSTRUCTION_PLAN).then(response => {
+        this.file.constructionPlanList = response.data;
+      });
+
+      // //本次采购清单
+      // api.project.loadFile(this.formData.id,FileType.CONSTRUCTION_PLAN).then(response => {
+      //   this.file.constructionPlanList = response.data;
+      // });
+
+      // //材料到货照片
+      // api.project.loadFile(this.formData.id,FileType.CONSTRUCTION_PLAN).then(response => {
+      //   this.file.constructionPlanList = response.data;
+      // });
+
+      // //本次施工清单
+      // api.project.loadFile(this.formData.id,FileType.CONSTRUCTION_PLAN).then(response => {
+      //   this.file.constructionPlanList = response.data;
+      // });
+
+      // //现场施工照片
+      // api.project.loadFile(this.formData.id,FileType.CONSTRUCTION_PLAN).then(response => {
+      //   this.file.constructionPlanList = response.data;
+      // });
+
+        
+        //this.bizProjectSupplierList = temp2   
+      
+    }, 
+    //供应商列表
+    getBizProjectSupplierList(){
+        api.project.bizProjectSupplierList(this.formData.id).then(response => {
+          let temp = response.data;
+          let temp2 = []
+          for (let index = 0; index < temp.length; index++) {
+            temp2.push(temp[index].supplierId)
+            
+          }
+          this.resultSupplier = temp2
+      })
+    },
+
+    getBizPurchaseMonthList(){
+      api.project.bizPurchaseMonthList(this.formData.id).then(response => {
+        this.purchaseMonthList = response.data; 
+      })
+    },
+
+
+    //施工月度列表
+    getBizConstructionMonthList(){
+      api.project.bizConstructionMonthList(this.formData.id).then(response => {
+        this.constructionMonthList = response.data;      
+      })
+    },
+
+    //劳务列表
+    getBizProjectConstructionList(){
+        api.project.bizProjectConstructionList(this.formData.id).then(response => {
+          let temp = response.data;
+          let temp2 = []
+          for (let index = 0; index < temp.length; index++) {
+            temp2.push(temp[index].constructionId)
+            
+          }
+          this.resultConstruction = temp2
+      })
+    },
+  },
+  created() {
+    //路由传参赋值
+    this.formData.id = this.$route.query.id;
+    //获取项目基本信息
+    this.getProjectById();
+    //查询总包单位赋值下拉框
+    this.getUserByRoleName();
+    //查询所属项目文件
+    this.loadFile();
+    api.project.getUserByRoleNamePost("gys").then(response => {
+      this.suppliers = response.data
+
+      this.getBizProjectSupplierList()
+
+      console.log(this.suppliers);
+    });
+
+    api.project.getUserByRoleNamePost("lw").then(response => {
+      this.constructions = response.data
+
+      this.getBizProjectConstructionList()
+
+      console.log(this.suppliers);
+    });
+    
+    this.getBizPurchaseMonthList()
+    this.getBizConstructionMonthList()
+  },
+};
+</script>
+
+<style lang="scss">
+  #detail{
+    .fsmb{
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
+  }
+</style>

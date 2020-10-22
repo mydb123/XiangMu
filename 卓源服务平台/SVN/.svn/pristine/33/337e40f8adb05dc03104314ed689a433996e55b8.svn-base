@@ -1,0 +1,183 @@
+const statusDesignPartnerRouter = [
+    {
+        //中断项目
+        status:0,
+        router:"/design/partner/failDetail",
+    },
+    {
+        //待立项审核
+        status:1,
+        router:"/design/partner/approvalPending",
+    },
+    {
+        //立项通过，待上传图纸
+        status:2,
+        router:"/design/partner/drawingUpload",
+    },
+    {
+        //图纸已上传，待确认
+        status:20,
+        router:"/design/partner/drawingReview",
+    },
+    {
+        //图纸已确认，方案编制中
+        status:3,
+        router:"/design/partner/planUpload",
+    },
+    {
+        //方案已提交，请确认
+        status:30,
+        router:"/design/partner/planReview",
+    },
+    {
+        //方案修改意见已提交，待修改
+        status:31,
+        router:"/design/partner/planSuggest",
+    },
+    {
+        //方案已修改，请确认
+        status:32,
+        router:"/design/partner/planUpdate",
+    },
+    {
+        //方案已确认，请缴费
+        status:4,
+        router:"/design/partner/planFee",
+    },
+    {
+        //项目设计中，成果待提交
+        status:5,
+        router:"/design/partner/resultUpload",
+    },
+    {
+        //成果已提交，请确认
+        status:50,
+        router:"/design/partner/resultReview",
+    },
+    {
+        //成果修改意见已提交，待修改
+        status:51,
+        router:"/design/partner/resultSuggest",
+    },
+    {
+        //成果已修改，请确认
+        status:52,
+        router:"/design/partner/resultUpdate",
+    },
+    {
+        //成果已确认，请评价
+        status:6,
+        router:"/design/partner/appraiseUpload",
+    },
+    {
+        //评价待确认
+        status:60,
+        router:"/design/partner/appraiseReview",
+    },
+    {
+        //结束
+        status:7,
+        router:"/design/partner/finished",
+    }
+]
+const statusDesignDeptRouter = [
+    {
+        //中断项目
+        status:0,
+        router:"/design/dept/failDetail",
+    },
+    {
+        //待立项审核
+        status:1,
+        router:"/design/dept/approvalPending",
+    },
+    {
+        //立项通过，待上传图纸
+        status:2,
+        router:"/design/dept/drawingUpload",
+    },
+    {
+        //图纸已上传，待确认
+        status:20,
+        router:"/design/dept/drawingReview",
+    },
+    {
+        //图纸已确认，方案编制中
+        status:3,
+        router:"/design/dept/planUpload",
+    },
+    {
+        //方案已提交，请确认
+        status:30,
+        router:"/design/dept/planReview",
+    },
+    {
+        //方案修改意见已提交，待修改
+        status:31,
+        router:"/design/dept/planSuggest",
+    },
+    {
+        //方案已修改，请确认
+        status:32,
+        router:"/design/dept/planUpdate",
+    },
+    {
+        //方案已确认，请缴费
+        status:4,
+        router:"/design/dept/planFee",
+    },
+    {
+        //项目设计中，成果待提交
+        status:5,
+        router:"/design/dept/resultUpload",
+    },
+    {
+        //成果已提交，请确认
+        status:50,
+        router:"/design/dept/resultReview",
+    },
+    {
+        //成果修改意见已提交，待修改
+        status:51,
+        router:"/design/dept/resultSuggest",
+    },
+    {
+        //成果已修改，请确认
+        status:52,
+        router:"/design/dept/resultUpdate",
+    },
+    {
+        //成果已确认，请评价
+        status:6,
+        router:"/design/dept/appraiseUpload",
+    },
+    {
+        //评价待确认
+        status:60,
+        router:"/design/dept/appraiseReview",
+    },
+    {
+        //结束
+        status:7,
+        router:"/design/dept/finished",
+    }
+]
+
+export function getStatusDesignPartnerRouter(status){
+    let array =statusDesignPartnerRouter ;
+    for (let index = 0; index < array.length; index++){
+        const element = array[index];
+        if(status == element.status){
+            return element.router
+        }  
+    }
+}
+export function getStatusDesignDeptRouter(status){
+    let array =statusDesignDeptRouter ;
+    for (let index = 0; index < array.length; index++) {
+        const element = array[index];
+        if(status == element.status){
+            return element.router
+        }
+    }
+}

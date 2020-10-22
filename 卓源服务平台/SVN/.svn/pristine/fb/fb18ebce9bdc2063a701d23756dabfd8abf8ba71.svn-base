@@ -1,0 +1,99 @@
+<template>
+<!-- 设计方案 -->
+    <div id="constructionScheme">
+		<el-breadcrumb>
+				<el-breadcrumb-item :to="{ path:'/workbench/project/allProjectList'}">所有项目列表</el-breadcrumb-item>
+				<el-breadcrumb-item>设计方案</el-breadcrumb-item>
+		</el-breadcrumb>
+		<el-card>
+			<el-form :model="formData">
+				<div class="wordborder" >
+					<div class='content'>
+						<el-row>
+							<el-col :span="5"><p>主设计师</p></el-col>
+							<el-col :span="8">
+								<el-form-item prop = "demandUser">
+								<el-input  v-model="formData.demandUser" placeholder="请输入内容"></el-input>
+								</el-form-item>
+							</el-col>
+							<el-col :span="5"><p>联系方式</p></el-col>
+							<el-col :span="6">
+								<el-form-item prop = "demandUserPhone">
+								<el-input  v-model="formData.demandUserPhone" placeholder="请输入内容"></el-input>
+								</el-form-item>
+							</el-col>
+						</el-row>
+						<el-row>
+						 <el-col :span="5"><p>设计周期</p></el-col>
+							<el-col :span="8">
+								<el-form-item prop = "demandUser">
+								<el-input  v-model="formData.demandUser" placeholder="请输入内容"></el-input>
+								</el-form-item>
+							</el-col>
+							<el-col :span="5"><p>拟交付时间</p></el-col>
+							<el-col :span="6">
+								<el-date-picker
+										v-model="value1"
+										type="date"
+										placeholder="选择日期" value-format="yyyy-MM-dd">
+								</el-date-picker>
+							</el-col>
+						</el-row>
+						<el-row>
+							<el-col :span="5"><p>成果提交介质</p></el-col>
+							<el-col :span="8">
+								<el-form-item prop = "demandUser">
+								<el-input  v-model="formData.demandUser" placeholder="请输入内容"></el-input>
+								</el-form-item>
+							</el-col>
+							<el-col :span="5"><p>成果提交方式</p></el-col>
+							<el-col :span="6">
+								<el-form-item prop = "demandUserPhone">
+								<el-input  v-model="formData.demandUserPhone" placeholder="请输入内容"></el-input>
+								</el-form-item>
+							</el-col>
+						</el-row>
+						<el-row>
+							<el-col :span="5"><p>设计范围</p></el-col>
+							<el-col :span="8">
+								<el-form-item prop = "demandUser">
+								<el-input  v-model="formData.demandUser" placeholder="请输入内容"></el-input>
+								</el-form-item>
+							</el-col>
+							<el-col :span="5"><p>其他要求</p></el-col>
+							<el-col :span="6">
+								<el-form-item prop = "demandUserPhone">
+								<el-input  v-model="formData.demandUserPhone" placeholder="请输入内容"></el-input>
+								</el-form-item>
+							</el-col>
+						</el-row>
+					</div>
+				</div>
+			</el-form>
+		</el-card>
+    </div>
+</template>
+
+<script>
+export default {
+  data() {
+		return {
+			formData:{
+				value1:"",
+			}
+		};
+	},
+	methods: {
+		
+	},
+	created() {
+		
+	}
+};
+</script>
+
+<style lang="scss" >
+
+</style>
+
+

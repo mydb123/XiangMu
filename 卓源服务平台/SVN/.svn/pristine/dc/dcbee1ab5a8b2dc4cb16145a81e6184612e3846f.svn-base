@@ -1,0 +1,347 @@
+<template>
+    <div class='front_introduction'>
+        <div class="subject">
+            <ul class="icon_kuang">
+              <li class="solve">
+                <img class="icon_tu" src="@/assets/icon/4.png"/>
+                <div class="icon_word">
+                  <h2>解决方案</h2>
+                  <p>好项目不用再到处找，这里更多优质项目等着你。</p>
+                </div>
+              </li>
+              <li class="solve">
+                <img class="icon_tu" src="@/assets/icon/3.png"/>
+                <div class="icon_word">
+                  <h2>市场范围</h2>
+                  <p>专业的团队，一站式体系，为客户提供更专业服务。</p>
+                </div>
+              </li>
+              <li class="solve">
+                <img class="icon_tu" src="@/assets/icon/2.png"/>
+                <div class="icon_word">
+                  <h2>合作伙伴</h2>
+                  <p>专业的团队，优质的服务，一站式体系让您更省心。</p>
+                </div>
+              </li>
+              <li class="solve">
+                <img class="icon_tu" src="@/assets/icon/1.png"/>
+                <div class="icon_word">
+                  <h2>加入平台</h2>
+                  <p>专业的团队，优质的服务，一站式体系让您更省心。</p>
+                </div>
+              </li>
+            </ul>
+
+              <div class="title_xiangmu">
+                <div class="left_title">
+                  <h1>最新项目
+                  <span>/LATEST PROJECT</span>
+                  </h1>
+                  <p>--我们最近在做什么！</p>
+                </div>
+                <div class="clearfix"></div>
+              </div>
+              <ul class="liebiao_xiangmu">
+                <li><router-link to="particulars1/1"><img src="@/assets/latest/xiangmu (1).jpg"/></router-link></li>
+                <li><router-link to="particulars1/2"><img src="@/assets/latest/xiangmu (2).jpg"/></router-link></li>
+                <li><router-link to="particulars1/3"><img style="margin-right: 0;" src="@/assets/latest/xiangmu (3).jpg"/></router-link></li>
+                <li><router-link to="particulars1/4"><img src="@/assets/latest/xiangmu (4).jpg"/></router-link></li>
+                <li><router-link to="particulars1/5"><img src="@/assets/latest/xiangmu (5).jpg"/></router-link></li>
+                <li><router-link to="particulars1/6"><img style="margin-right: 0;" src="@/assets/latest/xiangmu (6).jpg"/></router-link></li>
+                <li class="clearfix"></li>
+              </ul>				
+                <div>
+                  <div class="left_title" style="width: 100%;">
+                    <h1>项目信息
+                    <span>/PROJECT INFORMATION</span>
+                    </h1>
+                    <p>--好项目不容错过，赶快行动吧！</p>
+                  </div>
+                </div>
+                <div class="liebiao_information">
+                  <div class="left_tu">
+                    <img src="@/assets/information/information (1).jpg"/>
+                  </div>
+                  <div class="right_informtion">
+                    <h3>北京英兰国际中心</h3>
+                    <p class="time">开始时间：2019-09-18丨结束时间：2019-11-18</p>
+                    <p class="xiangmu_neirong">在智能建筑系统的开发设计中，作业精准性决定了“神经系统”的敏感与效能。中诚以踏实、严禁的态度，基于“一体化集成”的思路，将智能建筑中各个独立的子系统集成起来，构造建筑的神经系统和中枢，最大化发挥智能化系统的整体效用。为建筑定制智慧的大脑，让建筑真正聪明起来。</p>
+                  </div>
+                </div>
+                <div class="liebiao_information">
+                  <div class="left_tu mt15">
+                    <img src="@/assets/information/information (2).jpg"/>
+                  </div>
+                  <div class="right_informtion">
+                    <h3>苏州科技文化艺术中心</h3>
+                    <p class="time">开始时间：2019-09-18丨结束时间：2019-11-18</p>
+                    <p class="xiangmu_neirong">在智能建筑系统的开发设计中，作业精准性决定了“神经系统”的敏感与效能。中诚以踏实、严禁的态度，基于“一体化集成”的思路，将智能建筑中各个独立的子系统集成起来，构造建筑的神经系统和中枢，最大化发挥智能化系统的整体效用。为建筑定制智慧的大脑，让建筑真正聪明起来。</p>
+                  </div>
+                  
+                </div>
+                <div class="liebiao_information">
+                  <div class="left_tu mt15">
+                    <img src="@/assets/information/information (3).jpg"/>
+                  </div>
+                  <div class="right_informtion">
+                    <h3>长江三峡水利枢纽工程二期维护</h3>
+                    <p class="time">开始时间：2019-09-18丨结束时间：2019-11-18</p>
+                    <p class="xiangmu_neirong">在智能建筑系统的开发设计中，作业精准性决定了“神经系统”的敏感与效能。中诚以踏实、严禁的态度，基于“一体化集成”的思路，将智能建筑中各个独立的子系统集成起来，构造建筑的神经系统和中枢，最大化发挥智能化系统的整体效用。为建筑定制智慧的大脑，让建筑真正聪明起来。</p>
+                  </div>
+                  
+                </div>
+                <div class="liebiao_information">
+                  <div class="left_tu mt15">
+                    <img src="@/assets/information/information (4).jpg"/>
+                  </div>
+                  <div class="right_informtion">
+                    <h3>北京首都国际机场</h3>
+                    <p class="time">开始时间：2019-09-18丨结束时间：2019-11-18</p>
+                    <p class="xiangmu_neirong">在智能建筑系统的开发设计中，作业精准性决定了“神经系统”的敏感与效能。中诚以踏实、严禁的态度，基于“一体化集成”的思路，将智能建筑中各个独立的子系统集成起来，构造建筑的神经系统和中枢，最大化发挥智能化系统的整体效用。为建筑定制智慧的大脑，让建筑真正聪明起来。</p>
+                  </div>
+                </div>
+        <div class="news">
+          <div class="company">
+            <div class="news_shang">
+              <div class="left_title">
+                <h1>公司动态
+                <span>/NEWS</span>
+                </h1>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="news_xia">
+              <div class="left_tu ">
+                <img src="@/assets/news/news (1).jpg"/>
+              </div>
+              <div class="right_news">
+                <h3>智慧城市，智能创造--安徽中程看马博</h3>
+                <p class="time">DATE:2019-11-10</p>
+                <p class="news_neirong">2014年10月31日，第三届海峡两岸（马鞍山）电子信息博览会在会展中心拉开帷幕，此次展会是以“智慧城市，智能创造”。</p>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="news_xia">
+              <div class="left_tu ">
+                <img src="@/assets/news/news (2).jpg"/>
+              </div>
+              <div class="right_news">
+                <h3>智慧城市，智能创造--安徽中程看马博</h3>
+                <p class="time">DATE:2019-11-10</p>
+                <p class="news_neirong">2014年10月31日，第三届海峡两岸（马鞍山）电子信息博览会在会展中心拉开帷幕，此次展会是以“智慧城市，智能创造”。</p>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+          <!--行业动态-->
+          <div class="company" >
+            <div class="news_shang">
+              <div class="left_title">
+                <h1>行业动态
+                <span>/NEWS</span>
+                </h1>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="news_xia">
+              <div class="left_tu">
+                <img src="@/assets/news/news (3).jpg"/>
+              </div>
+              <div class="right_news">
+                <h3>智慧城市，智能创造--安徽中程看马博</h3>
+                <p class="time">DATE:2019-11-10</p>
+                <p class="news_neirong">2014年10月31日，第三届海峡两岸（马鞍山）电子信息博览会在会展中心拉开帷幕，此次展会是以“智慧城市，智能创造”。</p>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="news_xia">
+              <div class="left_tu">
+                <img src="@/assets/news/news (4).jpg"/>
+              </div>
+              <div class="right_news">
+                <h3>智慧城市，智能创造--安徽中程看马博</h3>
+                <p class="time">DATE:2019-11-10</p>
+                <p class="news_neirong">2014年10月31日，第三届海峡两岸（马鞍山）电子信息博览会在会展中心拉开帷幕，此次展会是以“智慧城市，智能创造”。</p>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+          <div class="clearfix"></div>
+		    </div>
+        </div>
+       <router-view></router-view>
+    </div>
+</template>
+<script>
+export default {
+
+}
+</script>
+<style lang='scss'>
+  .front_introduction{
+      .subject{
+        width: 1200px;
+        margin: 0 auto;
+      }
+
+      ul li {
+        list-style: none;
+      }
+      /*图标部分*/
+    .icon_kuang{
+      width: 1200px;
+      height: 103px;
+      margin: 50px auto;	
+    }
+    .icon_kuang li{
+      float: left;
+    }
+    .solve{
+      margin-right: 20px;
+    }
+    .solve .icon_tu{
+      float: left;
+    }
+    .solve .icon_word{
+      float: left;
+      width: 167px;
+      height: 102px;
+      margin:18px 0 19px 11px;
+    }
+    .icon_word h2{
+      font-family: "微软雅黑";
+      font-weight: bold;
+      font-size: 18px;
+      color: #333333;
+    }
+    .icon_word p{
+      font-size: 12px;
+      color: #737373;
+      margin-top:12px;
+      line-height: 20px;
+    }
+    /*项目名称*/
+    .title_xiangmu{
+      overflow: hidden;
+    }
+    .xiangmu_kuang,.information_kuang,.news{
+      width: 1200px;
+      margin: 0 auto;	
+    }
+    .left_title{
+      float: left;
+    }
+    .left_title h1{
+      font-size:30px;
+      color: #343434;
+
+    }
+    .left_title span{
+      font-size: 18px;
+      color: #aaaaaa;
+      font-family: "宋体";
+      margin-top: 11px;
+    }
+    .left_title p{
+      margin-top: 12px;
+      font-size: 14px;
+      color: #333333;
+    }
+    .right_title{
+      float: right;
+      width: 83px;
+      height: 25px;
+      border: solid 1px #425b5f;
+      position: relative;
+    }
+    .right_title span{
+      color: #425b5f;
+      font-size: 8px;
+      font-weight: bold;
+      text-align: right;
+      position: absolute;
+      top:7px;
+      right:12px;	
+    }
+    .liebiao_xiangmu{
+      margin-top: 32px;
+    }
+    .liebiao_xiangmu li img{
+      float: left;
+      margin-right:33px;
+      margin-bottom: 25px;
+    }
+    .liebiao_information{
+      width: 1200px;
+      /* height: 133px; */
+      margin-top: 30px;
+    }
+    .liebiao_information .left_tu{
+      float: left;
+    }
+    .mt15{
+      margin-top: 15px;
+    }
+    .right_informtion{
+      margin-left: 230px;
+    }
+    .right_informtion h3{
+      font-size: 24px;
+      color: #333333;
+      padding:11px 0 20px 0;
+    }
+    .right_informtion p{
+      font-size: 14px;
+    }
+    .right_informtion .time{
+      color: #333333;
+      margin-bottom: 18px;
+    }
+    .right_informtion .xiangmu_neirong{
+      color: #888888;
+      line-height: 26px;
+    }
+    /*公司动态*/
+    .news{
+      overflow: hidden;
+      margin-top: 40px;
+    }
+    .news .news_shang{
+      margin-bottom: 40px;
+    }
+    .news .company{
+      float: left;
+      width: 560px;
+      height: 351px;
+      margin-right:40px;
+      /*border:1px solid red;*/
+    }
+    .company .news_xia .left_tu{
+      float: left;
+    }
+    .company .news_xia .right_news{
+      margin-left: 153px;
+      margin-top:5px
+    }
+    .company .news_xia .right_news h3{
+      font-size: 18px;
+      margin-bottom: 13px;
+    }
+    .company .news_xia .right_news .time{
+      font-size: 10px;
+      color: #888888;
+    }
+    .company .news_xia .right_news .news_neirong{
+      font-size: 12px;
+      color: #888888;
+      line-height: 22px;
+      margin-top: 10px;
+    }
+    .news_shang,.news_xia{
+      margin-bottom: 40px;
+    }
+  }
+  .el-menu.el-menu--horizontal{
+    border-bottom:0!important; 
+  }
+</style>

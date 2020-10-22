@@ -1,0 +1,93 @@
+<template>
+  <div>
+    <div id='view_text_39_277723115_txt'   style="cursor:default; height:100%; width:100%;"   >
+    <div class="editableContent " style="line-height:1.5;">
+        <p><strong><span style="font-family: 微软雅黑, &quot;Microsoft YaHei&quot;; font-size: 20px; color: rgb(54, 96, 146);">企业概况</span></strong></p>
+
+        <p style="text-indent: 2em; text-align: justify;">
+        <span style="background-color: white; font-family: 微软雅黑, sans-serif; font-size: 14px; text-indent: 2em;">
+        卓源信息科技股份有限公司始创于2011年，总部位于合肥。公司业务以“智慧城市“为主题，专注于智慧建筑领域发展，兼顾智慧医疗、智慧物业、智慧农业等领域，致力于“倡导互联经济，科技改变生活”，是集研发、设计、工程实施及运营管理于一体的高新技术企业。
+        </span>
+        </p>
+        
+        <p style="background: white; text-indent: 2em; text-align: justify;"><span style="font-size: 14px;font-family: 微软雅黑, sans-serif">
+        卓源面向政府、企事业单位等客户提供全面的智慧城市咨询、顶层设计并推进智慧城市各项建设内容落地，建筑智能化工程咨询、设计、实施及运营管理服务，传统产业互联网化咨询、设计和投资运营服务等。
+        </span>
+        </p>
+
+        <p style="background: white; text-indent: 2em; text-align: justify;">
+        <span style="font-size: 14px;font-family: 微软雅黑, sans-serif">
+        卓源历经8年拼搏，综合实力不断提升，现已成为省内知名的建筑智能化企业之一。
+        公司具有建筑智能化系统设计专项甲级资质、电子与智能化工程专业承包壹级资质、
+        安全技术防范行业壹级资质、信息系统集成叁级资质、机电设备安装工程专业承包貳级资质等专项资质，
+        并通过ISO9001、ISO14001、ISO27001、OHSAS18001等质量、环境、信息安全、职业健康管理体系认证。
+        卓源先后与多家企业合作，依靠积极的价值观念、先进的技术实力、周到的服务和敏锐的市场洞察力获得了客户和企业的高度赞誉。
+        被评为安徽省企业技术中心，双软认定企业，高新技术企业，“四新”企业，技术创新示范企业。
+        </span>
+        </p>
+
+        <p style="background: white; text-indent: 2em; text-align: justify;">
+        <span style="font-size: 14px;font-family: 微软雅黑, sans-serif">
+        卓源以服务质量为公司生存的基础，以技术创新为公司发展的核心竞争力。
+        客户覆盖政府机关、医疗卫生、学校、场馆、公检法、运营商、大型企事业单位、
+        商业综合体、综合管廊等多个领域，具有丰富的行业经验。近年来持续加大智慧建筑、
+        智慧城市、产业互联网领域的研发投入力度，拥有多项具有自主知识产权的核心技术和产品。
+        通过不断的研发和实践，全方位提升公司整体实力，形成良好的产学研生态系统。
+        </span>
+        </p>
+           
+        <p style="background: white; text-indent: 2em; text-align: justify;">
+        <span style="font-size: 14px;font-family: 微软雅黑, sans-serif">
+        为了更全面、及时的服务于广大客户，公司在安徽、江苏、山东、海南等多个地区设立了分支机构，
+        更多区域的分支服务机构正在积极筹备建设中。卓源将始终坚持“精诚·革新·弘毅·敦行”的发展宗旨
+        ，致力于为客户提供更高品质的专业服务，为打造智慧城市、建设魅力中国贡献一份力量。
+        </span>
+        </p>
+        
+        <p>
+          <br/>
+        </p>
+    </div>
+
+    <div>
+      <div class="QRcode">
+          <div>
+              <img src="http://img1.bj.wezhan.cn/content/sitefiles/2008448/images/12382345_右侧图片1_3b9a76ec-4730-44e7-ab75-eff8c9c919d5_resize_picture.jpeg">
+          </div>
+          <div>
+              <img src="http://img1.bj.wezhan.cn/content/sitefiles/2008448/images/12382346_右侧图片2_12e30cac-9b15-4513-8f58-cde72c51b508_resize_picture.jpeg">
+          </div>
+      </div>
+
+    </div>
+</div>
+  </div>
+</template>
+
+
+<script>
+export default {
+  name: 'CompanyIntroduction',
+  components: {
+  },
+  data() {
+    return {
+      
+    }
+  },
+  methods: {
+
+  },
+  mounted: function () {
+  },
+}
+</script>
+
+<style>
+  .QRcode{
+    float: right;
+    height:120px;
+    margin-right: 100px;
+
+  }
+</style>

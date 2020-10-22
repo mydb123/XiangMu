@@ -1,0 +1,131 @@
+<template>
+<!--施工记录 -->
+    <div id="constructionRecord">
+		<el-breadcrumb>
+            <el-breadcrumb-item :to="{ path:'/workbench/project/allProjectList'}">所有项目列表</el-breadcrumb-item>
+            <el-breadcrumb-item>施工记录</el-breadcrumb-item>
+        </el-breadcrumb>
+		<el-card>
+			<el-form :model="formData"  ref="ruleForm">
+				<div class="wordborder" >
+					<div>施工记录</div>
+					<div class='content'>
+						<el-row>
+							<el-col :span="5"><p>项目经理</p></el-col>
+							<el-col :span="8" >
+								<el-form-item prop="name">
+									<el-input  v-model="formData.name" placeholder="请输入项目经理名称"></el-input>
+								</el-form-item>
+							</el-col>
+							<el-col :span="5"><p>联系方式</p></el-col>
+							<el-col :span="6">
+								<el-form-item prop = "demandUserPhone">
+								<el-input  v-model="formData.demandUserPhone" placeholder="请输入内容"></el-input>
+								</el-form-item>
+							</el-col>
+						</el-row>
+						<el-row>
+							<el-col :span="5"><p>本次施工月度</p></el-col>
+							<el-col :span="8">
+								<el-input  v-model="formData.buildStage" placeholder="请输入内容"></el-input>
+							</el-col>
+							<el-col :span="5"><p>本次施工清单</p></el-col>
+							<el-col :span="6">
+								<el-upload
+									class="upload-demo"
+									action="https://jsonplaceholder.typicode.com/posts/"
+									:on-preview="handlePreview"
+									:on-remove="handleRemove"
+									:before-remove="beforeRemove"
+									multiple
+									:limit="3"
+									:on-exceed="handleExceed"
+									:file-list="fileList">
+									<el-button size="small" type="primary">点击上传</el-button>
+									<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+								</el-upload> 
+							</el-col>
+						</el-row>
+						<el-row >
+							<el-col :span="5"><p>月度施工小结</p></el-col>
+							<el-col :span="19">
+								<el-card class="tupian">
+									<img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image">
+									<div>
+										<span>好吃的汉堡</span>
+										<el-button type="text" class="button">点击上传</el-button>
+									</div>
+								</el-card>
+							</el-col>
+						</el-row>
+						<el-row >
+							<el-col :span="5"><p>月度施工小结</p></el-col>
+							<el-col :span="19">
+								<el-form-item prop = "content">
+								<el-input
+									type="textarea"
+									:rows="3"
+									placeholder="请输入内容"
+									v-model="formData.content ">
+								</el-input>
+								</el-form-item>
+							</el-col>
+						</el-row>
+					</div>
+				</div>
+			</el-form>
+			<div>
+				<el-button type="primary" >竣工按钮</el-button>
+				<el-button type="primary" >提交</el-button>
+			</div>
+        </el-card>
+    </div>
+</template>
+<script>
+import {Industry,ProjectMode,TenderMode} from '@/utils/util'
+
+export default {
+  data() {
+		return {
+			options: ProjectMode,//项目模式
+			options2:Industry,//项目类别
+			options3: TenderMode,//招标模式
+			formData:{
+                leader:"1",//项目负责人
+                name:"",//项目名称
+                industry:"",//行业
+                province:"",//省
+                city:"",//市
+                region:"",//区
+                floorArea:"",//建筑面积
+                scale:"",//施工原型图中没有项目规模字段
+                buildingAddr:"",//建筑地址
+                projectMode:"",//项目规模
+                buildStage:"",//施工阶段
+                buildTarget:"",//施工目标
+                estimateBuildTime:"",//预计施工时间
+                otherExplain:"",//其他说明
+            }
+		};
+	},
+	methods: {
+		 
+	},
+	created() {
+		
+	}
+};
+</script>
+
+<style lang="scss" >
+#constructionRecord{
+	.mb20{
+		margin-bottom: 20px;
+		.lh40{
+			line-height: 40px;
+		}
+	}
+}
+</style> 
+
+

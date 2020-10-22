@@ -1,0 +1,206 @@
+<template>
+  <el-tabs :tab-position="tabPosition" style="height: 200px;">
+    <el-tab-pane label="项目信息">
+      <el-card>
+        <el-form :model="formData"    ref="formData" disabled>
+          <div class="wordborder">
+            <div>建筑信息</div>
+            <div class='content'>
+              <el-row>
+                <el-col :span="5"><p>项目名称</p></el-col>
+                <el-col :span="8" >
+                  <el-form-item prop="name">
+                    <el-input  v-model="formData.name" placeholder="请输入项目名称"></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="5"><p>项目类别</p></el-col>
+                <el-col :span="6">
+                  <el-form-item prop="type">
+                    <el-select v-model="formData.type" placeholder="请选择行业">
+                      <el-option
+                        v-for="item in options2"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                      </el-option>
+                    </el-select>
+                  </el-form-item>    
+                </el-col>
+              </el-row>
+              <el-row >
+                <el-col :span="5"><p>地区</p></el-col>
+                <el-col :span="8">
+                  <el-form-item prop = "region">
+                    <v-distpicker disabled 
+                      :province="formData.province" 
+                      :city='formData.city'
+                      :area='formData.region'
+                      >
+                      
+                    </v-distpicker>
+                  </el-form-item>    
+                </el-col>
+                <el-col :span="5"><p>项目建筑地址</p></el-col>
+                <el-col :span="6">
+                  <el-form-item prop="address">
+                    <el-input  v-model="formData.address" placeholder="请输入内容"></el-input>
+                  </el-form-item> 
+                </el-col>
+                
+              </el-row>
+              <el-row >
+                <el-col :span="5"><p>建筑面积</p></el-col>
+                <el-col :span="8">
+                  <el-form-item prop="area">
+                    <el-input  v-model="formData.area" placeholder="请输入内容">
+                      <template slot="append">m²</template>
+                    </el-input>
+                  </el-form-item>  
+                </el-col>
+
+                <el-col :span="5"><p>建筑使用单位</p></el-col>
+                <el-col :span="6">
+                  <el-form-item prop = "useCompany">
+                  <el-input  v-model="formData.useCompany" placeholder="请输入内容"></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row >
+                <el-col :span="5"><p>总包单位</p></el-col>
+                <el-col :span="8">
+                  <el-form-item prop="tempZbCompany">
+                    <el-select v-model="formData.zbCompany" placeholder="请选择">
+                      <el-option
+                        v-for="item in addoptions"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id">
+                      </el-option>
+                    </el-select>
+                  </el-form-item> 
+                </el-col>
+              </el-row>
+            </div>
+          </div>
+          <!--  -->
+          <div class="wordborder" >
+            <div>商务信息</div>
+            <div class='content'>
+              <el-row>
+                <el-col :span="5"><p>项目模式</p></el-col>
+                <el-col :span="8" >
+                  <el-form-item prop="mode">
+                    <el-select v-model="formData.mode" placeholder="请选择"  >
+                      <el-option
+                        v-for="item in options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                        >
+                      </el-option>
+                    </el-select>
+                  </el-form-item> 
+                </el-col>
+                <el-col :span="5"><p>招标模式</p></el-col>
+                <el-col :span="6">
+                  <el-form-item prop = "inviteMode">
+                  <el-select v-model="formData.inviteMode" placeholder="请选择">
+                    <el-option
+                      v-for="item in options3"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="5"><p>业主需求对接人</p></el-col>
+                <el-col :span="8">
+                  <el-form-item prop = "ownerPerson">
+                  <el-input  v-model="formData.ownerPerson" placeholder="请输入内容"></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="5"><p>业主需求对接人联系方式</p></el-col>
+                <el-col :span="6">
+                  <el-form-item prop = "ownerPersonPhone">
+                  <el-input  v-model="formData.ownerPersonPhone" placeholder="请输入内容"></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row >
+                <el-col :span="5"><p>项目规模</p></el-col>
+                <el-col :span="8">
+                  <el-form-item prop = "scale">
+                  <el-input  v-model="formData.scale" placeholder="请输入内容">
+                    <template slot="append">万元</template>
+                  </el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="5"><p>项目年度</p></el-col>
+                <el-col :span="6">
+                  <el-date-picker
+                      v-model="formData.year"
+                      type="year"
+                      placeholder="选择日期" >
+                  </el-date-picker>
+                </el-col>
+              </el-row>
+              <el-row >
+                <el-col :span="5"><p>项目内容简介</p></el-col>
+                <el-col :span="19">
+                  <el-form-item prop = "summary">
+                  <el-input 
+                    type="textarea"
+                    :rows="3"
+                    placeholder="请输入内容"
+                    v-model="formData.summary">
+                  </el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </div>
+          </div>
+        </el-form>
+        </el-card>
+    </el-tab-pane>
+    <el-tab-pane label="设计信息">设计信息</el-tab-pane>
+    <el-tab-pane label="角色管理">采购信息</el-tab-pane>
+    <el-tab-pane label="定时任务补偿">施工信息</el-tab-pane>
+  </el-tabs>
+</template>
+<script>
+import api from "@/api/index";
+import {Industry,ProjectMode,TenderMode} from '@/utils/util'
+  export default {
+    data() {
+      return {
+        tabPosition: 'top',
+        formData:{
+          id:null,
+        },
+        addoptions:[],
+        options: ProjectMode,//项目模式
+			  options2:Industry,//项目类别
+			  options3: TenderMode,//招标模式
+      };
+    },
+    methods: {
+      getProjectById(){
+        api.project.getProjectById(this.formData.id).then(response => {
+          this.formData = response.data
+        });
+      },
+      
+    },
+    created() {
+        this.formData.id = this.$route.query.id;
+        this.getProjectById()
+        //查询总包单位赋值下拉框
+        api.project.getUserByRoleNamePost("zb").then(response => {
+            this.addoptions = response.data
+        });
+      }
+  };
+</script>

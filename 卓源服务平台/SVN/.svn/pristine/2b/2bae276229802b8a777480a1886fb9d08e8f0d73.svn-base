@@ -1,0 +1,68 @@
+<template>
+<!-- 在建分析 -->
+    <div id="underAnalysis">
+        <div class="home_title">平台特点</div>
+		<el-card class="fl">
+			<div class="sjzxgk">数据中心概况</div>
+			<ul class="kkk">
+				<li><div></div><div>55555555555</div></li>
+				<li><div></div><div>55555555555</div></li>
+				<li><div></div><div>55555555555</div></li>
+				<li><div></div><div>55555555555</div></li>
+				<li><div></div><div>55555555555</div></li>
+				<li><div></div><div>55555555555</div></li>
+				<li><div></div><div>55555555555</div></li>
+				<li><div></div><div>55555555555</div></li>
+				<li><div></div><div>55555555555</div></li>
+			</ul>
+		</el-card>
+               
+		
+    </div>
+</template>
+
+<script>
+
+export default {
+  data() {
+		return {
+			
+		};
+	},
+	methods: {
+	
+	},
+	created() {
+		
+	}
+};
+</script>
+
+<style lang="scss" >
+#underAnalysis{
+	.home_title{
+        font-weight: 900;
+        font-size: 20px;
+        color: rgb(54, 96, 146);
+        padding-left: 5px;
+        border-left: 4px solid #fb973f;
+    }
+	.fl{
+		width: 1500px;
+		height: 100px;
+	}
+	.sjzxgk{
+		font-weight: 700;
+		font-size: 24px;
+		margin-left: 20px;
+		margin-right: 60px;
+		float: left;
+	}
+	.kkk li{
+		list-style: none;
+	}
+	
+}
+</style>
+
+

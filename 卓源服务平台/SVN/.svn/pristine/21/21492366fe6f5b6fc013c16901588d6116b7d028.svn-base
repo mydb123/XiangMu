@@ -1,0 +1,319 @@
+<template>
+    <div id="productCodeList" >
+        <div class="fu">
+           <div class="home_title">平台特点</div>
+           <el-row :gutter="12">
+                <el-col :span="6">
+                     <el-card>
+                         <div>
+                            <img class="cardimg" src="../assets/img/hello.png" alt="">
+                            <span class="home_subtitle">欢迎您</span>
+                         </div>
+                        <div class="neiro">中国十七冶集团有限公司</div>
+                    </el-card>
+                </el-col>
+                <el-col :span="6">
+                   <el-card>
+                         <div>
+                            <img class="cardimg" src="../assets/img/zaijian.png" alt="">
+                            <span class="home_subtitle">在建项目</span>
+                         </div>
+                        <div class="neiro fsi40">5</div>
+                    </el-card>
+                </el-col>
+                <el-col :span="6">
+                   <el-card>
+                         <div>
+                            <img class="cardimg" src="../assets/img/jungong.png" alt="">
+                            <span class="home_subtitle">竣工项目</span>
+                         </div>
+                        <div class="neiro fsi40">6</div>
+                    </el-card>
+                </el-col>
+                 <el-col :span="6">
+                  <el-card>
+                         <div>
+                            <img class="cardimg" src="../assets/img/zixuntixing.png" alt="">
+                            <span class="home_subtitle">咨询提醒</span>
+                         </div>
+                         <div style="text-align: center; line-height: 40px;"> <span class="neiro1">ne5555w <i class="jiaobiao">2</i></span></div>
+                    </el-card>
+                </el-col>
+            </el-row>
+            <el-row :gutter="12">
+                 <el-col :span="8">
+                     <el-card>
+                        <div class="Projecthader" >
+                            <span>卡片名称</span>
+                        </div>
+                        <ul class="textitem">
+                            <li>asga</li>
+                            <li>哈哈哈哈哈哈哈</li>
+                            <li>ffffffffffffffffff</li>
+                            <li>ffffffffffffffffff</li>
+                            <li>ffffffffffffffffff</li>
+                        </ul>
+                    </el-card>
+                </el-col>
+                <el-col :span="8">
+                     <el-card>
+                        <div class="Projecthader" >
+                            <span>咨询进度</span>
+                        </div>
+                        <ul class="textitem1">
+                            <li>asga</li>
+                            <li>哈哈哈哈哈哈哈</li>
+                            <li>ffffffffffffffffff</li>
+                            <li>ffffffffffffffffff</li>
+                            <li>ffffffffffffffffff</li>
+                        </ul>
+                    </el-card>
+                </el-col>
+                <el-col :span="8">
+                     <el-card>
+                        <div class="Projecthader" >
+                            <span>通知广告</span>
+                        </div>
+                        <ul class="textitem2">
+                            <li>1. 卓源科技通告</li>
+                            <li>2. 大矾山项目结束通告</li>
+                            <li>3. 南京科技馆项目通通知</li>
+                            <li>4. 上海云台项目开会通告</li>
+                            <li>5. 滁州文体项目开工通知</li>
+                        </ul>
+                    </el-card>
+                </el-col>
+            </el-row>
+             <el-row :gutter="12">
+                 <el-col :span="8">
+                     <el-card>
+                        <div class="Projecthader" >
+                            <span>项目进展</span>
+                        </div>
+                        <div id="barEcharts" class="whmauto"></div>
+                    </el-card>
+                </el-col>
+                <el-col :span="8">
+                     <el-card>
+                        <div class="Projecthader" >
+                            <span>项目地域分布图</span>
+                        </div>
+                       <div class="teact">
+                            <div id="pieEcharts" class="whmauto"></div>
+                       </div>
+                    </el-card>
+                </el-col>
+                <el-col :span="8">
+                     <el-card>
+                        <div class="Projecthader" >
+                            <span>项目合同额度分布图</span>
+                        </div>
+                       <div id="barEcharts2" class="wh54"></div>
+                    </el-card>
+                </el-col>
+            </el-row>
+        </div>
+    </div>
+</template>
+<script>
+import api from "@/api/index";
+export default {
+    data() {
+        return {
+            
+        }
+    },
+    methods: {
+        barEcharts(){
+            // 基于准备好的dom，初始化echarts实例
+            let barEcharts = this.$echarts.init(document.getElementById('barEcharts'));
+            // 绘制图表
+            barEcharts.setOption({
+                xAxis: {
+                    type: 'category',
+                    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [{
+                    data: [120, 200, 150, 80, 70, 110, 130],
+                    type: 'bar'
+                }]
+            });
+        },
+        pieECharts(){
+            // 基于准备好的dom，初始化echarts实例
+            let pieECharts = this.$echarts.init(document.getElementById('pieEcharts'))
+            // 绘制图表
+            pieECharts.setOption({
+                tooltip: {
+                    trigger: 'item'
+                },
+                legend: {
+                    bottom: 10,
+                    left: 'center',
+                    data: ['西凉', '益州', '兖州', '荆州', '幽州']
+                },
+                series: [
+                    {
+                        type: 'pie',
+                        radius: '65%',
+                        center: ['50%', '50%'],
+                        selectedMode: 'single',
+                        data: [
+                            {value: 1548,name: '幽州'},
+                            {value: 535, name: '荆州'},
+                            {value: 510, name: '兖州'},
+                            {value: 634, name: '益州'},
+                            {value: 735, name: '西凉'}
+                        ]
+                    }
+                ]
+            });
+        },
+        barEcharts2() {
+            // 基于准备好的dom，初始化echarts实例
+            let barEcharts2 = this.$echarts.init(document.getElementById('barEcharts2'));
+            // 绘制图表
+            barEcharts2.setOption({
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'value',
+                    boundaryGap: [0, 1]
+                },
+                yAxis: {
+                    type: 'category',
+                    data: ['巴西', '印尼', '美国', '印度', '中国', '世界人口(万)']
+                },
+                series: [
+                    {
+                        name: '2011年',
+                        type: 'bar',
+                        data: [1, 2, 5, 4, 3, 1]
+                    }
+                ]
+            });
+        }
+    },
+    mounted(){
+        this.barEcharts();
+        this.pieECharts();
+        this.barEcharts2();
+   },
+}
+</script>
+ 
+
+<style lang='scss'>
+#productCodeList{
+    .teact{
+        width: 100%;
+        text-align: center;
+    }
+    .home_title{
+        font-weight: 900;
+        font-size: 20px;
+        color: rgb(54, 96, 146);
+        padding-left: 5px;
+        border-left: 4px solid #fb973f;
+    }
+    .cardimg{
+        width: 50px;
+        vertical-align:text-top;
+    }
+    .home_subtitle{
+        color: #c6c6c6;
+        font-size: 20px;
+        margin-left: 10px;
+    }
+    .neiro{
+        font-size: 18px;
+        text-align: center;
+        font-weight: bolder;
+        height: 40px;
+    }
+    .fsi40{
+        font-size: 40px;
+    }
+    .neiro1{
+        position: relative;
+        display: inline-block;
+        font-size: 18px;
+        text-align: center;
+        margin: 0 auto;
+        line-height: 40px;
+        height: 40px;
+
+    }
+    .jiaobiao{
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        right: -15px;
+        top: -2px;
+        background-color: crimson;
+        border-radius: 50%;
+        line-height: 20px;
+    }
+    .Projecthader{
+        box-sizing: border-box;
+        padding-left: 10px;
+        font-size: 24px;
+    }
+    .textitem,.textitem1,.textitem2{
+        margin: 0;
+        padding-left: 10px;
+    }
+    .textitem li:nth-of-type(n),.textitem1 li:nth-of-type(n),.textitem2 li:nth-of-type(n){
+        font-size: 16px;
+        padding-bottom: 30px;
+        height: 16px;
+        line-height: 40px;
+        text-indent:1em;
+        list-style-type:none;
+        border-bottom: 1px solid #ccc;
+    }
+    .textitem li:nth-of-type(n)::before,.textitem1 li:nth-of-type(n)::before,.textitem2 li:nth-of-type(n)::before{
+        content: "●";
+        font-size: 30px;
+        padding-right: 14px;
+    }
+    .textitem li:nth-of-type(n)::before{
+        color: #4ccaf3;
+    }
+    .textitem1 li:nth-of-type(n)::before{
+        color: #ffa800;
+    }
+    .textitem2 li:nth-of-type(n)::before{
+        color: #bd9deb;
+    }
+    .textitem2 li:nth-of-type(2n){
+        background-color: #f0f1f0; 
+    }
+    .textitem2 li:nth-of-type(n){
+        border-bottom:none;
+    }
+    .whmauto{
+        width: 500px; 
+        height: 400px;
+        margin: 0 auto;
+    }
+    .wh54{
+        width: 500px; 
+        height: 400px;
+    }
+}
+
+</style>

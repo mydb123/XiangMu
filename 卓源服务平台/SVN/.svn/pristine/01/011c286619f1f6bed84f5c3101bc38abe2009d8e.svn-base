@@ -1,0 +1,254 @@
+<template>
+    <!-- <div>
+        状态32.
+        方案已修改，请确认
+    </div> -->
+    <div class='plan_update_construction_partner'>
+        <StepComponent :index='index' :flag='3'></StepComponent>
+        <div>
+            <el-form disabled>
+            <div class='div2'>
+                <div class='content'>
+                    <el-row>
+                        <el-col :span="5"><p>项目名称</p></el-col>
+                        <el-col :span="8" >
+                            <el-input v-model="formData.name" placeholder="请输入内容"></el-input>
+                        </el-col>
+                        <el-col :span="5"><p>状态</p></el-col>
+                        <el-col :span="6">
+                            <el-input v-model="statusText" placeholder="请输入内容"></el-input>
+                        </el-col>
+                    </el-row>
+                </div>
+            </div>
+            <div class="wordborder">
+                <p class='clickbox' v-on:click="click(1)" >施工方案</p>
+                <div class='content' v-show="show1">
+                    <el-row>
+                        <el-col :span="5"><p>施工月次</p></el-col>
+                        <el-col :span="8" >
+                            <el-input v-model="formData.count" placeholder="请输入内容"></el-input>
+                        </el-col>
+                        <el-col :span="5"><p>拟完成时间</p></el-col>
+                        <el-col :span="6">
+                            <el-date-picker
+                                value-format="yyyy-MM-dd"
+                                v-model="formData.intendedCompleteTime"
+                                type="date"
+                                placeholder="选择日期">
+                            </el-date-picker>
+                        </el-col>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="5"><p>施工人员</p></el-col>
+                        <el-col :span="8">
+                            <el-input  v-model="formData.builder" placeholder="请输入内容"></el-input>
+                        </el-col>
+                        <el-col :span="5"><p>联系方式</p></el-col>
+                        <el-col :span="6">
+                            <el-input  v-model="formData.builderPhone" placeholder="请输入内容"></el-input>
+                        </el-col>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="5"><p>施工范围</p></el-col>
+                        <el-col :span="19">
+                            <el-input  v-model="formData.buildScope" placeholder="请输入内容"></el-input>
+                        </el-col>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="5"><p>经营目标预算</p></el-col>
+                        <el-col :span="19">
+                            <div v-for="item in targetFile" :key="item.id" class="text item">
+                                <el-link type="primary" :href="downloadUrl+item.id">{{item.name}}</el-link>
+                            </div>
+                        </el-col>
+                    </el-row>
+                    <el-row >
+                        <el-col :span="5"><p>管理费</p></el-col>
+                        <el-col :span="8">
+                            <el-input v-model="formData.manageCost" placeholder="请输入内容">
+                                <template slot="append">万元</template>
+                            </el-input>
+                        </el-col>
+                    </el-row>
+                </div>
+            </div>
+            <div class="wordborder" >
+                <p class='clickbox' v-on:click="click(2)">上次意见</p>
+                <div class='content' v-show="show2">
+                    <el-row >
+                        <el-col :span="5"><p>意见内容</p></el-col>
+                        <el-col :span="19">
+                            <el-input
+                                type="textarea"
+                                :rows="3"
+                                placeholder="请输入内容"
+                                v-model="lastProgress">
+                            </el-input>
+                        </el-col>
+                    </el-row>
+                </div>
+            </div>
+            </el-form>
+            <div class="wordborder" >
+                <p class='clickbox' v-on:click="click(3)">修改意见</p>
+                <div class='content' v-show="show3">
+                    <el-row >
+                        <el-col :span="5"><p>意见内容</p></el-col>
+                        <el-col :span="19">
+                            <el-input
+                                type="textarea"
+                                :rows="3"
+                                placeholder="请输入内容"
+                                v-model="formData.progress">
+                            </el-input>
+                        </el-col>
+                    </el-row>
+                </div>
+            </div>
+        </div>
+        <div class='div5'>
+            <el-button style='background-color:#666' @click="refuse" type="primary" round>拒绝</el-button>
+            <el-button @click="accept" type="primary" round>接受</el-button>
+        </div>
+    </div>
+</template>
+
+<script>
+import store from '@/store/index'
+import base from '@/api/base'
+import StepComponent from '@/components/StepComponent'
+import {Industry,ProjectMode} from '@/utils/util'
+import api from '@/api/index'
+import {loadFile} from '@/utils/pageResult';
+export default {
+    components: {
+        StepComponent
+    },
+    data() {
+        return {
+            downloadUrl:base.sq+"/bizConstruction/partner/download?access_token="+store.getters.token+"&fileId=",//下载路径
+            show1:true,
+            show2:true,
+            show3:true,
+            index:3,
+            statusText:"方案已修改，请确认",
+            formData:{
+                id:"",
+                name:"",
+                count:"",//采购次数
+                intendedCompleteTime:"",//拟完成时间
+                builder:"",//采购人员
+                builderPhone:"",//采购员联系方式
+                buildScope:"",//采购范围
+                manageCost:"",//管理费
+                progress:""//意见
+            },
+            targetFile:[],//经营目标预算
+            lastProgress:""//上次修改意见
+        }
+    },
+    methods: {
+        click(index){
+            if(index==1){
+                this.show1 = !this.show1
+            }else if(index==2){
+                this.show2 = !this.show2
+            }else if(index==3){
+                this.show3 = !this.show3
+            }
+        },
+        refuse() {
+            api.constructionPartner.updateStatusAndProgress(this.formData.id,30,this.formData.progress).then(response => {
+                this.$router.push('/construction/partner/planSuggest');
+            }).catch(error => {
+                console.log(error);
+            });
+        },
+        accept() {
+            api.constructionPartner.updateStatus(this.formData.id,33).then(response => {
+                this.$router.push({path:'/construction/partner/planFee',query:{id:this.formData.id}});
+            }).catch(error => {
+                console.log(error);
+            });
+        },
+        loadData(id) {
+            api.constructionPartner.findById(id).then(response => {
+                this.formData.id = response.id;
+                this.formData.name = response.name; //项目名称
+                this.formData.count = response.count;//采购次数
+                this.formData.intendedCompleteTime = response.intendedCompleteTime;//拟完成时间
+                this.formData.builder = response.builder;//采购人员
+                this.formData.builderPhone = response.builderPhone;//采购人员电话
+                this.formData.buildScope = response.buildScope;//采购范围
+                this.formData.manageCost = response.manageCost;//管理费
+                // this.formData.accountRequire = response.accountRequire;//账期要求
+                // this.formData.arrivalRequire = response.arrivalRequire;//到货要求
+                // this.formData.otherRequire = response.otherRequire;//其他要求
+                // this.formData.leader = response.leader;//项目负责人
+                // this.formData.submitDate = response.submitDate;//创建日期
+                // this.formData.industry = response.industry;//行业
+                // this.formData.province = response.province//省
+                // this.formData.city = response.city;//市
+                // this.formData.region = response.region;//区
+                // this.formData.buildingAddr = response.buildingAddr;//建筑地址
+                // this.formData.scale = response.scale;//项目规模
+                // this.formData.buildingAddr = response.buildingAddr;//项目地址
+                // 采购信息
+                // this.formData.projectMode = response.projectMode;//项目模式
+                // this.formData.acquisitionStage = response.acquisitionStage;//采购阶段
+                // this.formData.purchasingTarget = response.purchasingTarget;//采购目标
+                // this.formData.estimatedConstructionTime = response.estimatedConstructionTime;//预计采购时间
+                // this.formData.otherDescription = response.otherDescription;//其他说明
+
+            }).catch(error => {
+                console.log(error);
+            });
+        },
+        findBizConstructionProgressByExample(id){//加载项目信息和最新的意见
+            api.constructionPartner.findBizConstructionProgressByExample(id,30).then(response => {
+                this.lastProgress = response.progress;
+            }).catch(error => {
+                console.log(error);
+            });
+        },
+        loadTargetFile(){//加载上传的成果附件
+            loadFile('constructionPartner',this.formData.id,6,this.targetFile)
+        }
+    },
+    mounted: function () {
+        this.formData.id = this.$route.query.id; //获取路由传值
+        //加载数据
+        this.loadData(this.formData.id); //项目基本信息
+        this.findBizConstructionProgressByExample(this.formData.id);//意见
+        this.loadTargetFile();//加载上传附件
+    },
+}
+</script>
+
+<style lang='scss'>
+.plan_update_construction_partner{
+    margin: 10px auto;
+    border:1px solid #E7E8ED; 
+    .div2{
+        position:relative;
+        margin: 25px;
+        min-height:20px;
+        line-height: 40px;
+        .content{
+            width: 80%;
+            margin: 35px;
+            margin-left:50px;
+            p{
+                padding:0px 5px;   
+                margin:0px 10px; 
+            }
+        }
+    }
+    .div5{
+        text-align: center;
+        margin-bottom: 20px;
+    }
+}
+
+</style>

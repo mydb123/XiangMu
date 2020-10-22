@@ -1,0 +1,271 @@
+html {
+    height: 100%;
+  }
+  
+  body {
+    position: relative;
+    top: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    // min-width: 1458px;
+    overflow: hidden;
+    
+  }
+  
+  .app {
+    $solidBorder: 1px solid #eee;
+    $sideCollapsedWidth: 66px;
+    $sideExpandedWidth: 280px;
+    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+    font-size: 1em;
+    // width: 100%;
+    height: 100%;
+    // min-width: 1458px;
+    border: $solidBorder;
+    display: flex;
+    display: -webkit-flex;
+    flex-flow: row nowrap;
+    &-side {
+      width: 280px;
+      // height: 823px;
+      max-height: 823px;
+      font-weight: 700;
+      border-right: $solidBorder;
+      overflow-y: auto;
+      &-left {
+        background-color: rgb(238, 241, 246);
+      }
+      &-logo {
+        height: 55px;
+        text-align: center;
+      }
+      &-collapsed {
+        width: 66px!important;
+      }
+      &-expanded {
+        width: 280px!important;
+      }
+    }
+    &-header {
+      width: 100%;
+      height: 60px;
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: flex-start;
+      align-items: center;
+      border-bottom: $solidBorder;
+      &-userinfo {
+        position: absolute;
+        right: 0;
+        margin-right: 25px;
+        display: flex;
+        flex-flow: row nowrap;
+        height: 60px;
+        justify-content: flex-start;
+        align-items: center;
+      }
+    }
+    &-body {
+      font-size: 1em;
+      width: 100%;
+      // height: 100%;
+      padding: 20px;
+      overflow-y: auto;
+      overflow-x: auto;
+    }
+    &-footer {
+      width: 95%;
+      height: 60px;
+    }
+  }
+  
+  .inline-block {
+    display: inline-block;
+  }
+
+.width70{
+  width:70%;
+}
+.width100{
+  width:100%;
+}
+.fl{
+  float:left;
+}
+.fr{
+  float:right;
+}
+.clearfloat{
+  clear: both;
+}
+a{
+  text-decoration: none;
+}
+//表单-带文字的框体
+.wordborder{
+  position:relative;
+  border:1px solid #E7E8ED; 
+  margin: 15px;
+  min-height:50px;
+  p.clickbox{
+      margin-left:5%;
+      margin-top:-10px;
+      background: #fff;
+      cursor:pointer;
+      width:136px;
+      color: #FFF;
+      background-color: #409EFF;
+      border-color: #409EFF;
+      border-radius: 10px;
+      text-align: center;
+  }
+  .content{
+      width: 80%;
+      // margin: 35px;
+      margin-left:50px;
+      p{
+          padding:0px 5px;   
+          margin:10px 10px 36px 10px;
+      }
+      .textItem{
+          background-color: #E7E8ED;
+      }
+      ._textarea{
+          overflow:scroll-y;
+          height:200px;
+          border: none;
+          padding: 5px;
+          resize: none;
+      }
+  }
+}
+//详情界面-带文字的边框
+.box{
+  position:relative;
+  border:1px solid #E7E8ED; 
+  // border:1px solid #000;
+  margin: 25px;
+  min-height:50px;
+  p.clickbox{
+      margin-left:5%;
+      margin-top:-10px;
+      background: #fff;
+      cursor:pointer;
+      width:120px;
+      color: #FFF;
+      background-color: #409EFF;
+      border-color: #409EFF;
+      border-radius: 10px;
+      padding-left: 29px;
+  }
+  .content{
+      width: 80%;
+      // margin: 35px;
+      margin-left:50px;
+      p{
+          padding:0px 5px;
+          margin:10px 10px 36px 10px;
+      }
+      .textItem{
+          background-color: #E7E8ED;
+      }
+      ._textarea{
+          overflow:scroll-y;
+          height:200px;
+          border: none;
+          padding: 5px;
+          resize: none;
+      }
+  }
+}
+//步骤条
+.stempComponent{
+  height: 150px;
+  margin-bottom: 20px;
+  border-bottom:1px dashed #E7E8ED; ;
+  text-align:center;
+  .item{
+      display: inline-block;
+      width: 100px;
+      height: 100px;
+      margin:25px 0px;
+      background: #fff;
+      border:solid 2px #666;
+      -moz-border-radius: 50px;
+      -webkit-border-radius: 50px;
+      border-radius: 50px;
+      border-radius: 50%;
+      span{
+          display: inline-block;color: #000;height: 100px;line-height: 100px;text-align: center
+      }
+  }
+  .color1{
+
+      border:solid 2px #41c7db;
+  }
+  .link {
+      display: inline-block;
+      width: 5%;
+      height: 0px;
+      border-top: dashed #000 2px;
+  }      
+}
+
+.distpicker-address-wrapper{
+  select{
+      color: #C0C4CC;
+      background: #F5F7FA;
+      appearance:none;
+      -moz-appearance:none; /* Firefox */
+      -webkit-appearance:none; /* Safari 和 Chrome */
+  }
+}
+
+//不可点击-带文字的框体
+.wordborder_no_click{
+  position:relative;
+  border:1px solid #E7E8ED; 
+  margin: 15px;
+  min-height:50px;
+  p.clickbox{
+      margin-left:5%;
+      margin-top:-10px;
+      background: #fff;
+      width:90px;
+      color: #FFF;
+      background-color: #409EFF;
+      border-color: #409EFF;
+      border-radius: 10px;
+      padding-left:29px;
+  }
+  .content{
+      width: 80%;
+      // margin: 35px;
+      margin-left:50px;
+      p{
+          padding:0px 5px;   
+          margin:10px 10px 36px 10px;
+      }
+      .textItem{
+          background-color: #E7E8ED;
+      }
+      ._textarea{
+          overflow:scroll-y;
+          height:200px;
+          border: none;
+          padding: 5px;
+          resize: none;
+      }
+  }
+}
+.el-date-editor{
+  width: 100%!important;
+}
+.el-select{
+  width: 100%!important;
+}
